@@ -1,1 +1,4 @@
+#Toncat sobe por padrão na 8080. Essa configuração permite alterar a porta que irá subir.
+server:
+  port: 8085
 

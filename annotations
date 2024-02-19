@@ -1,0 +1,27 @@
+Comandos relevantes:
+
+GERAR O JAR DA APLICAÇÃO:
+
+    Abrir o terminal da pasta raiz do projeto. O jar será criado automaticamente na pasta target.
+    Comando: ./mvnw clean install -DskipTests
+
+
+GERAR A IMAGEM DA APLICAÇÃO:
+
+    Criar o arquivo Dockerfile na raiz do projeto e abrir o terminal lá;
+    Comando: docker build -t nomeQueQueroDar .
+
+
+SUBIR O CONTAINER:
+
+    Docker run -p portaHost:portaContainer nomeDaImagem
+    Adicionar o -d para rodar em segundo plano e não travar o terminal
+    O -p faz o mapeamento das portes (host/container)
+
+
+
+COMANDOS DOCKER USUAIS:
+
+    Docker ps / images /
+
+
