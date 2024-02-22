@@ -15,13 +15,23 @@ GERAR A IMAGEM DA APLICAÇÃO:
 SUBIR O CONTAINER:
 
     Docker run -p portaHost:portaContainer nomeDaImagem
-    Adicionar o -d para rodar em segundo plano e não travar o terminal
-    O -p faz o mapeamento das portes (host/container)
+    -d para rodar em segundo plano e não travar o terminal
+    -p faz o mapeamento das portas (host/container)
+    --name atribui um nome ao container
+
+CRIAR UM VOLUME NO HOST P/ OS CONTAINERS PERSISTIREM OS DADOS
+
+    docker volume create nome_do_volume
+
+SUBIR UM CONTAINER POSTGRE
+
+    docker run -d -p 5432:5432 -v "nome_do_volume:/var/lib/postgresql/data" -e POSTGRES_PASSWORD=postgres -e PRIMARY_USER=postgres postgres
+
+    docker run -d -p 5432:5432 -v "roteiro_volume:/var/lib/postgresql/data" --name db_roteiro -e PRIMARY_USER=postgres postgres
+
+    docker run -d -p 5432:5432 -v "roteiro_volume:/var/lib/postgresql/data" --name db_roteiro -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin postgres
 
 
-
-COMANDOS DOCKER USUAIS:
-
-    Docker ps / images /
-
+COMANDO PARA CRIAR O CONTAINER LOCAL JÁ COM AS CONFIGURAÇÕES DO YML
+docker run --name roteirodb -p 3307:3306 -e MYSQL_ROOT_PASSWORD=admin -e MYSQL_DATABASE=roteiro -e MYSQL_USER=projeto -e MYSQL_PASSWORD=12345 -d mysql:latest
 

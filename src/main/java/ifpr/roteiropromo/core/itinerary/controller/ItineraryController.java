@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/itinerary")
 @RequiredArgsConstructor
@@ -16,8 +18,8 @@ public class ItineraryController {
     private final ItineraryService itineraryService;
 
     @GetMapping()
-    public ResponseEntity<String> getAll(){
-        return ResponseEntity.ok("array with all selected tourist points");
+    public ResponseEntity<List<Itinerary>> getAll(){
+        return ResponseEntity.ok(itineraryService.findAll());
     }
 
     @PostMapping()

@@ -1,4 +1,32 @@
-#Toncat sobe por padrão na 8080. Essa configuração permite alterar a porta que irá subir.
+#Toncat sobe na 8080. Configuração para alterar a porta que irá subir.
 server:
   port: 8085
+  servlet:
+    contextPath: /api
 
+
+  #spring:
+  #Configuração do banco de dados (mysql - local - MAQUINA ANDERSON)
+  #datasource:
+  #  driver-class-name: com.mysql.cj.jdbc.Driver
+  #  url: jdbc:mysql://127.0.0.1:3306/roteiro?useTimezone=true&serverTimezone=UTC&createDatabaseIfNotExist=true
+  #  username: root
+  #  password: bel468608
+
+#CONFIGURAÇÃO BANCO P/ CONTAINER LOCAL
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3307/roteiro?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: projeto
+    password: 12345
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    properties:
+        show_sql: true
+        format_sql: true
+
+
+#docker run --name roteirodb -p 3307:3306 -e MYSQL_ROOT_PASSWORD=admin -e MYSQL_DATABASE=roteiro -e MYSQL_USER=projeto -e MYSQL_PASSWORD=12345 -d mysql:latest
