@@ -2,7 +2,7 @@ package ifpr.roteiropromo.core.itinerary.controller;
 
 
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTOForm;
-import ifpr.roteiropromo.core.itinerary.domain.entity.Itinerary;
+import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
 import ifpr.roteiropromo.core.itinerary.service.ItineraryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

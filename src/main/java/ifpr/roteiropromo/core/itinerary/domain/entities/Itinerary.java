@@ -1,4 +1,4 @@
-package ifpr.roteiropromo.core.itinerary.domain.entity;
+package ifpr.roteiropromo.core.itinerary.domain.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

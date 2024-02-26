@@ -1,7 +1,7 @@
 package ifpr.roteiropromo.core.itinerary.service;
 
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTOForm;
-import ifpr.roteiropromo.core.itinerary.domain.entity.Itinerary;
+import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
 import ifpr.roteiropromo.core.itinerary.repository.ItineraryRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
