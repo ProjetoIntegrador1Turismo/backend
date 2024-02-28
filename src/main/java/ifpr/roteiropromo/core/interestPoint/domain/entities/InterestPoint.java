@@ -21,7 +21,7 @@ public abstract class InterestPoint {
     String name;
 
     @OneToOne(cascade = CascadeType.ALL)
-    Addres addres;
+    Addres address;
 
     Integer averageValue;
 

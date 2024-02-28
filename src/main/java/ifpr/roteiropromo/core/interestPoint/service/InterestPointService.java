@@ -1,6 +1,7 @@
 package ifpr.roteiropromo.core.interestPoint.service;
 
-import ifpr.roteiropromo.core.erros.ServiceException;
+
+import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTOForm;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.*;
 import ifpr.roteiropromo.core.interestPoint.repository.InterestPointRepository;
@@ -18,33 +19,31 @@ public class InterestPointService {
 
     private final ModelMapper modelMapper;
     private final InterestPointRepository interestPointRepository;
-
     public InterestPoint create(InterestPointDTOForm interestPointDTOForm) {
-
-        switch (interestPointDTOForm.getInterestPointType()) {
-            case HOTEL:
-                Hotel hotel = modelMapper.map(interestPointDTOForm, Hotel.class);
-                return interestPointRepository.save(hotel);
-            case EVENT:
+        log.info("Acessou o metodo com switch");
+        switch (interestPointDTOForm.getInterestPointType()){
+            case "EVENT":
                 Event event = modelMapper.map(interestPointDTOForm, Event.class);
                 return interestPointRepository.save(event);
-            case TOURIST_POINT:
-                TouristPoint touristPoint = modelMapper.map(interestPointDTOForm, TouristPoint.class);
-                return interestPointRepository.save(touristPoint);
-            case RESTAURANT:
-                Restaurant restaurant = modelMapper.map(interestPointDTOForm, Restaurant.class);
-                return interestPointRepository.save(restaurant);
-            case EXPERIENCE:
+            case "HOTEL":
+                Hotel hotel = modelMapper.map(interestPointDTOForm, Hotel.class);
+                return interestPointRepository.save(hotel);
+            case "EXPERIENCE":
                 Experience experience = modelMapper.map(interestPointDTOForm, Experience.class);
                 return interestPointRepository.save(experience);
+            case "RESTAURANT":
+                Restaurant restaurant = modelMapper.map(interestPointDTOForm, Restaurant.class);
+                return interestPointRepository.save(restaurant);
+            case "TOURIST_POINT":
+                TouristPoint touristPoint = modelMapper.map(interestPointDTOForm, TouristPoint.class);
+                return interestPointRepository.save(touristPoint);
             default:
-                //Erro não esta passando a msg do erro. Falta corrigir
-                throw new ServiceException("Interest Point Type not exist!");
+                throw new ServiceError("Interest point type not found: " + interestPointDTOForm.getInterestPointType());
         }
-
     }
 
     public List<InterestPoint> getAll() {
+        log.info("Acessou o getAll na service do ponto de interesse");
         return interestPointRepository.findAll();
     }
 

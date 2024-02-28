@@ -5,15 +5,7 @@ server:
     contextPath: /api
 
 
-  #spring:
-  #Configuração do banco de dados (mysql - local - MAQUINA ANDERSON)
-  #datasource:
-  #  driver-class-name: com.mysql.cj.jdbc.Driver
-  #  url: jdbc:mysql://127.0.0.1:3306/roteiro?useTimezone=true&serverTimezone=UTC&createDatabaseIfNotExist=true
-  #  username: root
-  #  password: bel468608
-
-#CONFIGURAÇÃO BANCO P/ CONTAINER LOCAL
+#CONFIGURAÇÃO BANCO NO CONTAINER LOCAL P/ COMANDO DA LINHA 32
 spring:
   datasource:
     url: jdbc:mysql://localhost:3307/roteiro?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
@@ -25,8 +17,15 @@ spring:
     hibernate:
       ddl-auto: update
     properties:
-        show_sql: true
+        show_sql: false
         format_sql: true
 
 
 #docker run --name roteirodb -p 3307:3306 -e MYSQL_ROOT_PASSWORD=admin -e MYSQL_DATABASE=roteiro -e MYSQL_USER=projeto -e MYSQL_PASSWORD=12345 -d mysql:latest
+
+logging:
+  level:
+    ifpr:
+      roteiropromo: debug
+    web: debug
+
