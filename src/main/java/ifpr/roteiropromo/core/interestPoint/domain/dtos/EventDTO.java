@@ -1,6 +1,6 @@
 package ifpr.roteiropromo.core.interestPoint.domain.dtos;
 
-import ifpr.roteiropromo.core.addres.model.entities.Addres;
+import ifpr.roteiropromo.core.addres.domain.entities.Addres;
 import ifpr.roteiropromo.core.enums.InterestPointType;
 import lombok.*;
 

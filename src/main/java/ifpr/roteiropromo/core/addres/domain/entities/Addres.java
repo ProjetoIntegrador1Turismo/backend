@@ -1,4 +1,4 @@
-package ifpr.roteiropromo.core.addres.model.entities;
+package ifpr.roteiropromo.core.addres.domain.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

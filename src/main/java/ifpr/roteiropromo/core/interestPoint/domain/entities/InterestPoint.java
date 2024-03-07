@@ -1,7 +1,7 @@
 package ifpr.roteiropromo.core.interestPoint.domain.entities;
 
 
-import ifpr.roteiropromo.core.addres.model.entities.Addres;
+import ifpr.roteiropromo.core.addres.domain.entities.Addres;
 import ifpr.roteiropromo.core.enums.InterestPointType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,7 +12,6 @@ import lombok.*;
 @Entity
 @Data
 public abstract class InterestPoint {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
