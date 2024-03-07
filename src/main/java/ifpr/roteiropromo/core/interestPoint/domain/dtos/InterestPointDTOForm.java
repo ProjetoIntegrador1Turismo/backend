@@ -12,10 +12,7 @@ import lombok.NoArgsConstructor;
 public class InterestPointDTOForm {
 
     String name;
-    Addres addres;
-    Integer averageValue;
-    String description;
-    InterestPointType interestPointType;
-
+    String shortDescription;
+    String interestPointType;
 
 }

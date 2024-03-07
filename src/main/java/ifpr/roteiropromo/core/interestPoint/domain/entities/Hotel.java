@@ -22,5 +22,4 @@ public class Hotel extends InterestPoint implements Serializable {
     private Boolean breakfastIncluded;
 
 
-
 }
