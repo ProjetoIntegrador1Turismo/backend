@@ -11,7 +11,6 @@ import lombok.Setter;
 @Setter
 public class ItineraryDTOForm {
 
-    private String name;
-    private String type;
+    private String title;
 
 }

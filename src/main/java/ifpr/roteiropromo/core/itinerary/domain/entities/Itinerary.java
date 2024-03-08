@@ -1,15 +1,14 @@
 package ifpr.roteiropromo.core.itinerary.domain.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.List;
 
 
 @AllArgsConstructor
@@ -22,9 +21,17 @@ public class Itinerary implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String name;
-    private String type;
-    private boolean freeEntrance;
 
+    private String title;
 
+    private String description;
+
+    private float mediumCost;
+
+    private Integer days;
+
+    @OneToMany
+    private List<InterestPoint> interestPoints;
+
+    // COLOCAR O PRIVATE USER GUIA COM RELACIONAMENTO ONE TO MANY
 }

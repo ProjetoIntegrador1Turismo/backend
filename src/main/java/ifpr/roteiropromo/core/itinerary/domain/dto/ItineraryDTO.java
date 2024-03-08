@@ -12,8 +12,9 @@ import lombok.Setter;
 public class ItineraryDTO {
 
     private Long id;
-    private String name;
-    private String type;
-    private boolean freeEntrance;
+    private String title;
+    private String description;
+    private float mediumCost;
+    private Integer days;
 
 }
