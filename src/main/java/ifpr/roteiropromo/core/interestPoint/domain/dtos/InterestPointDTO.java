@@ -1,6 +1,6 @@
 package ifpr.roteiropromo.core.interestPoint.domain.dtos;
 
-import ifpr.roteiropromo.core.addres.model.entities.Addres;
+import ifpr.roteiropromo.core.addres.model.entities.Address;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,7 +11,7 @@ import lombok.ToString;
 public class InterestPointDTO {
 
     private String name;
-    private Addres addres;
+    private Address address;
     private Integer averageValue;
     private String shortDescription;
     private String interestPointType;

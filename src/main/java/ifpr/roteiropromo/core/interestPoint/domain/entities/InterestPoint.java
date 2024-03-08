@@ -1,7 +1,7 @@
 package ifpr.roteiropromo.core.interestPoint.domain.entities;
 
 
-import ifpr.roteiropromo.core.addres.model.entities.Addres;
+import ifpr.roteiropromo.core.addres.model.entities.Address;
 import ifpr.roteiropromo.core.enums.InterestPointType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,7 +21,7 @@ public abstract class InterestPoint {
     String name;
 
     @OneToOne(cascade = CascadeType.ALL)
-    Addres address;
+    Address address;
 
     Integer averageValue;
 

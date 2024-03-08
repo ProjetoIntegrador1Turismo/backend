@@ -1,6 +1,6 @@
 package ifpr.roteiropromo.core.interestPoint.domain.dtos;
 
-import ifpr.roteiropromo.core.addres.model.entities.Addres;
+import ifpr.roteiropromo.core.addres.model.entities.Address;
 import ifpr.roteiropromo.core.enums.InterestPointType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +13,7 @@ public class ExperienceDTO {
 
     private Long id;
     private String name;
-    private Addres addres;
+    private Address address;
     private Integer averageValue;
     private String shortDescription;
     private InterestPointType interestPointType;

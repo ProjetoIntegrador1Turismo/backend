@@ -56,13 +56,10 @@ public class InterestPointService {
     }
 
     public InterestPoint update(Long id, InterestPointDTO interestPointDTO) {
-        log.info("Objeto enviado para atulização:");
-        log.info(interestPointDTO);
+
         InterestPoint interestPointFound = interestPointRepository.findById(id).orElseThrow(
                 () -> new ServiceError("Could not found a interest point with that id: " + id)
         );
-        log.info("Objeto encontrado no banco");
-        log.info(interestPointFound.getName());
         modelMapper.map(interestPointDTO, interestPointFound);
         return interestPointRepository.save(interestPointFound);
     }

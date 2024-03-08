@@ -6,7 +6,6 @@ import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,8 +47,11 @@ public class InterestPointController {
             @PathVariable Long id,
             @RequestBody InterestPointDTO interestPointDTO
             ){
+        log.info("ENDEREÇO DO FRONT");
+        log.info(interestPointDTO.getAddress().getRoad());
         return ResponseEntity.ok(interestPointService.update(id, interestPointDTO));
     }
+
 
 
 
