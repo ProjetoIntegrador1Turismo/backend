@@ -1,6 +1,5 @@
-package ifpr.roteiropromo.core.addres.model.entities;
+package ifpr.roteiropromo.core.address.model.entities;
 
-import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

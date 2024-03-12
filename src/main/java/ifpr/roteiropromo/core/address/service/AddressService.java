@@ -1,7 +1,7 @@
-package ifpr.roteiropromo.core.addres.service;
+package ifpr.roteiropromo.core.address.service;
 
-import ifpr.roteiropromo.core.addres.model.entities.Address;
-import ifpr.roteiropromo.core.addres.repository.AddressRepository;
+import ifpr.roteiropromo.core.address.model.entities.Address;
+import ifpr.roteiropromo.core.address.repository.AddressRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
-package ifpr.roteiropromo.core.addres.controller;
+package ifpr.roteiropromo.core.address.controller;
 
-import ifpr.roteiropromo.core.addres.model.entities.Address;
-import ifpr.roteiropromo.core.addres.service.AddressService;
+import ifpr.roteiropromo.core.address.model.entities.Address;
+import ifpr.roteiropromo.core.address.service.AddressService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
