@@ -1,5 +1,8 @@
 package ifpr.roteiropromo.core.utils;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -8,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -16,6 +20,8 @@ import java.util.Map;
 
 
 @Log4j2
+@Service
+@RequiredArgsConstructor
 public class JwtTokenHandler {
 
 
@@ -50,7 +56,7 @@ public class JwtTokenHandler {
         ResponseEntity<Map> response = restTemplate.postForEntity(
                 "http://localhost:8080/realms/master/protocol/openid-connect/token",
                 createEntityRequestForAdmin(), Map.class);
-        return "Bearer " + (String) response.getBody().get("access_token");
+        return (String) response.getBody().get("access_token");
     }
 
     private HttpEntity<MultiValueMap<String, String>> createEntityRequestForAdmin(){

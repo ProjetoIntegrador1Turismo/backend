@@ -20,7 +20,7 @@ public class AuthenticationController {
 
     //Busca no keycloak o token do usuário já cadastrado (uma forma de fazer pelo back-end a captura do token do usuário)
     @PostMapping()
-    public ResponseEntity<String> getToken(@RequestBody User user){
+    public ResponseEntity<String> getToken(@RequestBody UserDTO user){
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, String> userDataForm = new LinkedMultiValueMap<>();
