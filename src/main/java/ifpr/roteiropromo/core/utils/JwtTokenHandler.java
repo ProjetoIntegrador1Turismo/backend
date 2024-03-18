@@ -45,7 +45,6 @@ public class JwtTokenHandler {
             log.info("User id keycloack: " + idKeyclock);
             log.info("User name: " + userName);
         } else {
-            // Caso não seja um token JWT, você pode lidar de acordo com a lógica da sua aplicação
             System.out.println("Não foi encontrado um token JWT na requisição.");
         }
     }

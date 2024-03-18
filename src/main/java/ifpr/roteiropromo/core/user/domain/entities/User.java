@@ -1,4 +1,5 @@
-package ifpr.roteiropromo.core.user.domain;
+package ifpr.roteiropromo.core.user.domain.entities;
+
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,12 +11,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class User {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

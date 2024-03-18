@@ -1,10 +1,15 @@
 package ifpr.roteiropromo.core.user.controller;
 
-import ifpr.roteiropromo.core.user.domain.User;
+import ifpr.roteiropromo.core.auth.UserAuthenticationDTO;
+import ifpr.roteiropromo.core.user.domain.dtos.UserDTO;
+import ifpr.roteiropromo.core.user.domain.dtos.UserDTOForm;
 import ifpr.roteiropromo.core.user.service.UserService;
 import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -23,16 +28,26 @@ public class UserController {
         this.userService = userService;
     }
 
+    //Create a new user
     @PostMapping("/create")
-    public void createNewUser(@RequestBody User user){
-        userService.creatNewUser(user);
+    public ResponseEntity<UserDTO> createNewUser(@RequestBody UserDTOForm userDTOForm){
+        return ResponseEntity.ok(userService.creatNewUser(userDTOForm));
     }
 
-    @GetMapping()
-    public String getAdminToken(){
-        JwtTokenHandler jwtTokenHandler = new JwtTokenHandler();
-        return jwtTokenHandler.getAdminToken();
+
+    //Metodo só para testes. Provavelmente não será mantido.
+//    @GetMapping()
+//    public String getAdminToken(){
+//        JwtTokenHandler jwtTokenHandler = new JwtTokenHandler();
+//        return jwtTokenHandler.getAdminToken();
+//    }
+
+
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> getAllUsers(){
+        return ResponseEntity.ok(userService.getAll());
     }
+
 
 
 
