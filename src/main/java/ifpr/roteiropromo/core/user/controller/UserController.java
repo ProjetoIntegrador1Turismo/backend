@@ -1,10 +1,10 @@
 package ifpr.roteiropromo.core.user.controller;
 
-import ifpr.roteiropromo.core.auth.UserAuthenticationDTO;
 import ifpr.roteiropromo.core.user.domain.dtos.UserDTO;
 import ifpr.roteiropromo.core.user.domain.dtos.UserDTOForm;
+import ifpr.roteiropromo.core.user.domain.dtos.UserDTORecovery;
+import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.service.UserService;
-import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +34,14 @@ public class UserController {
         return ResponseEntity.ok(userService.creatNewUser(userDTOForm));
     }
 
+    //Criar metodo para recuperar senha considerando email + recoveryWord;
+    @GetMapping("/recovery")
+    public ResponseEntity<String> resetPassword(
+            @RequestBody UserDTORecovery userDTORecovery
+            ){
+        return ResponseEntity.ok(userService.resetUserPassword(userDTORecovery));
+    }
+
 
     //Metodo só para testes. Provavelmente não será mantido.
 //    @GetMapping()
@@ -44,11 +52,20 @@ public class UserController {
 
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers(){
+    public ResponseEntity<List<User>> getAllUsers(){
         return ResponseEntity.ok(userService.getAll());
     }
 
 
+    @GetMapping("/email")
+    public ResponseEntity<User> getOne(@RequestParam String email){
+        return ResponseEntity.ok(userService.getOneByEmail(email));
+    }
+
+//    @GetMapping("/id/{id}")
+//    public ResponseEntity<User> getOne(@PathVariable Long id){
+//        return ResponseEntity.ok(userService.getOneById(id));
+//    }
 
 
 

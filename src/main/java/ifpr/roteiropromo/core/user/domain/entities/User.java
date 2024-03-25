@@ -1,10 +1,7 @@
 package ifpr.roteiropromo.core.user.domain.entities;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,24 +10,21 @@ import lombok.Setter;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Getter
 @Setter
-public class User {
+public abstract class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
-    private String username;
+    @Column(unique = true)
+    private String email;
+
+    private String userName;
 
     private String firstName;
 
     private String lastName;
-
-    private String email;
-
-    private String cadasturCode;
-
-    private String password;
-
 }

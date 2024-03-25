@@ -37,6 +37,13 @@ public class InterestPointController {
         return ResponseEntity.ok(interestPointService.getAll());
     }
 
+    @GetMapping("/name")
+    public ResponseEntity<InterestPoint> getOneById(@RequestParam String name){
+        return ResponseEntity.ok(interestPointService.getOneByName(name));
+    }
+
+
+
     @GetMapping("/{id}")
     public ResponseEntity<InterestPoint> getOneById(@PathVariable Long id){
         return ResponseEntity.ok(interestPointService.getOne(id));

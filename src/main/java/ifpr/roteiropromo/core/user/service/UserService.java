@@ -4,6 +4,9 @@ package ifpr.roteiropromo.core.user.service;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.user.domain.dtos.UserDTO;
 import ifpr.roteiropromo.core.user.domain.dtos.UserDTOForm;
+import ifpr.roteiropromo.core.user.domain.dtos.UserDTORecovery;
+import ifpr.roteiropromo.core.user.domain.entities.Guide;
+import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.repository.UserRepository;
 import ifpr.roteiropromo.core.utils.JwtTokenHandler;
@@ -34,23 +37,26 @@ public class UserService {
             RestTemplate restTemplate = new RestTemplate();
             response = restTemplate.postForEntity(
                     "http://localhost:8080/admin/realms/SpringBootKeycloak/users",
-                    createRequestToKeycloack(userDTOForm), Map.class);
-            log.info(response.getStatusCode());
+                    createRequestToKeycloackToNewUser(userDTOForm), Map.class);
         }catch (Exception e){
             throw  new ServiceError("E-mail already registered!");
         }
         if (response.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(201))){
-            log.info("criar um novo usuário no banco local com os mesmos dados, verificando se é guia");
-            User newUser = mapper.map(userDTOForm, User.class);
-            return mapper.map(userRepository.save(newUser), UserDTO.class);
+
+            if (userDTOForm.getCadasturCode().isEmpty()){
+                Tourist tourist = mapper.map(userDTOForm, Tourist.class);
+                return mapper.map(userRepository.save(tourist), UserDTO.class);
+            }else{
+                Guide guide = mapper.map(userDTOForm, Guide.class);
+                guide.setIsApproved(false);
+                return mapper.map(userRepository.save(guide), UserDTO.class);
+            }
         }else {
             throw new ServiceError("An error occurred when creating the new user.");
         }
-
     }
 
-
-    private HttpEntity<String> createRequestToKeycloack(UserDTOForm userDTOForm){
+    private HttpEntity<String> createRequestToKeycloackToNewUser(UserDTOForm userDTOForm){
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -71,14 +77,14 @@ public class UserService {
                         "}" +
                         "]" +
                         "}",
-                userDTOForm.getUsername(), true, true, userDTOForm.getFirstName(), userDTOForm.getLastName(), userDTOForm.getEmail(), userDTOForm.getPassword());
+                userDTOForm.getUserName(), true, true, userDTOForm.getFirstName(), userDTOForm.getLastName(), userDTOForm.getEmail(), userDTOForm.getPassword());
         return new HttpEntity<String>(userJson, httpHeaders);
 
     }
 
 
-    public List<UserDTO> getAll() {
-        return mapList(userRepository.findAll(), UserDTO.class);
+    public List<User> getAll() {
+        return userRepository.findAll();
     }
 
     public <S, T> List<T> mapList(List<S> source, Class<T> targetClass) {
@@ -88,28 +94,44 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    //Esta funcionando a busca do usuário pelo email.
+    //Provavelmente o problema esta na requisição feita ao keyclock
+    public String resetUserPassword(UserDTORecovery userDTORecovery) {
+        try{
+            User userFound = userRepository.getOnByEmail(userDTORecovery.getEmail());
+            getUserIdFromKeyclock(userFound);
+            String userIDKeycloack = getUserIdFromKeyclock(userFound);
+            log.info(userIDKeycloack);
+
+            return "A password recovery email has been sent!";
+        }catch (Exception e){
+            throw new ServiceError("Could not found a user with that email: " + userDTORecovery.getEmail());
+        }
+    }
+
+
+
+
+    //funcionando - lapidar para retornar só o ID necessário para o update
+    private String getUserIdFromKeyclock(User user){
+        RestTemplate restTemplate = new RestTemplate();
+        String keycloakUrl = "http://localhost:8080/admin/realms/SpringBootKeycloak/users?search=" + user.getEmail();
+        String token = jwtTokenHandler.getAdminToken();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        //ResponseEntity<String> response = restTemplate.exchange(keycloakUrl, HttpMethod.GET, entity, String.class);
+        ResponseEntity<Map> response = restTemplate.exchange(keycloakUrl, HttpMethod.GET, entity, Map.class);
+        log.info(response.getBody());
+        return (String) response.getBody().get("id");
+    }
+
+
+    public User getOneByEmail(String email) {
+        return userRepository.getOnByEmail(email);
+    }
+
 
 
 }
 
-/*
-HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        httpHeaders.setBearerAuth(jwtTokenHandler.getAdminToken());
-
-        MultiValueMap<String, Object> requestBody = new LinkedMultiValueMap<>();
-        requestBody.add("username", user.getUsername());
-        requestBody.add("enabled", "true");
-        requestBody.add("emailVerified", "true");
-        requestBody.add("firstName", user.getFirstName());
-        requestBody.add("lastName", user.getLastName());
-        requestBody.add("email", user.getEmail());
-
-        MultiValueMap<String, String> credentials = new LinkedMultiValueMap<>();
-        credentials.add("type", "password");
-        credentials.add("value", user.getPassword());
-        credentials.add("temporary", "false");
-
-        requestBody.add("credentials", credentials);
-
-        return new HttpEntity<MultiValueMap<String, Object>>(requestBody, httpHeaders);*/

@@ -7,7 +7,9 @@ import lombok.Setter;
 @Setter
 public class UserDTO {
 
-    private String username;
+    private Long id;
+
+    private String userName;
 
     private String firstName;
 
@@ -17,5 +19,6 @@ public class UserDTO {
 
     private String cadasturCode;
 
+    private Boolean isApproved;
 
 }

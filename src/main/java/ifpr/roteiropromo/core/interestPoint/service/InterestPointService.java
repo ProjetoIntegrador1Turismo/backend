@@ -74,5 +74,7 @@ public class InterestPointService {
     }
 
 
-
+    public InterestPoint getOneByName(String name) {
+        return interestPointRepository.getOnByName(name);
+    }
 }
