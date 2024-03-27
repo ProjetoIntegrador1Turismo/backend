@@ -38,6 +38,13 @@ public class InterestPointController {
         return ResponseEntity.ok(interestPointService.getAll());
     }
 
+    @GetMapping("/name")
+    public ResponseEntity<InterestPoint> getOneById(@RequestParam String name){
+        return ResponseEntity.ok(interestPointService.getOneByName(name));
+    }
+
+
+
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<InterestPoint> getOneById(@PathVariable Long id){
@@ -53,7 +60,6 @@ public class InterestPointController {
         log.info(interestPointDTO.getAddress().getRoad());
         return ResponseEntity.ok(interestPointService.update(id, interestPointDTO));
     }
-
 
 
 

@@ -22,24 +22,29 @@ public class InterestPointService {
     private final InterestPointRepository interestPointRepository;
     public InterestPoint create(InterestPointDTOForm interestPointDTOForm) {
         log.info("Acessou o metodo com switch");
-        switch (interestPointDTOForm.getInterestPointType()){
-            case "EVENT":
-                Event event = modelMapper.map(interestPointDTOForm, Event.class);
-                return interestPointRepository.save(event);
-            case "HOTEL":
-                Hotel hotel = modelMapper.map(interestPointDTOForm, Hotel.class);
-                return interestPointRepository.save(hotel);
-            case "EXPERIENCE":
-                Experience experience = modelMapper.map(interestPointDTOForm, Experience.class);
-                return interestPointRepository.save(experience);
-            case "RESTAURANT":
-                Restaurant restaurant = modelMapper.map(interestPointDTOForm, Restaurant.class);
-                return interestPointRepository.save(restaurant);
-            case "TOURIST_POINT":
-                TouristPoint touristPoint = modelMapper.map(interestPointDTOForm, TouristPoint.class);
-                return interestPointRepository.save(touristPoint);
-            default:
-                throw new ServiceError("Interest point type not found: " + interestPointDTOForm.getInterestPointType());
+
+        if(interestPointAlreadyExist(interestPointDTOForm.getName())){
+            throw new ServiceError("Ja existe");
+        }else{
+            switch (interestPointDTOForm.getInterestPointType()) {
+                case "EVENT":
+                    Event event = modelMapper.map(interestPointDTOForm, Event.class);
+                    return interestPointRepository.save(event);
+                case "HOTEL":
+                    Hotel hotel = modelMapper.map(interestPointDTOForm, Hotel.class);
+                    return interestPointRepository.save(hotel);
+                case "EXPERIENCE":
+                    Experience experience = modelMapper.map(interestPointDTOForm, Experience.class);
+                    return interestPointRepository.save(experience);
+                case "RESTAURANT":
+                    Restaurant restaurant = modelMapper.map(interestPointDTOForm, Restaurant.class);
+                    return interestPointRepository.save(restaurant);
+                case "TOURIST_POINT":
+                    TouristPoint touristPoint = modelMapper.map(interestPointDTOForm, TouristPoint.class);
+                    return interestPointRepository.save(touristPoint);
+                default:
+                    throw new ServiceError("Interest point type not found: " + interestPointDTOForm.getInterestPointType());
+            }
         }
     }
 
@@ -48,6 +53,10 @@ public class InterestPointService {
         return interestPointRepository.findAll();
     }
 
+    private boolean interestPointAlreadyExist(String name){
+        InterestPoint interestPointFound = interestPointRepository.getOnByName(name);
+        return interestPointFound != null;
+    }
 
     public InterestPoint getOne(Long id) {
         return interestPointRepository.findById(id).orElseThrow(
@@ -62,5 +71,10 @@ public class InterestPointService {
         );
         modelMapper.map(interestPointDTO, interestPointFound);
         return interestPointRepository.save(interestPointFound);
+    }
+
+
+    public InterestPoint getOneByName(String name) {
+        return interestPointRepository.getOnByName(name);
     }
 }

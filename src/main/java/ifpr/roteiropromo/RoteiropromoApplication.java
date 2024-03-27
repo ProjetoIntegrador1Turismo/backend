@@ -1,5 +1,6 @@
 package ifpr.roteiropromo;
 
+import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -21,6 +22,7 @@ public class RoteiropromoApplication {
 		mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		return mapper;
 	}
+
 
 
 

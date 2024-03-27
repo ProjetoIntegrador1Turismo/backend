@@ -20,15 +20,15 @@ public class AuthenticationController {
 
     //Busca no keycloak o token do usuário já cadastrado (uma forma de fazer pelo back-end a captura do token do usuário)
     @PostMapping()
-    public ResponseEntity<String> getToken(@RequestBody User user){
+    public ResponseEntity<String> getToken(@RequestBody UserAuthenticationDTO user){
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        RestTemplate restTemplate = new RestTemplate();
         MultiValueMap<String, String> userDataForm = new LinkedMultiValueMap<>();
         userDataForm.add("client_id", user.getClientId());
         userDataForm.add("username", user.getUsername());
         userDataForm.add("password", user.getPassword());
         userDataForm.add("grant_type", user.getGrantType());
+        RestTemplate restTemplate = new RestTemplate();
         HttpEntity<MultiValueMap<String, String>> entityToRequestKeycloak = new HttpEntity<>(userDataForm, httpHeaders);
         return restTemplate.postForEntity(
                 "http://localhost:8080/realms/SpringBootKeycloak/protocol/openid-connect/token",
