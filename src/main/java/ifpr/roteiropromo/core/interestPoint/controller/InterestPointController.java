@@ -28,7 +28,6 @@ public class InterestPointController {
     public ResponseEntity<InterestPoint> createNewInterestPoint(
             @RequestBody InterestPointDTOForm interestPointDTOForm
             ){
-        log.info("Entrou no create com nova entidade: " + interestPointDTOForm.getName());
         return ResponseEntity.ok(interestPointService.create(interestPointDTOForm));
     }
 
@@ -42,8 +41,6 @@ public class InterestPointController {
     public ResponseEntity<InterestPoint> getOneById(@RequestParam String name){
         return ResponseEntity.ok(interestPointService.getOneByName(name));
     }
-
-
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
