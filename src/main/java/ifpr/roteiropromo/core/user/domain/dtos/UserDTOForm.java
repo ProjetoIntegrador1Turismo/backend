@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class UserDTOForm {
 
-    private String userName;
+    //private String userName;
 
     private String firstName;
 

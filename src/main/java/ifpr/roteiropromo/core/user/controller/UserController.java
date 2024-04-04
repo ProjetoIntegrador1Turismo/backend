@@ -6,6 +6,7 @@ import ifpr.roteiropromo.core.user.domain.dtos.UserDTORecovery;
 import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.service.UserService;
 import lombok.extern.log4j.Log4j2;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,13 +17,7 @@ import java.util.List;
 @Log4j2
 public class UserController {
 
-/*
-* Já identifiquei as rotas aptas a criar um usuário a atualiar sua senha pelo keyclock
-* O novo usuário já vem por padrão com a permisão de usuário simples (guia dependerá de atuação do adm)
-*
-**/
     private final UserService userService;
-
 
     public UserController(UserService userService){
         this.userService = userService;
@@ -34,7 +29,7 @@ public class UserController {
         return ResponseEntity.ok(userService.creatNewUser(userDTOForm));
     }
 
-    //Criar metodo para recuperar senha considerando email + recoveryWord;
+    //Metodo pausado. Ponderar a rota já pronta para disparar o email de recuperação!
     @GetMapping("/recovery")
     public ResponseEntity<String> resetPassword(
             @RequestBody UserDTORecovery userDTORecovery
@@ -62,10 +57,6 @@ public class UserController {
         return ResponseEntity.ok(userService.getOneByEmail(email));
     }
 
-//    @GetMapping("/id/{id}")
-//    public ResponseEntity<User> getOne(@PathVariable Long id){
-//        return ResponseEntity.ok(userService.getOneById(id));
-//    }
 
 
 

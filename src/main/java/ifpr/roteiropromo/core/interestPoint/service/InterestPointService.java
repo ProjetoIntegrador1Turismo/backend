@@ -11,6 +11,7 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 
 @Service
@@ -24,7 +25,7 @@ public class InterestPointService {
         log.info("Acessou o metodo com switch");
 
         if(interestPointAlreadyExist(interestPointDTOForm.getName())){
-            throw new ServiceError("Ja existe");
+            throw new ServiceError("There is already a point of interest with that name: " + interestPointDTOForm.getName());
         }else{
             switch (interestPointDTOForm.getInterestPointType()) {
                 case "EVENT":
@@ -49,7 +50,6 @@ public class InterestPointService {
     }
 
     public List<InterestPoint> getAll() {
-        log.info("Acessou o getAll na service do ponto de interesse");
         return interestPointRepository.findAll();
     }
 
@@ -65,7 +65,6 @@ public class InterestPointService {
     }
 
     public InterestPoint update(Long id, InterestPointDTO interestPointDTO) {
-
         InterestPoint interestPointFound = interestPointRepository.findById(id).orElseThrow(
                 () -> new ServiceError("Could not found a interest point with that id: " + id)
         );

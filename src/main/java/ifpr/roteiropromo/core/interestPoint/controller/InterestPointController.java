@@ -53,8 +53,6 @@ public class InterestPointController {
             @PathVariable Long id,
             @RequestBody InterestPointDTO interestPointDTO
             ){
-        log.info("ENDEREÇO DO FRONT");
-        log.info(interestPointDTO.getAddress().getRoad());
         return ResponseEntity.ok(interestPointService.update(id, interestPointDTO));
     }
 

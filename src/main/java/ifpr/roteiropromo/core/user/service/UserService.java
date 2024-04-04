@@ -32,6 +32,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     public UserDTO creatNewUser(UserDTOForm userDTOForm){
+
         ResponseEntity<Map> response;
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -42,12 +43,13 @@ public class UserService {
             throw  new ServiceError("E-mail already registered!");
         }
         if (response.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(201))){
-
-            if (userDTOForm.getCadasturCode().isEmpty()){
+            if (userDTOForm.getCadasturCode() == null){
                 Tourist tourist = mapper.map(userDTOForm, Tourist.class);
+                tourist.setUserName(userDTOForm.getFirstName());
                 return mapper.map(userRepository.save(tourist), UserDTO.class);
             }else{
                 Guide guide = mapper.map(userDTOForm, Guide.class);
+                guide.setUserName(userDTOForm.getFirstName());
                 guide.setIsApproved(false);
                 return mapper.map(userRepository.save(guide), UserDTO.class);
             }
@@ -63,7 +65,6 @@ public class UserService {
         httpHeaders.setBearerAuth(jwtTokenHandler.getAdminToken());
         String userJson = String.format(
                 "{" +
-                        "\"username\": \"%s\"," +
                         "\"enabled\": %b," +
                         "\"emailVerified\": %b," +
                         "\"firstName\": \"%s\"," +
@@ -77,10 +78,36 @@ public class UserService {
                         "}" +
                         "]" +
                         "}",
-                userDTOForm.getUserName(), true, true, userDTOForm.getFirstName(), userDTOForm.getLastName(), userDTOForm.getEmail(), userDTOForm.getPassword());
+                true, true, userDTOForm.getFirstName(), userDTOForm.getLastName(), userDTOForm.getEmail(), userDTOForm.getPassword());
         return new HttpEntity<String>(userJson, httpHeaders);
 
     }
+
+//    private HttpEntity<String> createRequestToKeycloackToNewUser(UserDTOForm userDTOForm){
+//
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+//        httpHeaders.setBearerAuth(jwtTokenHandler.getAdminToken());
+//        String userJson = String.format(
+//                "{" +
+//                        "\"username\": \"%s\"," +
+//                        "\"enabled\": %b," +
+//                        "\"emailVerified\": %b," +
+//                        "\"firstName\": \"%s\"," +
+//                        "\"lastName\": \"%s\"," +
+//                        "\"email\": \"%s\"," +
+//                        "\"credentials\": [" +
+//                        "{" +
+//                        "\"type\": \"password\"," +
+//                        "\"value\": \"%s\"," +
+//                        "\"temporary\": false" +
+//                        "}" +
+//                        "]" +
+//                        "}",
+//                userDTOForm.getUserName(), true, true, userDTOForm.getFirstName(), userDTOForm.getLastName(), userDTOForm.getEmail(), userDTOForm.getPassword());
+//        return new HttpEntity<String>(userJson, httpHeaders);
+//
+//    }
 
 
     public List<User> getAll() {
@@ -95,7 +122,7 @@ public class UserService {
     }
 
     //Esta funcionando a busca do usuário pelo email.
-    //Provavelmente o problema esta na requisição feita ao keyclock
+    //Metodo substituido pela rota que dispara o email e reset?
     public String resetUserPassword(UserDTORecovery userDTORecovery) {
         try{
             User userFound = userRepository.getOnByEmail(userDTORecovery.getEmail());
@@ -108,9 +135,6 @@ public class UserService {
             throw new ServiceError("Could not found a user with that email: " + userDTORecovery.getEmail());
         }
     }
-
-
-
 
     //funcionando - lapidar para retornar só o ID necessário para o update
     private String getUserIdFromKeyclock(User user){
@@ -128,7 +152,15 @@ public class UserService {
 
 
     public User getOneByEmail(String email) {
-        return userRepository.getOnByEmail(email);
+        try{
+            return userRepository.getOnByEmail(email);
+        }catch (Exception e){
+            throw new ServiceError("Could not found a user with that email: " + email);
+        }
+    }
+
+    public Boolean existsUserByEmail(String email) {
+        return userRepository.existsUserByEmail(email);
     }
 
 
