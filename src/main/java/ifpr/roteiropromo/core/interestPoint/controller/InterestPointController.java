@@ -27,7 +27,7 @@ public class InterestPointController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<InterestPoint> createNewInterestPoint(
             @RequestBody InterestPointDTOForm interestPointDTOForm
-            ){
+    ){
         return ResponseEntity.ok(interestPointService.create(interestPointDTOForm));
     }
 
@@ -52,7 +52,7 @@ public class InterestPointController {
     public ResponseEntity<InterestPoint> updateOneById(
             @PathVariable Long id,
             @RequestBody InterestPointDTO interestPointDTO
-            ){
+    ){
         return ResponseEntity.ok(interestPointService.update(id, interestPointDTO));
     }
 

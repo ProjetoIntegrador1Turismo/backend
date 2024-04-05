@@ -44,7 +44,7 @@ public class InterestPointService {
                     TouristPoint touristPoint = modelMapper.map(interestPointDTOForm, TouristPoint.class);
                     return interestPointRepository.save(touristPoint);
                 default:
-                    throw new ServiceError("Interest point type not found: " + interestPointDTOForm.getInterestPointType());
+                    throw new ServiceError("Tipo de interest point não encontrado: " + interestPointDTOForm.getInterestPointType());
             }
         }
     }
@@ -60,13 +60,13 @@ public class InterestPointService {
 
     public InterestPoint getOne(Long id) {
         return interestPointRepository.findById(id).orElseThrow(
-                () -> new ServiceError("Could not found a interest point with that id: " + id)
+                () -> new ServiceError("Não foi possível encontrar o ponto de interesse com o ID: " + id)
         );
     }
 
     public InterestPoint update(Long id, InterestPointDTO interestPointDTO) {
         InterestPoint interestPointFound = interestPointRepository.findById(id).orElseThrow(
-                () -> new ServiceError("Could not found a interest point with that id: " + id)
+                () -> new ServiceError("Não foi possível encontrar o ponto de interesse com o ID: " + id)
         );
         modelMapper.map(interestPointDTO, interestPointFound);
         return interestPointRepository.save(interestPointFound);
@@ -75,5 +75,11 @@ public class InterestPointService {
 
     public InterestPoint getOneByName(String name) {
         return interestPointRepository.getOnByName(name);
+    }
+
+    public InterestPoint findById(Long interestPointId) {
+        return interestPointRepository.findById(interestPointId).orElseThrow(
+                () -> new ServiceError("Não foi possível encontrar o ponto de interesse com o ID: " + interestPointId)
+        );
     }
 }
