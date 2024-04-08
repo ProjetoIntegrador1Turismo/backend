@@ -83,32 +83,6 @@ public class UserService {
 
     }
 
-//    private HttpEntity<String> createRequestToKeycloackToNewUser(UserDTOForm userDTOForm){
-//
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-//        httpHeaders.setBearerAuth(jwtTokenHandler.getAdminToken());
-//        String userJson = String.format(
-//                "{" +
-//                        "\"username\": \"%s\"," +
-//                        "\"enabled\": %b," +
-//                        "\"emailVerified\": %b," +
-//                        "\"firstName\": \"%s\"," +
-//                        "\"lastName\": \"%s\"," +
-//                        "\"email\": \"%s\"," +
-//                        "\"credentials\": [" +
-//                        "{" +
-//                        "\"type\": \"password\"," +
-//                        "\"value\": \"%s\"," +
-//                        "\"temporary\": false" +
-//                        "}" +
-//                        "]" +
-//                        "}",
-//                userDTOForm.getUserName(), true, true, userDTOForm.getFirstName(), userDTOForm.getLastName(), userDTOForm.getEmail(), userDTOForm.getPassword());
-//        return new HttpEntity<String>(userJson, httpHeaders);
-//
-//    }
-
 
     public List<User> getAll() {
         return userRepository.findAll();
@@ -159,11 +133,28 @@ public class UserService {
         }
     }
 
+    public Tourist getTouristById(Long id) {
+        User userFound = getOneById(id);
+        if (userFound instanceof Tourist){
+            return (Tourist) userFound;
+        }else{
+            throw new ServiceError("User found with id: " + id + " is not a tourist!");
+        }
+    }
+
+    public User getOneById(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new ServiceError("Could not find user with id: " + id)
+        );
+    }
+
     public Boolean existsUserByEmail(String email) {
         return userRepository.existsUserByEmail(email);
     }
 
-
+    public void updateTourist(Tourist touristFound) {
+        userRepository.save(touristFound);
+    }
 
 }
 

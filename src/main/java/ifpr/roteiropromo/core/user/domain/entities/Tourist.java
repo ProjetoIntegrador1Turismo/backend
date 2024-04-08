@@ -1,7 +1,11 @@
 package ifpr.roteiropromo.core.user.domain.entities;
 
+import ifpr.roteiropromo.core.comments.domain.entities.Comment;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -10,6 +14,7 @@ import lombok.*;
 @Setter
 public class Tourist extends User{
 
-    private String comments;
+    @OneToMany
+    private List<Comment> comment;
 
 }

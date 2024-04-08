@@ -25,7 +25,7 @@ public class AuthenticationService {
     public ResponseEntity<String> getAuthenticationToken(UserAuthenticationDTO user) {
 
         if (!userExists(user.getUsername())) {
-            throw new ServiceError("No user found with this email" + user.getUsername());
+            throw new ServiceError("No user found with this email: " + user.getUsername());
         }
         try{
             HttpHeaders httpHeaders = new HttpHeaders();
