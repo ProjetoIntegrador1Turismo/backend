@@ -60,7 +60,7 @@ public class InterestPointService {
 
     public InterestPoint getOne(Long id) {
         return interestPointRepository.findById(id).orElseThrow(
-                () -> new ServiceError("Não foi possível encontrar o ponto de interesse com o ID: " + id)
+                () -> new ServiceError("Não foi possível encontrar um ponto de interesse com o ID: " + id)
         );
     }
 

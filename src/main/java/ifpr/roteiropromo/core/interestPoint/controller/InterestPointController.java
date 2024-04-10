@@ -38,7 +38,7 @@ public class InterestPointController {
     }
 
     @GetMapping("/name")
-    public ResponseEntity<InterestPoint> getOneById(@RequestParam String name){
+    public ResponseEntity<InterestPoint> getOneByName(@RequestParam String name){
         return ResponseEntity.ok(interestPointService.getOneByName(name));
     }
 

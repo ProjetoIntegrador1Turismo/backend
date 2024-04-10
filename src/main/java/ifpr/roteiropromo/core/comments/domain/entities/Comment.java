@@ -1,6 +1,7 @@
 package ifpr.roteiropromo.core.comments.domain.entities;
 
 import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
+import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,7 +19,7 @@ public class Comment {
     private String text;
     private String wasVisitingDate;
     private Integer rating;
-    @OneToOne()
+    @OneToOne
     private InterestPoint interestPoint;
 
 }

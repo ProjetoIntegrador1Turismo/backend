@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/comment/{touristId}")
+@RequestMapping("/comment")
 public class CommentController {
 
     private final CommentService commentService;
@@ -19,8 +19,7 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-
-    @PostMapping("/create/{interestPointId}")
+    @PostMapping("/{touristId}/create/{interestPointId}")
     public ResponseEntity<CommentDTO> createComment(
             @PathVariable Long interestPointId,
             @RequestBody CommentDTOForm commentDTOForm,
@@ -33,9 +32,20 @@ public class CommentController {
         return ResponseEntity.ok(commentService.getAll());
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<CommentDTO> getOne(@PathVariable Long id){
-        return ResponseEntity.ok(commentService.getOne(id));
+    @GetMapping("{commentId}")
+    public ResponseEntity<CommentDTO> getOne(@PathVariable Long commentId){
+        return ResponseEntity.ok(commentService.getOne(commentId));
+    }
+
+    @GetMapping("/interestpoint/{interestPointId}")
+    public ResponseEntity<List<CommentDTO>> getAllByInterestPoint(@PathVariable Long interestPointId){
+        return ResponseEntity.ok(commentService.getAllByInterestPoint(interestPointId));
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId){
+        commentService.deleteComment(commentId);
+        return ResponseEntity.noContent().build();
     }
 
 

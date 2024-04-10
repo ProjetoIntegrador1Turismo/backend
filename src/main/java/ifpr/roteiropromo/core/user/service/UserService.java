@@ -138,7 +138,7 @@ public class UserService {
         if (userFound instanceof Tourist){
             return (Tourist) userFound;
         }else{
-            throw new ServiceError("User found with id: " + id + " is not a tourist!");
+            throw new ServiceError("User found with id: " + id + " is not a tourist so he can't make comments!");
         }
     }
 
@@ -152,8 +152,8 @@ public class UserService {
         return userRepository.existsUserByEmail(email);
     }
 
-    public void updateTourist(Tourist touristFound) {
-        userRepository.save(touristFound);
+    public Tourist updateTourist(Tourist touristFound) {
+        return userRepository.save(touristFound);
     }
 
 }

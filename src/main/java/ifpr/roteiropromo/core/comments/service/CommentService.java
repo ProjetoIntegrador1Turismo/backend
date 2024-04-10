@@ -12,6 +12,7 @@ import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class CommentService {
 
     private final ModelMapper mapper;
@@ -41,11 +43,23 @@ public class CommentService {
         return commentRepository.findAll().stream().map(comment -> mapper.map(comment, CommentDTO.class)).toList();
     }
 
-
     public CommentDTO getOne(Long id) {
         Comment commentFound = commentRepository.findById(id).orElseThrow(
                 () -> new ServiceError("Could not find comment with id: " + id)
         );
         return mapper.map(commentFound, CommentDTO.class);
     }
+
+
+    public List<CommentDTO> getAllByInterestPoint(Long interestPointId) {
+        InterestPoint interestPointFound = interestPointService.getOne(interestPointId);
+        return commentRepository.findAllByInterestPoint(interestPointFound).stream().map(
+                comment -> mapper.map(comment, CommentDTO.class)
+        ).toList();
+    }
+
+    public void deleteComment(Long commentId) {
+        Comment commentFound = commentRepository.findById(commentId).get();
+    }
+
 }
