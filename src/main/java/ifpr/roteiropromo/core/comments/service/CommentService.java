@@ -58,8 +58,15 @@ public class CommentService {
         ).toList();
     }
 
-    public void deleteComment(Long commentId) {
+    public void deleteComment(Long touristId, Long commentId) {
+        Tourist touristFound = userService.getTouristById(touristId);
+        touristFound.getComment().removeIf(comment -> comment.getId().equals(commentId));
         Comment commentFound = commentRepository.findById(commentId).get();
+        log.info(commentFound.getText());
+        commentRepository.delete(commentFound);
     }
+
+
+
 
 }

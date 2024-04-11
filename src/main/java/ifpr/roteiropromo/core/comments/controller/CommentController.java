@@ -42,9 +42,9 @@ public class CommentController {
         return ResponseEntity.ok(commentService.getAllByInterestPoint(interestPointId));
     }
 
-    @DeleteMapping("/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId){
-        commentService.deleteComment(commentId);
+    @DeleteMapping("/{touristId}/delete/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long touristId, @PathVariable Long commentId){
+        commentService.deleteComment(touristId, commentId);
         return ResponseEntity.noContent().build();
     }
 
