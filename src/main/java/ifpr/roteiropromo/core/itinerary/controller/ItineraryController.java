@@ -36,8 +36,6 @@ public class ItineraryController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Itinerary> updateOne(@RequestBody ItineraryDTO itineraryDTO, @PathVariable Long id){
 
-        Itinerary itineraryFound = itineraryService.findById(id);
-
         return ResponseEntity.ok(itineraryService.update(itineraryDTO, id));
     }
 
