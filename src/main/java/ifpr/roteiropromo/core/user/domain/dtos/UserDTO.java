@@ -1,5 +1,6 @@
 package ifpr.roteiropromo.core.user.domain.dtos;
 
+import ifpr.roteiropromo.core.guideprofile.domain.dtos.GuideProfileDTO;
 import lombok.Getter;
 import lombok.Setter;
 

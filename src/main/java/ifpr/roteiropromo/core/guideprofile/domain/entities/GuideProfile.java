@@ -1,7 +1,11 @@
 package ifpr.roteiropromo.core.guideprofile.domain.entities;
 
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
+import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,9 +16,12 @@ import java.io.Serializable;
 import java.util.List;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 @Entity
 public class GuideProfile implements Serializable {
 
@@ -22,16 +29,10 @@ public class GuideProfile implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String name;
-    private String email;
-    private String contact;
-    private String description;
-    private String cadastur;
+    @OneToOne
+    private Guide guide;
 
-    @OneToMany
+    @OneToMany(mappedBy = "guideProfile", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Itinerary> itineraries;
-
-//    @ManyToOne
-//    private List<Avaliacao> avaliacoes;
-
 }

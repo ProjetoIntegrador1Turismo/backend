@@ -57,7 +57,10 @@ public class UserController {
         return ResponseEntity.ok(userService.getOneByEmail(email));
     }
 
-
+    @PutMapping
+    public ResponseEntity<User> updateUser(@RequestBody UserDTO userDTO){
+        return ResponseEntity.ok(userService.update(userDTO));
+    }
 
 
 

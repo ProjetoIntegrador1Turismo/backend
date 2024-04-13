@@ -1,5 +1,6 @@
 package ifpr.roteiropromo.core.guideprofile.domain.dtos;
 
+import ifpr.roteiropromo.core.user.domain.dtos.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,10 +12,5 @@ import lombok.Setter;
 @Setter
 public class GuideProfileDTOForm {
 
-    private String name;
-    private String email;
-    private String contact;
-    private String description;
-    private String cadastur;
-
+    private UserDTO user;
 }

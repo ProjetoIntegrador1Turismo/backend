@@ -1,6 +1,7 @@
 package ifpr.roteiropromo.core.guideprofile.controller;
 
 
+import ifpr.roteiropromo.core.guideprofile.domain.dtos.GuideProfileDTO;
 import ifpr.roteiropromo.core.guideprofile.domain.dtos.GuideProfileDTOForm;
 import ifpr.roteiropromo.core.guideprofile.domain.entities.GuideProfile;
 import ifpr.roteiropromo.core.guideprofile.service.GuideProfileService;
@@ -20,9 +21,15 @@ public class GuideProfileController {
         this.guideProfileService = guideProfileService;
     }
 
+//    @GetMapping
+//    @PreAuthorize("hasRole('USER')")
+//    public ResponseEntity<List<GuideProfile>> getAll(){
+//        return ResponseEntity.ok(guideProfileService.findAll());
+//    }
+
     @GetMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<List<GuideProfile>> getAll(){
+    public ResponseEntity<List<GuideProfileDTO>> getAll(){
         return ResponseEntity.ok(guideProfileService.findAll());
     }
 
@@ -36,6 +43,13 @@ public class GuideProfileController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GuideProfile> saveOne(@RequestBody GuideProfileDTOForm guideProfileDTOForm){
         return ResponseEntity.ok(guideProfileService.create(guideProfileDTOForm));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> deleteOne(@PathVariable Long id){
+        guideProfileService.delete(id);
+        return ResponseEntity.ok("Guide Profile removido com sucesso!");
     }
 
 }

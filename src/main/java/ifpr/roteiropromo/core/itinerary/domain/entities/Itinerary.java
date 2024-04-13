@@ -1,5 +1,9 @@
 package ifpr.roteiropromo.core.itinerary.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import ifpr.roteiropromo.core.guideprofile.domain.entities.GuideProfile;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,6 +19,9 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 @Entity
 public class Itinerary implements Serializable {
 
@@ -33,4 +40,8 @@ public class Itinerary implements Serializable {
     @ManyToMany
     private List<InterestPoint> interestPoints;
 
+    @ManyToOne
+    @JoinColumn(name = "guideProfile_id")
+    @JsonManagedReference
+    private GuideProfile guideProfile;
 }

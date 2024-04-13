@@ -159,11 +159,20 @@ public class UserService {
         }
     }
 
+    public User findById(Long id){
+        return userRepository.findById(id).orElseThrow(
+                () -> new ServiceError("Could not found a user with that ID: " + id)
+        );
+    }
+
     public Boolean existsUserByEmail(String email) {
         return userRepository.existsUserByEmail(email);
     }
 
-
-
+    public User update(UserDTO userDTO){
+        User user = findById(userDTO.getId());
+        mapper.map(userDTO, user);
+        return userRepository.save(user);
+    }
 }
 
