@@ -33,6 +33,7 @@ public class CommentService {
         Tourist touristFound = userService.getTouristById(touristId);
         Comment newComment = mapper.map(commentDTOForm, Comment.class);
         newComment.setInterestPoint(interestPointFound);
+        newComment.setTouristName(touristFound.getFirstName());
         Comment commentSave = commentRepository.save(newComment);
         touristFound.getComment().add(commentSave);
         userService.updateTourist(touristFound);

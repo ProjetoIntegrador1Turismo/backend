@@ -19,7 +19,11 @@ public class Comment {
     private String text;
     private String wasVisitingDate;
     private Integer rating;
-    @OneToOne
+    private String touristName;
+
+    @ManyToOne
     private InterestPoint interestPoint;
+
+
 
 }

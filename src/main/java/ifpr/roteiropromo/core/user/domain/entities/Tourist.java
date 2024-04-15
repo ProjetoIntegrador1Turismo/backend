@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 public class Tourist extends User{
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Comment> comment;
 
 }
