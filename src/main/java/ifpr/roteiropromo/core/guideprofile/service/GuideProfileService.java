@@ -5,6 +5,7 @@ import ifpr.roteiropromo.core.guideprofile.domain.dtos.GuideProfileDTO;
 import ifpr.roteiropromo.core.guideprofile.domain.dtos.GuideProfileDTOForm;
 import ifpr.roteiropromo.core.guideprofile.domain.entities.GuideProfile;
 import ifpr.roteiropromo.core.guideprofile.repository.GuideProfileRepository;
+import ifpr.roteiropromo.core.user.domain.dtos.UserDTO;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.service.UserService;
@@ -23,15 +24,14 @@ public class GuideProfileService {
     private final GuideProfileRepository guideProfileRepository;
     private final UserService userService;
 
-    public GuideProfile create(GuideProfileDTOForm guideProfileDTOForm){
-        User user = userService.findById(guideProfileDTOForm.getUser().getId());
-
-        if (user == null) {
-            throw new ServiceError("User with id " + guideProfileDTOForm.getUser().getId() + " not found");
+    public GuideProfile create(Long id){
+        Guide guide = userService.findGuideById(id);
+        if (guide == null) {
+            throw new ServiceError("User with id " + id + " not found");
         }
 
-        GuideProfile guideProfile = modelMapper.map(guideProfileDTOForm, GuideProfile.class);
-        guideProfile.setGuide((Guide) user);
+        GuideProfile guideProfile = new GuideProfile();
+        guideProfile.setGuide(guide);
         return guideProfileRepository.save(guideProfile);
     }
 
@@ -63,7 +63,12 @@ public class GuideProfileService {
     public List<GuideProfileDTO> findAll() {
         List<GuideProfile> guideProfiles = guideProfileRepository.findAll();
         return guideProfiles.stream()
-                .map(guideProfile -> modelMapper.map(guideProfile, GuideProfileDTO.class))
+                .map(guideProfile -> {
+                    GuideProfileDTO guideProfileDTO = modelMapper.map(guideProfile, GuideProfileDTO.class);
+                    UserDTO userDTO = modelMapper.map(guideProfile.getGuide(), UserDTO.class);
+                    guideProfileDTO.setUser(userDTO);
+                    return guideProfileDTO;
+                })
                 .collect(Collectors.toList());
     }
 }

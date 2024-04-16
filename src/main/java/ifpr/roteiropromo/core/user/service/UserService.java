@@ -174,6 +174,15 @@ public class UserService {
         }
     }
 
+    public Guide findGuideById(Long id) {
+        User userFound = getOneById(id);
+        if (userFound instanceof Guide){
+            return (Guide) userFound;
+        }else{
+            throw new ServiceError("User found with id: " + id + " is not a guide so he can't make comments!");
+        }
+    }
+
     public User getOneById(Long id) {
         return userRepository.findById(id).orElseThrow(
                 () -> new ServiceError("Could not find user with id: " + id)

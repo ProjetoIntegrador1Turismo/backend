@@ -5,6 +5,7 @@ import ifpr.roteiropromo.core.guideprofile.domain.entities.GuideProfile;
 import ifpr.roteiropromo.core.guideprofile.service.GuideProfileService;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTO;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTOForm;
+import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryResponseDTO;
 import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
 import ifpr.roteiropromo.core.itinerary.service.ItineraryService;
 import org.springframework.http.ResponseEntity;
@@ -36,17 +37,15 @@ public class ItineraryController {
 
     @GetMapping()
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<List<ItineraryDTO>> getAll(){
+    public ResponseEntity<List<ItineraryResponseDTO>> getAll(){
         return ResponseEntity.ok(itineraryService.findAll());
     }
 
-    // save antigo
-//    @PostMapping()
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public ResponseEntity<Itinerary> saveOne(@RequestBody ItineraryDTOForm itineraryForm){
-//
-//        return ResponseEntity.ok(itineraryService.create(itineraryForm));
-//    }
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Itinerary> getOne(@PathVariable Long id){
+        return ResponseEntity.ok(itineraryService.findById(id));
+    }
 
     @PostMapping()
     @PreAuthorize("hasRole('GUIA')")

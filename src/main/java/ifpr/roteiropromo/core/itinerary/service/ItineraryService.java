@@ -7,6 +7,7 @@ import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTO;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTOForm;
+import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryResponseDTO;
 import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
 import ifpr.roteiropromo.core.itinerary.repository.ItineraryRepository;
 import jakarta.transaction.Transactional;
@@ -41,11 +42,31 @@ public class ItineraryService {
 //        return itineraryRepository.findAll();
 //    }
 
-    public List<ItineraryDTO> findAll() {
+//    public List<ItineraryDTO> findAll() {
+//        List<Itinerary> itineraries = itineraryRepository.findAll();
+//        return itineraries.stream()
+//                .map(itinerary -> modelMapper.map(itinerary, ItineraryDTO.class))
+//                .collect(Collectors.toList());
+//    }
+
+    public List<ItineraryResponseDTO> findAll() {
         List<Itinerary> itineraries = itineraryRepository.findAll();
         return itineraries.stream()
-                .map(itinerary -> modelMapper.map(itinerary, ItineraryDTO.class))
+                .map(itinerary -> {
+                    ItineraryResponseDTO itineraryResponseDTO = modelMapper.map(itinerary, ItineraryResponseDTO.class);
+                    itineraryResponseDTO.setGuideId(itinerary.getGuideProfile().getGuide().getId());
+                    return itineraryResponseDTO;
+                })
                 .collect(Collectors.toList());
+    }
+
+    public ItineraryResponseDTO getItinerary(Long id) {
+        Itinerary itinerary = itineraryRepository.findById(id).orElseThrow(
+                () -> new ServiceError("Itinerary with id " + id + " not found")
+        );
+        ItineraryResponseDTO itineraryResponseDTO = modelMapper.map(itinerary, ItineraryResponseDTO.class);
+        itineraryResponseDTO.setGuideId(itinerary.getGuideProfile().getGuide().getId());
+        return itineraryResponseDTO;
     }
 
     public Itinerary update(ItineraryDTO itineraryDTO, Long id){
