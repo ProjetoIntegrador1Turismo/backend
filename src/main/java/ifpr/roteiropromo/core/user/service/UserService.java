@@ -83,6 +83,32 @@ public class UserService {
 
     }
 
+//    private HttpEntity<String> createRequestToKeycloackToNewUser(UserDTOForm userDTOForm){
+//
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+//        httpHeaders.setBearerAuth(jwtTokenHandler.getAdminToken());
+//        String userJson = String.format(
+//                "{" +
+//                        "\"username\": \"%s\"," +
+//                        "\"enabled\": %b," +
+//                        "\"emailVerified\": %b," +
+//                        "\"firstName\": \"%s\"," +
+//                        "\"lastName\": \"%s\"," +
+//                        "\"email\": \"%s\"," +
+//                        "\"credentials\": [" +
+//                        "{" +
+//                        "\"type\": \"password\"," +
+//                        "\"value\": \"%s\"," +
+//                        "\"temporary\": false" +
+//                        "}" +
+//                        "]" +
+//                        "}",
+//                userDTOForm.getUserName(), true, true, userDTOForm.getFirstName(), userDTOForm.getLastName(), userDTOForm.getEmail(), userDTOForm.getPassword());
+//        return new HttpEntity<String>(userJson, httpHeaders);
+//
+//    }
+
 
     public List<User> getAll() {
         return userRepository.findAll();
@@ -133,6 +159,12 @@ public class UserService {
         }
     }
 
+    public User findById(Long id){
+        return userRepository.findById(id).orElseThrow(
+                () -> new ServiceError("Could not found a user with that ID: " + id)
+        );
+    }
+
     public Tourist getTouristById(Long id) {
         User userFound = getOneById(id);
         if (userFound instanceof Tourist){
@@ -150,6 +182,12 @@ public class UserService {
 
     public Boolean existsUserByEmail(String email) {
         return userRepository.existsUserByEmail(email);
+    }
+
+    public User update(UserDTO userDTO){
+        User user = findById(userDTO.getId());
+        mapper.map(userDTO, user);
+        return userRepository.save(user);
     }
 
     public Tourist updateTourist(Tourist touristFound) {

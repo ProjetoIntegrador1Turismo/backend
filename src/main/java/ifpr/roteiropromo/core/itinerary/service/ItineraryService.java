@@ -1,6 +1,8 @@
 package ifpr.roteiropromo.core.itinerary.service;
 
 import ifpr.roteiropromo.core.errors.ServiceError;
+import ifpr.roteiropromo.core.guideprofile.domain.entities.GuideProfile;
+import ifpr.roteiropromo.core.guideprofile.repository.GuideProfileRepository;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTO;
@@ -13,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,17 +24,29 @@ public class ItineraryService {
     private final ModelMapper modelMapper;
     private final ItineraryRepository itineraryRepository;
     private final InterestPointService interestPointService;
+    private final GuideProfileRepository guideProfileRepository;
 
     public Itinerary create(ItineraryDTOForm itineraryDTOForm){
+        GuideProfile guideProfile = guideProfileRepository.findById(itineraryDTOForm.getGuideProfileId())
+                .orElseThrow(() -> new ServiceError("GuideProfile not found"));
+
         Itinerary itinerary = modelMapper.map(itineraryDTOForm, Itinerary.class);
+        itinerary.setGuideProfile(guideProfile);
+
         return itineraryRepository.save(itinerary);
     }
 
 
-    public List<Itinerary> findAll() {
-        return itineraryRepository.findAll();
-    }
+//    public List<Itinerary> findAll() {
+//        return itineraryRepository.findAll();
+//    }
 
+    public List<ItineraryDTO> findAll() {
+        List<Itinerary> itineraries = itineraryRepository.findAll();
+        return itineraries.stream()
+                .map(itinerary -> modelMapper.map(itinerary, ItineraryDTO.class))
+                .collect(Collectors.toList());
+    }
 
     public Itinerary update(ItineraryDTO itineraryDTO, Long id){
         Itinerary itineraryFound = itineraryRepository.findById(id).orElseThrow(
