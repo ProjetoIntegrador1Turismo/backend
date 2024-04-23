@@ -1,0 +1,45 @@
+#spring:
+#  datasource:
+#    url: jdbc:sqlserver://${DB_ADDR:179.106.238.81}:${DB_PORT:1434};databaseName=${DB_NAME:xdose_teste};sendTimeAsDatetime=false;
+#    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#    username: ${DB_USER:xdose}
+#    password: ${DB_PASSWORD:xdose}
+#
+#
+#
+#  jpa:
+#    show-sql: true
+#    properties:
+#        dialect: org.hibernate.dialect.SQLServer2012Dialect
+#        hbm2ddl.import_files_sql_extractor: org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor
+#        format_sql: true
+#    generate-ddl: true
+#    hibernate:
+#      ddl-auto: update
+#
+#
+#  sql:
+#    init:
+#      mode: always
+#server:
+#  port: 80
+
+####################################################################################################################
+
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:dbtest
+    username: sa
+    password: sa
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
