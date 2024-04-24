@@ -199,6 +199,19 @@ public class UserService {
         return userRepository.save(user);
     }
 
+//    public Guide makeGuide(Long id){
+//        User user = findById(id);
+//        if (user instanceof Guide){
+//            return (Guide) user;
+//        }else{
+//            Guide guide = new Guide();
+//            mapper.map(user, guide);
+//            guide.setIsApproved(false);
+//            userRepository.delete(user);
+//            return userRepository.save(guide);
+//        }
+//    }
+
     public Tourist updateTourist(Tourist touristFound) {
         return userRepository.save(touristFound);
     }
