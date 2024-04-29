@@ -82,4 +82,12 @@ public class InterestPointService {
                 () -> new ServiceError("Não foi possível encontrar o ponto de interesse com o ID: " + interestPointId)
         );
     }
+
+    public List<InterestPoint> findAllByIds(List<Long> ids) {
+        List<InterestPoint> interestPoints = interestPointRepository.findAllById(ids);
+        if (interestPoints.isEmpty()) {
+            throw new ServiceError("Não foi possível encontrar pontos de interesse com os IDs fornecidos");
+        }
+        return interestPoints;
+    }
 }
