@@ -1,5 +1,7 @@
 package ifpr.roteiropromo.core.utils;
 
+import ifpr.roteiropromo.core.auth.domain.AuthenticatedUserDTO;
+import ifpr.roteiropromo.core.errors.ServiceError;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -26,13 +28,13 @@ public class JwtTokenHandler {
 
 
     //Extrai os dados do usuario a partir do token enviado na requisição
-    public void getUserDataFromToken() {
+    public AuthenticatedUserDTO getUserDataFromToken() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // Verifica se a autenticação é do tipo JWT (se o usuário estiver autenticado com um token JWT)
         if (authentication instanceof JwtAuthenticationToken) {
             JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) authentication;
-
+            AuthenticatedUserDTO userDTO = new AuthenticatedUserDTO();
             //Extrai o token
             String token = jwtAuthenticationToken.getToken().getTokenValue();
 
@@ -44,8 +46,12 @@ public class JwtTokenHandler {
             log.info("Email: " + userEmail);
             log.info("User id keycloack: " + idKeyclock);
             log.info("User name: " + userName);
+            userDTO.setEmail(userEmail.toString());
+            userDTO.setFirstName(userName.toString());
+
+            return userDTO;
         } else {
-            System.out.println("Não foi encontrado um token JWT na requisição.");
+            throw new ServiceError("User not authenticated");
         }
     }
 

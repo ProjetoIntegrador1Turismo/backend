@@ -17,7 +17,7 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String road;
-    private Integer number;
-    private Integer zipCode;
+    private String number;
+    private String zipCode;
 
 }

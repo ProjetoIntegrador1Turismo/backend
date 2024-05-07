@@ -14,6 +14,10 @@ public class Experience extends InterestPoint{
 
     private String longDescription;
 
+    private String category;
 
+    private String requiredTime;
+
+    private String requiredAge;
 
 }

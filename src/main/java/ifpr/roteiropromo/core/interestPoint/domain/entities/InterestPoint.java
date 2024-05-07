@@ -13,7 +13,6 @@ import lombok.*;
 @Data
 public abstract class InterestPoint {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     Long id;

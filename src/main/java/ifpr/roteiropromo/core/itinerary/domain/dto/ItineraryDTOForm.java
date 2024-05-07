@@ -17,6 +17,4 @@ public class ItineraryDTOForm {
     private Float mediumCost;
     private Integer days;
 
-    //tests 12/04/2024
-    private Long guideProfileId ;
 }

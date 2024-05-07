@@ -19,9 +19,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
 @Entity
 public class Itinerary implements Serializable {
 
@@ -40,8 +37,4 @@ public class Itinerary implements Serializable {
     @ManyToMany
     private List<InterestPoint> interestPoints;
 
-    @ManyToOne
-    @JoinColumn(name = "guideProfile_id")
-    @JsonManagedReference
-    private GuideProfile guideProfile;
 }

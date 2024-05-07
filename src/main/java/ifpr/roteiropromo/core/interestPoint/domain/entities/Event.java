@@ -14,4 +14,6 @@ public class Event extends InterestPoint{
 
     private String longDescription;
 
+    private String date;
+
 }
