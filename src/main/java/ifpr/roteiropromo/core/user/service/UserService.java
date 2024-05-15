@@ -216,5 +216,17 @@ public class UserService {
         return userRepository.save(touristFound);
     }
 
+    public Guide makeGuide(Long id, String cadasturCode){
+        User user = findById(id);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+        Guide guide = new Guide();
+        mapper.map(user, guide);
+        guide.setCadasturCode(cadasturCode);
+        guide.setIsApproved(true);
+        userRepository.delete(user);
+        return userRepository.save(guide);
+    }
 }
 
