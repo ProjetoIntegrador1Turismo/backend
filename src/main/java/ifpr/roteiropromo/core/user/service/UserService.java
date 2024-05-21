@@ -216,16 +216,42 @@ public class UserService {
         return userRepository.save(touristFound);
     }
 
-    public Guide makeGuide(Long id, String cadasturCode){
-        User user = findById(id);
-        if (user == null) {
-            throw new RuntimeException("User not found");
+    public Guide createGuide(UserDTOForm userDTOForm) {
+        if (userDTOForm.getCadasturCode() == null || userDTOForm.getCadasturCode().isEmpty()) {
+            throw new ServiceError("CadasturCode é necessário para se cadastrar como guia!");
         }
-        Guide guide = new Guide();
-        mapper.map(user, guide);
-        guide.setCadasturCode(cadasturCode);
+        Guide guide = mapper.map(userDTOForm, Guide.class);
+        guide.setUserName(userDTOForm.getFirstName());
+        guide.setCadasturCode(userDTOForm.getCadasturCode());
+        guide.setIsApproved(false);
+        return userRepository.save(guide);
+    }
+
+    public List<Guide> getAllGuides() {
+        return userRepository.findAllGuides();
+    }
+
+    public Guide approveGuide(Long id){
+        Guide guide = findGuideById(id);
+        if (guide == null){
+            throw new ServiceError("Guide não encontrado.");
+        }
+        if (guide.getIsApproved()){
+            throw new ServiceError("Guide já está aprovado!");
+        }
         guide.setIsApproved(true);
-        userRepository.delete(user);
+        return userRepository.save(guide);
+    }
+
+    public Guide disapproveGuide(Long guideId) {
+        Guide guide = findGuideById(guideId);
+        if (guide == null){
+            throw new ServiceError("Guide não encontrado.");
+        }
+        if (!guide.getIsApproved()){
+            throw new ServiceError("Guide já está desativado!");
+        }
+        guide.setIsApproved(false);
         return userRepository.save(guide);
     }
 }

@@ -3,20 +3,22 @@ package ifpr.roteiropromo.core.admin.controller;
 import ifpr.roteiropromo.core.admin.service.AdminService;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
+import ifpr.roteiropromo.core.user.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
+@RequiredArgsConstructor
 public class AdminController {
 
-    @Autowired
-    private AdminService adminService;
+    private final AdminService adminService;
+    private final UserService userService;
 
     @GetMapping("/selected-interest-points-details")
     public ResponseEntity<List<InterestPoint>> getSelectedInterestPointsDetails() throws IOException {
@@ -42,9 +44,16 @@ public class AdminController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/make-guide/{id}")
-    public ResponseEntity<Guide> makeGuide(@PathVariable Long id, @RequestBody Map<String, String> body) {
-        Guide guide = adminService.makeGuide(id, body.get("cadasturCode"));
+    // Aprovar Guia
+    @PutMapping("/approve-guide/{guideId}")
+    public ResponseEntity<Guide> approveGuide(@PathVariable Long guideId) {
+        Guide guide = userService.approveGuide(guideId);
+        return ResponseEntity.ok(guide);
+    }
+
+    @PutMapping("/disapprove-guide/{guideId}")
+    public ResponseEntity<Guide> disapproveGuide(@PathVariable Long guideId) {
+        Guide guide = userService.disapproveGuide(guideId);
         return ResponseEntity.ok(guide);
     }
 }

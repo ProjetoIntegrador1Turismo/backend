@@ -29,6 +29,9 @@ public class AdminService {
 
     private final File configFile = new File("src/main/resources/selectedInterestPoints.json");
 
+    //
+    // Select Interest Points
+    //
     public List<InterestPoint> getSelectedInterestPointsDetails() throws IOException {
         List<Long> selectedInterestPointIds = readConfigFile().get("selectedInterestPoints");
         return interestPointService.findAllByIds(selectedInterestPointIds);
@@ -50,10 +53,6 @@ public class AdminService {
         List<Long> selectedInterestPointIds = config.get("selectedInterestPoints");
         selectedInterestPointIds.set(index, newInterestPointId);
         objectMapper.writeValue(configFile, config);
-    }
-
-    public Guide makeGuide(Long id, String cadasturCode) {
-        return userService.makeGuide(id, cadasturCode);
     }
 
     private Map<String, List<Long>> readConfigFile() throws IOException {
