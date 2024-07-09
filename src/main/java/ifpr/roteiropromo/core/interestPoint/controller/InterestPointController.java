@@ -22,7 +22,7 @@ public class InterestPointController {
         this.interestPointService = interestPointService;
     }
 
-    //Save a basic template for all Interest Point types
+    //Cria um novo pont de interesse com os dados básicos - NOME e TIPO
     @PostMapping()
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<InterestPoint> createNewInterestPoint(
@@ -48,7 +48,11 @@ public class InterestPointController {
         return ResponseEntity.ok(interestPointService.getOne(id));
     }
 
+
+    //CORRIGIR ERRO AO TENTAR ATUALIZAR E ADICIONAR O ENDEREÇO
+    //FIX DUPLICAÇÃO DE ENDEREÇO AO ATUALIZAR - SE EXISTIR, ATUALIZAR E NAO CRIAR NOVO
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<InterestPoint> updateOneById(
             @PathVariable Long id,
             @RequestBody InterestPointDTO interestPointDTO
