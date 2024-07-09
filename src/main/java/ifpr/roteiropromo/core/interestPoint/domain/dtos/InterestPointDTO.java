@@ -14,7 +14,8 @@ public class InterestPointDTO {
     private Address address;
     private Integer averageValue;
     private String shortDescription;
-    private String interestPointType;
+    //Não permitir a att do tipo de ponto de interesse, pois são tabelas distintas!
+    //private String interestPointType;
     private String longDescription;
     private Integer starsNumber;
     private Boolean isResort;
