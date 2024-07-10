@@ -6,6 +6,7 @@ import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryResponseDTO;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryUpdateDTO;
 import ifpr.roteiropromo.core.itinerary.service.ItineraryService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class ItineraryController {
     }
 
     @PostMapping()
-    //@PreAuthorize("hasRole('GUIA')")
+    @PreAuthorize("hasRole('GUIA')")
     public ResponseEntity<ItineraryDTO> saveOne(@RequestBody ItineraryDTOForm itineraryDTOForm){
         return ResponseEntity.ok(itineraryService.create(itineraryDTOForm));
     }
