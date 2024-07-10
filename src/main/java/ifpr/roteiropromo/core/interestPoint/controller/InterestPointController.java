@@ -32,7 +32,7 @@ public class InterestPointController {
     }
 
     @GetMapping()
-    //@PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<InterestPoint>> getAllInterestPoints(){
         return ResponseEntity.ok(interestPointService.getAll());
     }
@@ -49,8 +49,6 @@ public class InterestPointController {
     }
 
 
-    //CORRIGIR ERRO AO TENTAR ATUALIZAR E ADICIONAR O ENDEREÇO
-    //FIX DUPLICAÇÃO DE ENDEREÇO AO ATUALIZAR - SE EXISTIR, ATUALIZAR E NAO CRIAR NOVO
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<InterestPoint> updateOneById(
