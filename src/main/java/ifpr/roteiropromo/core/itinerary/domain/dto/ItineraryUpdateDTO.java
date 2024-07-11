@@ -1,16 +1,11 @@
 package ifpr.roteiropromo.core.itinerary.domain.dto;
 
-import ifpr.roteiropromo.core.guideprofile.domain.entities.GuideProfile;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-public class ItineraryDTOForm {
+public class ItineraryUpdateDTO {
 
     private String title;
     private String description;

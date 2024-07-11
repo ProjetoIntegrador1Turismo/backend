@@ -26,30 +26,9 @@ public class AuthenticationService {
 
     private final UserService userService;
 
-    public ResponseEntity<String> getAuthenticationToken(UserAuthenticationDTO user) {
 
-        if (!userExists(user.getUsername())) {
-            throw new ServiceError("No user found with this email: " + user.getUsername());
-        }
-        try{
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            MultiValueMap<String, String> userDataForm = new LinkedMultiValueMap<>();
-            userDataForm.add("client_id", "login-app");
-            userDataForm.add("username", user.getUsername());
-            userDataForm.add("password", user.getPassword());
-            userDataForm.add("grant_type", "password");
-            RestTemplate restTemplate = new RestTemplate();
-            HttpEntity<MultiValueMap<String, String>> entityToRequestKeycloak = new HttpEntity<>(userDataForm, httpHeaders);
-            return restTemplate.postForEntity(
-                    "http://localhost:8080/realms/SpringBootKeycloak/protocol/openid-connect/token",
-                    entityToRequestKeycloak, String.class);
-        }catch (Exception e){
-            throw new ServiceError("Invalid username or password.");
-        }
-
-    }
-
+    //Retorna os dados do usuario e o token de autenticação caso exista
+    //Caso não exista, ou, os dados de login estejam errados, lança uma exceção
     public AuthenticatedUserDTO getUSerTokenAndData(UserAuthenticationDTO user) {
         if (!userExists(user.getUsername())) {
             throw new ServiceError("No user found with this email: " + user.getUsername());

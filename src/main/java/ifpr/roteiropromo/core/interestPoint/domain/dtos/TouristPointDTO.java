@@ -19,5 +19,4 @@ public class TouristPointDTO {
     private InterestPointType interestPointType;
     private String longDescription;
 
-
 }

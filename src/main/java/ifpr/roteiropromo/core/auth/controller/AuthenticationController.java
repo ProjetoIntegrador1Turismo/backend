@@ -23,13 +23,7 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
-    //Obtem o token de autenticação sem os dados do usuário
-//    @PostMapping()
-//    public ResponseEntity<String> getToken(@RequestBody UserAuthenticationDTO user){
-//        return authenticationService.getAuthenticationToken(user);
-//    }
-
-    //Obtem o token de autenticação e os dados do usuário
+    //Retorna os dados do usuario e o token de autenticação
     @PostMapping()
     public ResponseEntity<AuthenticatedUserDTO> getTokenAndUserData(@RequestBody UserAuthenticationDTO user){
         return ResponseEntity.ok(authenticationService.getUSerTokenAndData(user));

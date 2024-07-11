@@ -1,5 +1,6 @@
 package ifpr.roteiropromo.core.itinerary.service;
 
+import ifpr.roteiropromo.core.auth.domain.AuthenticatedUserDTO;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.guideprofile.domain.entities.GuideProfile;
 import ifpr.roteiropromo.core.guideprofile.repository.GuideProfileRepository;
@@ -8,8 +9,14 @@ import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTO;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTOForm;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryResponseDTO;
+import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryUpdateDTO;
 import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
 import ifpr.roteiropromo.core.itinerary.repository.ItineraryRepository;
+import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
+import ifpr.roteiropromo.core.user.domain.entities.Guide;
+import ifpr.roteiropromo.core.user.repository.GuideRepository;
+import ifpr.roteiropromo.core.user.repository.UserRepository;
+import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -25,77 +32,87 @@ public class ItineraryService {
     private final ModelMapper modelMapper;
     private final ItineraryRepository itineraryRepository;
     private final InterestPointService interestPointService;
-    private final GuideProfileRepository guideProfileRepository;
+    private final JwtTokenHandler jwtTokenHandler;
+    private final GuideRepository guideRepository;
 
-    public Itinerary create(ItineraryDTOForm itineraryDTOForm){
-        GuideProfile guideProfile = guideProfileRepository.findById(itineraryDTOForm.getGuideProfileId())
-                .orElseThrow(() -> new ServiceError("GuideProfile not found"));
-
-        Itinerary itinerary = modelMapper.map(itineraryDTOForm, Itinerary.class);
-        itinerary.setGuideProfile(guideProfile);
-
-        return itineraryRepository.save(itinerary);
+    public ItineraryDTO create(ItineraryDTOForm itineraryDTOForm){
+        Guide guideFound = getGuideAuthenticated();
+        if (guideFound == null) {
+            throw new ServiceError("Guia não encontrado");
+        }else {
+            Itinerary newItinerary = modelMapper.map(itineraryDTOForm, Itinerary.class);
+            Itinerary itinerarySaved = itineraryRepository.save(newItinerary);
+            guideFound.getItineraries().add(itinerarySaved);
+            guideRepository.save(guideFound);
+         return modelMapper.map(itinerarySaved, ItineraryDTO.class);
+        }
     }
 
-
-//    public List<Itinerary> findAll() {
-//        return itineraryRepository.findAll();
-//    }
-
-//    public List<ItineraryDTO> findAll() {
-//        List<Itinerary> itineraries = itineraryRepository.findAll();
-//        return itineraries.stream()
-//                .map(itinerary -> modelMapper.map(itinerary, ItineraryDTO.class))
-//                .collect(Collectors.toList());
-//    }
-
-    public List<ItineraryResponseDTO> findAll() {
-        List<Itinerary> itineraries = itineraryRepository.findAll();
-        return itineraries.stream()
-                .map(itinerary -> {
-                    ItineraryResponseDTO itineraryResponseDTO = modelMapper.map(itinerary, ItineraryResponseDTO.class);
-                    itineraryResponseDTO.setGuideId(itinerary.getGuideProfile().getGuide().getId());
-                    return itineraryResponseDTO;
-                })
-                .collect(Collectors.toList());
-    }
-
-    public ItineraryResponseDTO getItinerary(Long id) {
-        Itinerary itinerary = itineraryRepository.findById(id).orElseThrow(
-                () -> new ServiceError("Itinerary with id " + id + " not found")
+    public ItineraryDTO update(Long id, ItineraryUpdateDTO itineraryDTO) {
+        Guide guide = getGuideAuthenticated();
+        Itinerary itinerary = guide.getItineraries().stream().filter(t->t.getId().equals(id)).findFirst().orElseThrow(
+                () -> new ServiceError("O guia autenticado não possui um roteiro com o ID: " + id)
         );
-        ItineraryResponseDTO itineraryResponseDTO = modelMapper.map(itinerary, ItineraryResponseDTO.class);
-        itineraryResponseDTO.setGuideId(itinerary.getGuideProfile().getGuide().getId());
-        return itineraryResponseDTO;
+        modelMapper.map(itineraryDTO, itinerary);
+        return modelMapper.map(itineraryRepository.save(itinerary), ItineraryDTO.class);
     }
 
-    public Itinerary update(ItineraryDTO itineraryDTO, Long id){
-        Itinerary itineraryFound = itineraryRepository.findById(id).orElseThrow(
-                () -> new ServiceError("Não foi possível encontrar um roteiro com o ID: " + id)
+    public ItineraryDTO addInterestPoint(Long itineraryId, Long interestPointIds) {
+        Guide guide = getGuideAuthenticated();
+        Itinerary itineraryFound = getOneItineraryFromGuide(guide, itineraryId);
+        InterestPoint interestPointFound = interestPointService.findById(interestPointIds);
+        itineraryFound.getInterestPoints().add(interestPointFound);
+        return modelMapper.map(itineraryRepository.save(itineraryFound), ItineraryDTO.class);
+    }
+
+    public Itinerary getOneItineraryFromGuide(Guide guide, Long id){
+        return guide.getItineraries().stream().filter(t->t.getId().equals(id)).findFirst().orElseThrow(
+                () -> new ServiceError("O guia autenticado não possui um roteiro com o ID: " + id)
         );
-        modelMapper.map(itineraryDTO, itineraryFound);
-        return itineraryRepository.save(itineraryFound);
     }
 
+    public Guide getGuideAuthenticated(){
+        AuthenticatedUserDTO authenticatedUserDTO = jwtTokenHandler.getUserDataFromToken();
+        Guide guide = guideRepository.getOnByEmail(authenticatedUserDTO.getEmail());
+        if (guide == null) {
+            throw new ServiceError("Guia não encontrado");
+        }else{
+            return guide;
+        }
+    }
 
-    public Itinerary findById(Long id){
+    public Itinerary findOneById(Long id){
         return itineraryRepository.findById(id).orElseThrow(
                 () -> new ServiceError("Não foi possível encontrar um roteiro com o ID: " + id)
         );
     }
 
-    @Transactional
-    public Itinerary addInterestPoint(Long itineraryId, Long interestPointId) {
-        Itinerary itinerary = findById(itineraryId);
-        InterestPoint interestPointFound = interestPointService.findById(interestPointId);
-
-        // Para adicionar o ponto de interesse na lista:
-        List<InterestPoint> interestPoints = itinerary.getInterestPoints();
-        interestPoints.add(interestPointFound);
-
-        return itineraryRepository.save(itinerary);
+    public List<ItineraryDTO> findAll() {
+        return itineraryRepository.findAll().stream()
+                .map(itinerary -> {
+                    return modelMapper.map(itinerary, ItineraryDTO.class);
+                })
+                .collect(Collectors.toList());
     }
 
 
+    public ItineraryDTO findById(Long id) {
+        return modelMapper.map(findOneById(id), ItineraryDTO.class);
+    }
 
+    public ItineraryResponseDTO getGuideByItinerary(Long id) {
+        Itinerary itinerary = findOneById(id);
+        Guide guide = guideRepository.getByItineraries(itinerary);
+        ItineraryResponseDTO itineraryResponseDTO = modelMapper.map(itinerary, ItineraryResponseDTO.class);
+        itineraryResponseDTO.setGuide(modelMapper.map(guide, GuideDTO.class));
+        return itineraryResponseDTO;
+    }
+
+    public void delete(Long id) {
+        Guide guide = getGuideAuthenticated();
+        Itinerary itinerary = getOneItineraryFromGuide(guide, id);
+        guide.getItineraries().remove(itinerary);
+        guideRepository.save(guide);
+        itineraryRepository.delete(itinerary);
+    }
 }

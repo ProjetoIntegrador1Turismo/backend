@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
+import ifpr.roteiropromo.core.review.domain.entities.Review;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,9 +20,6 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
 @Entity
 public class GuideProfile implements Serializable {
 
@@ -29,10 +27,11 @@ public class GuideProfile implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    //Pelo Guia, podemos obter a lista de itinerários que ele criou
     @OneToOne
     private Guide guide;
 
-    @OneToMany(mappedBy = "guideProfile", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<Itinerary> itineraries;
+    @OneToMany
+    private List<Review> reviews;
+
 }

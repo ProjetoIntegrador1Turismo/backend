@@ -152,10 +152,11 @@ public class UserService {
 
 
     public User getOneByEmail(String email) {
-        try{
-            return userRepository.getOnByEmail(email);
-        }catch (Exception e){
+        User userFound = userRepository.getOnByEmail(email);
+        if(userFound == null){
             throw new ServiceError("Could not found a user with that email: " + email);
+        }else {
+            return userFound;
         }
     }
 

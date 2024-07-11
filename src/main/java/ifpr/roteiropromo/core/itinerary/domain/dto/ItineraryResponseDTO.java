@@ -1,6 +1,7 @@
 package ifpr.roteiropromo.core.itinerary.domain.dto;
 
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTO;
+import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +17,5 @@ public class ItineraryResponseDTO {
     private Float mediumCost;
     private Integer days;
     private List<InterestPointDTO> interestPoints;
-    private Long guideId;
-    // getters and setters...
+    private GuideDTO guide;
 }
