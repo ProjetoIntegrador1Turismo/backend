@@ -21,6 +21,8 @@ public class InterestPointService {
 
     private final ModelMapper modelMapper;
     private final InterestPointRepository interestPointRepository;
+
+
     public InterestPoint create(InterestPointDTOForm interestPointDTOForm) {
         log.info("Acessou o metodo com switch");
 
@@ -90,4 +92,11 @@ public class InterestPointService {
         }
         return interestPoints;
     }
+
+    public void updateCoverImageUrl(Long id, String imageUrl) {
+        InterestPoint interestPointFound = getOne(id);
+        interestPointFound.setImageCoverUrl(imageUrl);
+        interestPointRepository.save(interestPointFound);
+    }
+
 }
