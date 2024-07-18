@@ -3,7 +3,8 @@ server:
   port: 8081
   #servlet:
   #  contextPath: /api
-
+upload:
+  dir: uploads/
 
 #CONFIGURAÇÃO BANCO NO CONTAINER LOCAL P/ COMANDO DA LINHA 32
 spring:
@@ -21,9 +22,11 @@ spring:
     properties:
         show_sql: false
         format_sql: true
+  mvc:
+    static-path-pattern: /uploads/**
 
 
-#docker run --name roteirodb -p 3307:3306 -e MYSQL_ROOT_PASSWORD=admin -e MYSQL_DATABASE=roteiro -e MYSQL_USER=projeto -e MYSQL_PASSWORD=12345 -d mysql:latest
+  #docker run --name roteirodb -p 3307:3306 -e MYSQL_ROOT_PASSWORD=admin -e MYSQL_DATABASE=roteiro -e MYSQL_USER=projeto -e MYSQL_PASSWORD=12345 -d mysql:latest
 
 
   security:
