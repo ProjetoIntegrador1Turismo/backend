@@ -15,19 +15,21 @@ public abstract class InterestPoint {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
-    Long id;
+    private Long id;
 
     @Column(unique = true)
-    String name;
+    private String name;
 
     @OneToOne(cascade = CascadeType.ALL)
-    Address address;
+    private Address address;
 
-    Integer averageValue;
+    private Integer averageValue;
 
-    String shortDescription;
+    private String shortDescription;
+
+    private String imageCoverUrl;
 
     @Enumerated(EnumType.STRING)
-    InterestPointType interestPointType;
+    private InterestPointType interestPointType;
 
 }
