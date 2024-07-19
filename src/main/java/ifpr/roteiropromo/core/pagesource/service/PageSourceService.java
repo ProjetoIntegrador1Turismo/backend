@@ -11,7 +11,6 @@ import ifpr.roteiropromo.core.itinerary.repository.ItineraryRepository;
 import ifpr.roteiropromo.core.pagesource.domain.BasicPointDTO;
 import ifpr.roteiropromo.core.pagesource.domain.HomePageDTO;
 import ifpr.roteiropromo.core.pagesource.domain.InterestPointCardDTO;
-import ifpr.roteiropromo.core.pagesource.domain.SliderDTO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -35,27 +34,40 @@ public class PageSourceService {
     public HomePageDTO getHomePageData(){
         HomePageDTO homePageDTO = new HomePageDTO();
         homePageDTO.setTop3InterestPoints(getTop3InterestPoints());
-        homePageDTO.setFirstSlider(getRandomPointsToFirstSlider()); ////roteiros ou experiencias
+        homePageDTO.setFirstSlider(getRandomPointsToFirstSlider()); ////pontos, roteiros ou experiencias
+        homePageDTO.setSecondSlider(getRandomPointsToSecondSlider()); //restaurantes, hoteis e eventos
 
         return homePageDTO;
     }
 
-    private SliderDTO getRandomPointsToFirstSlider() {
-        SliderDTO sliderDTO = new SliderDTO();
+    private List<BasicPointDTO> getRandomPointsToSecondSlider() {
+        List<BasicPointDTO> basicPointDTO = new ArrayList<>();
+        basicPointDTO.addAll(getRandomRestaurant());
+    }
+
+    private List<BasicPointDTO> getRandomRestaurant() {
+    }
+
+    private List<BasicPointDTO> getRandomPointsToFirstSlider() {
+        List<BasicPointDTO> basicPointDTO = new ArrayList<>();
+        basicPointDTO.addAll(getRandomTouristPoints());
+        basicPointDTO.addAll(getRandomExperiences());
+        basicPointDTO.addAll(getRandomItineraries());
+        return basicPointDTO;
+    }
+
+    private List<BasicPointDTO> getRandomExperiences() {
+        List<Experience> experiences = experienceRepository.findAll();
+        Collections.shuffle(experiences);
+        List<Experience> random3Experiences = experiences.subList(0, 3);
+        return mapList(random3Experiences, BasicPointDTO.class);
+    }
+
+    private List<BasicPointDTO> getRandomTouristPoints() {
         List<TouristPoint> touristPoints = touristPointRepository.findAll();
         Collections.shuffle(touristPoints);
         List<TouristPoint> random3TouristPoints = touristPoints.subList(0, 3);
-        sliderDTO.setBasicPointDTOList(mapList(random3TouristPoints, BasicPointDTO.class));
-
-        List<Experience> experiences = experienceRepository.findAll();
-        Collections.shuffle(touristPoints);
-        List<Experience> random3Experiences = experiences.subList(0, 3);
-        sliderDTO.getBasicPointDTOList().addAll(mapList(random3Experiences, BasicPointDTO.class));
-
-        sliderDTO.getBasicPointDTOList().addAll(getRandomItineraries());
-
-
-        return sliderDTO;
+        return mapList(random3TouristPoints, BasicPointDTO.class);
     }
 
     private List<BasicPointDTO> getRandomItineraries() {
@@ -67,6 +79,7 @@ public class PageSourceService {
             BasicPointDTO basicPoint = new BasicPointDTO();
             basicPoint.setId(itinerary.getId());
             basicPoint.setName(itinerary.getTitle());
+            basicPoint.setImageCoverUrl("http://localhost:8081/uploads/roteiro.jpeg");
             basicPointDTO.add(basicPoint);
         }
         return basicPointDTO;
