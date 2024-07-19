@@ -3,6 +3,7 @@ package ifpr.roteiropromo.core.user.controller;
 import ifpr.roteiropromo.core.user.domain.dtos.UserDTO;
 import ifpr.roteiropromo.core.user.domain.dtos.UserDTOForm;
 import ifpr.roteiropromo.core.user.domain.dtos.UserDTORecovery;
+import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.service.UserService;
 import lombok.extern.log4j.Log4j2;
@@ -44,6 +45,7 @@ public class UserController {
     public ResponseEntity<User> getOne(@RequestParam String email){
         return ResponseEntity.ok(userService.getOneByEmail(email));
     }
+
 
     @PutMapping
     @PreAuthorize("hasRole('USER')")
