@@ -317,6 +317,7 @@ public class UserService {
         ResponseEntity<List<Map<String, Object>>> response = restTemplate.exchange(
                 keycloakUrl, HttpMethod.GET, entity, new ParameterizedTypeReference<List<Map<String, Object>>>() {});
 
+
         if (response.getStatusCode() == HttpStatus.OK) {
             List<Map<String, Object>> users = response.getBody();
             if (users != null && !users.isEmpty()) {
