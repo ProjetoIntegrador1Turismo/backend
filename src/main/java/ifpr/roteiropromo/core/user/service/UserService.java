@@ -16,6 +16,7 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -32,36 +33,46 @@ public class UserService {
     private final ModelMapper mapper;
     private final UserRepository userRepository;
 
-    public UserDTO creatNewUser(UserDTOForm userDTOForm){
-
+    public UserDTO createNewUser(UserDTOForm userDTOForm) {
         ResponseEntity<Map> response;
         try {
             RestTemplate restTemplate = new RestTemplate();
             response = restTemplate.postForEntity(
                     "http://localhost:8080/admin/realms/SpringBootKeycloak/users",
                     createRequestToKeycloackToNewUser(userDTOForm), Map.class);
-        }catch (Exception e){
-            throw  new ServiceError("E-mail already registered!");
+        } catch (HttpClientErrorException e) {
+            throw new ServiceError("E-mail already registered!");
+        } catch (Exception e) {
+            throw new ServiceError("An unexpected error occurred: " + e.getMessage());
         }
-        if (response.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(201))){
-            if (userDTOForm.getCadasturCode() == null){
-                Tourist tourist = mapper.map(userDTOForm, Tourist.class);
-                tourist.setUserName(userDTOForm.getFirstName());
-                return mapper.map(userRepository.save(tourist), UserDTO.class);
-            } else if (userDTOForm.isAdmin()) {
+
+        if (response.getStatusCode().equals(HttpStatus.CREATED)) {
+            User user;
+            if (userDTOForm.isActiveAdmin()) {
                 Admin admin = mapper.map(userDTOForm, Admin.class);
                 admin.setUserName(userDTOForm.getFirstName());
-                return mapper.map(userRepository.save(admin), UserDTO.class);
-            } else{
+                admin.setActiveAdmin(true); // Certifique-se de que esse campo é específico para Admin
+                user = admin;
+            } else if (userDTOForm.getCadasturCode() == null) {
+                Tourist tourist = mapper.map(userDTOForm, Tourist.class);
+                tourist.setUserName(userDTOForm.getFirstName());
+                user = tourist;
+            } else {
                 Guide guide = mapper.map(userDTOForm, Guide.class);
                 guide.setUserName(userDTOForm.getFirstName());
                 guide.setIsApproved(false);
-                return mapper.map(userRepository.save(guide), UserDTO.class);
+                user = guide;
             }
-        }else {
-            throw new ServiceError("An error occurred when creating the new user.");
+            User savedUser = userRepository.save(user);
+            log.info("User created with type: " + savedUser.getClass().getSimpleName()); // Debug: Verifique o tipo criado
+            return mapper.map(savedUser, UserDTO.class);
+        } else {
+            throw new ServiceError("An error occurred when creating the new user. Status: " + response.getStatusCode());
         }
     }
+
+
+
 
     private HttpEntity<String> createRequestToKeycloackToNewUser(UserDTOForm userDTOForm){
 
@@ -84,8 +95,7 @@ public class UserService {
                         "]" +
                         "}",
                 true, true, userDTOForm.getFirstName(), userDTOForm.getLastName(), userDTOForm.getEmail(), userDTOForm.getPassword());
-        return new HttpEntity<String>(userJson, httpHeaders);
-
+        return new HttpEntity<>(userJson, httpHeaders);
     }
 
 //    private HttpEntity<String> createRequestToKeycloackToNewUser(UserDTOForm userDTOForm){
@@ -159,11 +169,11 @@ public class UserService {
     public User getOneByEmail(String email) {
         User userFound = userRepository.getOnByEmail(email);
         if(userFound == null){
-            throw new ServiceError("Could not found a user with that email: " + email);
-        }else {
-            return userFound;
+            throw new ServiceError("Could not find a user with that email: " + email);
         }
+        return userFound;
     }
+
 
     public User findById(Long id){
         return userRepository.findById(id).orElseThrow(

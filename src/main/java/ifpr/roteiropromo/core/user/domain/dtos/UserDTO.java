@@ -22,4 +22,5 @@ public class UserDTO {
 
     private Boolean isApproved;
 
+    private boolean activeAdmin;
 }

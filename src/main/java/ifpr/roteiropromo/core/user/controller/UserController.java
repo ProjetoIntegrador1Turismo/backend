@@ -27,7 +27,7 @@ public class UserController {
     //Cria um novo usuário - Turista ou Guia
     @PostMapping("/create")
     public ResponseEntity<UserDTO> createNewUser(@RequestBody UserDTOForm userDTOForm){
-        return ResponseEntity.ok(userService.creatNewUser(userDTOForm));
+        return ResponseEntity.ok(userService.createNewUser(userDTOForm));
     }
 
     //Recupera todos os usuários - Guia ou Turista. Acesso ADMIN apenas.

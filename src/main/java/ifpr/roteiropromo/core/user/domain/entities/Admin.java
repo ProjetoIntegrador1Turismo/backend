@@ -17,6 +17,6 @@ import java.util.List;
 @Builder
 public class Admin extends User{
 
-        private boolean isAdmin;
+        private boolean activeAdmin;
 
 }
