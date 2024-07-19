@@ -3,6 +3,7 @@ package ifpr.roteiropromo.core.auth.service;
 import ifpr.roteiropromo.core.auth.domain.AuthenticatedUserDTO;
 import ifpr.roteiropromo.core.auth.domain.UserAuthenticationDTO;
 import ifpr.roteiropromo.core.errors.ServiceError;
+import ifpr.roteiropromo.core.user.domain.entities.Admin;
 import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.service.UserService;
@@ -53,7 +54,11 @@ public class AuthenticationService {
             authenticatedUserDTO.setEmail(userEntity.getEmail());
             if (userEntity instanceof Tourist){
                 authenticatedUserDTO.setUserType("Tourist");
-            }else{
+            }
+            if (userEntity instanceof Admin){
+                authenticatedUserDTO.setUserType("Admin");
+            }
+            else{
                 authenticatedUserDTO.setUserType("Guide");
             }
             return authenticatedUserDTO;

@@ -5,6 +5,7 @@ import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.user.domain.dtos.UserDTO;
 import ifpr.roteiropromo.core.user.domain.dtos.UserDTOForm;
 import ifpr.roteiropromo.core.user.domain.dtos.UserDTORecovery;
+import ifpr.roteiropromo.core.user.domain.entities.Admin;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import ifpr.roteiropromo.core.user.domain.entities.User;
@@ -47,7 +48,11 @@ public class UserService {
                 Tourist tourist = mapper.map(userDTOForm, Tourist.class);
                 tourist.setUserName(userDTOForm.getFirstName());
                 return mapper.map(userRepository.save(tourist), UserDTO.class);
-            }else{
+            } else if (userDTOForm.isAdmin()) {
+                Admin admin = mapper.map(userDTOForm, Admin.class);
+                admin.setUserName(userDTOForm.getFirstName());
+                return mapper.map(userRepository.save(admin), UserDTO.class);
+            } else{
                 Guide guide = mapper.map(userDTOForm, Guide.class);
                 guide.setUserName(userDTOForm.getFirstName());
                 guide.setIsApproved(false);
@@ -200,22 +205,11 @@ public class UserService {
         return userRepository.save(user);
     }
 
-//    public Guide makeGuide(Long id){
-//        User user = findById(id);
-//        if (user instanceof Guide){
-//            return (Guide) user;
-//        }else{
-//            Guide guide = new Guide();
-//            mapper.map(user, guide);
-//            guide.setIsApproved(false);
-//            userRepository.delete(user);
-//            return userRepository.save(guide);
-//        }
-//    }
 
     public Tourist updateTourist(Tourist touristFound) {
         return userRepository.save(touristFound);
     }
+
 
     public Guide createGuide(UserDTOForm userDTOForm) {
         if (userDTOForm.getCadasturCode() == null || userDTOForm.getCadasturCode().isEmpty()) {
@@ -228,9 +222,11 @@ public class UserService {
         return userRepository.save(guide);
     }
 
+
     public List<Guide> getAllGuides() {
         return userRepository.findAllGuides();
     }
+
 
     public Guide approveGuide(Long id){
         Guide guide = findGuideById(id);
@@ -243,6 +239,7 @@ public class UserService {
         guide.setIsApproved(true);
         return userRepository.save(guide);
     }
+
 
     public Guide disapproveGuide(Long guideId) {
         Guide guide = findGuideById(guideId);

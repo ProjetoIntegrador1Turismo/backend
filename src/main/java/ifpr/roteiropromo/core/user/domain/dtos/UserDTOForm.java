@@ -25,4 +25,7 @@ public class UserDTOForm {
 
     private String password;
 
+    //Atributo opcional cadastro de ADMIN pelo painel de administrador.
+    private boolean isAdmin;
+
 }
