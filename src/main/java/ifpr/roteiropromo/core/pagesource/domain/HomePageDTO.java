@@ -12,7 +12,7 @@ public class HomePageDTO implements Serializable {
 
     private List<InterestPointCardDTO> top3InterestPoints;
 
-    private SliderDTO firstSlider; //Passeios (ponto turistico unitário), roteiros ou experiencias
-    private SliderDTO secondSlider; //restaurantes, hoteis e eventos
+    private List<BasicPointDTO> firstSlider; //Passeios (ponto turistico unitário), roteiros ou experiencias
+    private List<BasicPointDTO> secondSlider; //restaurantes, hoteis e eventos
 
 }
