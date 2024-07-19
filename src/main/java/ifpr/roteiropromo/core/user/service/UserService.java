@@ -5,6 +5,7 @@ import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.user.domain.dtos.UserDTO;
 import ifpr.roteiropromo.core.user.domain.dtos.UserDTOForm;
 import ifpr.roteiropromo.core.user.domain.dtos.UserDTORecovery;
+import ifpr.roteiropromo.core.user.domain.dtos.UserDTOUpdate;
 import ifpr.roteiropromo.core.user.domain.entities.Admin;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.domain.entities.Tourist;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -235,6 +237,28 @@ public class UserService {
     }
 
 
+    public UserDTO updateUser(UserDTOUpdate userDTOUpdate) {
+        User user = findById(userDTOUpdate.getId());
+        if (user == null) {
+            throw new ServiceError("User not found with id: " + userDTOUpdate.getId());
+        }
+
+        // Atualizar nome no backend
+        user.setFirstName(userDTOUpdate.getFirstName());
+        user.setLastName(userDTOUpdate.getLastName());
+        User updatedUser = userRepository.save(user);
+
+        // Atualizar nome e senha no Keycloak
+        try {
+            updateUserInKeycloak(updatedUser, userDTOUpdate.getNewPassword());
+        } catch (Exception e) {
+            throw new ServiceError("Failed to update user in Keycloak: " + e.getMessage());
+        }
+
+        return mapper.map(updatedUser, UserDTO.class);
+    }
+
+
     //////////////////////////////////////////////////
     //////////////////////////////////////////////////
     // Métodos relacionados ao KEYCLOAK:
@@ -289,20 +313,74 @@ public class UserService {
         headers.set("Authorization", "Bearer " + token);
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
+        log.debug("Getting user ID from Keycloak for email: {}", user.getEmail());
+        log.debug("Keycloak URL: {}", keycloakUrl);
+        log.debug("Token: {}", token);
+
         ResponseEntity<List<Map<String, Object>>> response = restTemplate.exchange(
                 keycloakUrl, HttpMethod.GET, entity, new ParameterizedTypeReference<List<Map<String, Object>>>() {});
 
         if (response.getStatusCode() == HttpStatus.OK) {
             List<Map<String, Object>> users = response.getBody();
             if (users != null && !users.isEmpty()) {
+                log.debug("User found in Keycloak: {}", users.get(0));
                 return users.get(0).get("id").toString();
             } else {
+                log.warn("User not found in Keycloak for email: {}", user.getEmail());
                 throw new ServiceError("User not found in Keycloak");
             }
         } else {
+            log.error("Failed to retrieve user from Keycloak. Status: {}", response.getStatusCode());
             throw new ServiceError("Failed to retrieve user from Keycloak. Status: " + response.getStatusCode());
         }
     }
+
+
+
+
+    private void updateUserInKeycloak(User user, String newPassword) {
+        RestTemplate restTemplate = new RestTemplate();
+        String userId = getUserIdFromKeycloak(user);
+        String token = jwtTokenHandler.getAdminToken();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + token);
+
+        //
+        // Atualizar nome no Keycloak
+        //
+        Map<String, Object> updateNamePayload = new HashMap<>();
+        updateNamePayload.put("firstName", user.getFirstName());
+        updateNamePayload.put("lastName", user.getLastName());
+
+        HttpEntity<Map<String, Object>> nameEntity = new HttpEntity<>(updateNamePayload, headers);
+        try {
+            restTemplate.exchange(
+                    "http://localhost:8080/admin/realms/SpringBootKeycloak/users/" + userId,
+                    HttpMethod.PUT, nameEntity, String.class);
+        } catch (Exception e) {
+            throw new ServiceError("Failed to update user name in Keycloak: " + e.getMessage());
+        }
+
+        // Atualizar senha no Keycloak
+        if (newPassword != null && !newPassword.isEmpty()) {
+            Map<String, Object> updatePasswordPayload = new HashMap<>();
+            updatePasswordPayload.put("type", "password");
+            updatePasswordPayload.put("value", newPassword);
+            updatePasswordPayload.put("temporary", false);
+
+            HttpEntity<Map<String, Object>> passwordEntity = new HttpEntity<>(updatePasswordPayload, headers);
+            try {
+                restTemplate.exchange(
+                        "http://localhost:8080/admin/realms/SpringBootKeycloak/users/" + userId + "/reset-password",
+                        HttpMethod.PUT, passwordEntity, String.class);
+            } catch (Exception e) {
+                throw new ServiceError("Failed to update user password in Keycloak: " + e.getMessage());
+            }
+        }
+    }
+
 
 
     void addRoleToUser(String userId, String adminMasterToken, String roleName) {
@@ -342,39 +420,6 @@ public class UserService {
                 .orElseThrow(() -> new ServiceError("Role not found"))
                 .get("id").toString();
     }
-
-
-//    private void updateUserInKeycloak(UserDTO userDTO, String token) {
-//        RestTemplate restTemplate = new RestTemplate();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        headers.set("Authorization", "Bearer " + token);
-//
-//        String userJson = String.format(
-//                "{" +
-//                        "\"firstName\": \"%s\"," +
-//                        "\"lastName\": \"%s\"," +
-//                        "\"credentials\": [" +
-//                        "{" +
-//                        "\"type\": \"password\"," +
-//                        "\"value\": \"%s\"," +
-//                        "\"temporary\": false" +
-//                        "}" +
-//                        "]" +
-//                        "}",
-//                userDTO.getFirstName(), userDTO.getLastName(), userDTO.getPassword()
-//        );
-//
-//        HttpEntity<String> entity = new HttpEntity<>(userJson, headers);
-//        String url = "http://localhost:8080/admin/realms/springbootkeycloak/users/" + userDTO.getId();
-//
-//        try {
-//            restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
-//        } catch (Exception e) {
-//            throw new ServiceError("Failed to update user in Keycloak: " + e.getMessage());
-//        }
-//    }
-
 
 
     //    private HttpEntity<String> createRequestToKeycloackToNewUser(UserDTOForm userDTOForm){

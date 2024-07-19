@@ -3,6 +3,7 @@ package ifpr.roteiropromo.core.user.controller;
 import ifpr.roteiropromo.core.user.domain.dtos.UserDTO;
 import ifpr.roteiropromo.core.user.domain.dtos.UserDTOForm;
 import ifpr.roteiropromo.core.user.domain.dtos.UserDTORecovery;
+import ifpr.roteiropromo.core.user.domain.dtos.UserDTOUpdate;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.service.UserService;
@@ -47,11 +48,21 @@ public class UserController {
     }
 
 
-    @PutMapping
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<User> updateUser(@RequestBody UserDTO userDTO){
-        return ResponseEntity.ok(userService.update(userDTO));
+    @PutMapping("/update")
+    public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTOUpdate userDTOUpdate) {
+        log.debug("Received update request for user: {}", userDTOUpdate);
+        UserDTO updatedUser = userService.updateUser(userDTOUpdate);
+        return ResponseEntity.ok(updatedUser);
     }
+
+
+
+
+
+
+
+
+
 
     //    //Metodo pausado. Ponderar a rota já pronta para disparar o email de recuperação!
 //    @GetMapping("/recovery")
