@@ -14,6 +14,7 @@ import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -33,136 +34,89 @@ public class UserService {
     private final ModelMapper mapper;
     private final UserRepository userRepository;
 
+
     public UserDTO createNewUser(UserDTOForm userDTOForm) {
         ResponseEntity<Map> response;
+
+        // Verificando se o usuário já não é cadastrado:
         try {
             RestTemplate restTemplate = new RestTemplate();
             response = restTemplate.postForEntity(
                     "http://localhost:8080/admin/realms/SpringBootKeycloak/users",
-                    createRequestToKeycloackToNewUser(userDTOForm), Map.class);
+                    createRequestToKeycloakToNewUser(userDTOForm), Map.class);
         } catch (HttpClientErrorException e) {
             throw new ServiceError("E-mail already registered!");
         } catch (Exception e) {
             throw new ServiceError("An unexpected error occurred: " + e.getMessage());
         }
 
+        // Verificando de que tipo é o User que será cadastrado:
         if (response.getStatusCode().equals(HttpStatus.CREATED)) {
             User user;
             if (userDTOForm.isActiveAdmin()) {
                 Admin admin = mapper.map(userDTOForm, Admin.class);
                 admin.setUserName(userDTOForm.getFirstName());
-                admin.setActiveAdmin(true); // Certifique-se de que esse campo é específico para Admin
+                admin.setActiveAdmin(true);
                 user = admin;
+
+                // Adicionando role ADMIN no keycloak:
+                try {
+                    String userId = getUserIdFromKeycloak(user);
+                    this.addRoleToUser(userId, jwtTokenHandler.getAdminToken(), "ADMIN");
+                } catch (Exception e) {
+                    throw new ServiceError("Failed to assign role to user: " + e.getMessage());
+                }
+
             } else if (userDTOForm.getCadasturCode() == null) {
                 Tourist tourist = mapper.map(userDTOForm, Tourist.class);
                 tourist.setUserName(userDTOForm.getFirstName());
                 user = tourist;
+
+                // Adicionando role USER no keycloak:
+                try {
+                    String userId = getUserIdFromKeycloak(user);
+                    this.addRoleToUser(userId, jwtTokenHandler.getAdminToken(), "USER");
+                } catch (Exception e) {
+                    throw new ServiceError("Failed to assign role to user: " + e.getMessage());
+                }
             } else {
                 Guide guide = mapper.map(userDTOForm, Guide.class);
                 guide.setUserName(userDTOForm.getFirstName());
                 guide.setIsApproved(false);
                 user = guide;
             }
+
+
+            // Salvando no banco
             User savedUser = userRepository.save(user);
-            log.info("User created with type: " + savedUser.getClass().getSimpleName()); // Debug: Verifique o tipo criado
+
+
             return mapper.map(savedUser, UserDTO.class);
+
         } else {
             throw new ServiceError("An error occurred when creating the new user. Status: " + response.getStatusCode());
         }
     }
 
 
-
-
-    private HttpEntity<String> createRequestToKeycloackToNewUser(UserDTOForm userDTOForm){
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        httpHeaders.setBearerAuth(jwtTokenHandler.getAdminToken());
-        String userJson = String.format(
-                "{" +
-                        "\"enabled\": %b," +
-                        "\"emailVerified\": %b," +
-                        "\"firstName\": \"%s\"," +
-                        "\"lastName\": \"%s\"," +
-                        "\"email\": \"%s\"," +
-                        "\"credentials\": [" +
-                        "{" +
-                        "\"type\": \"password\"," +
-                        "\"value\": \"%s\"," +
-                        "\"temporary\": false" +
-                        "}" +
-                        "]" +
-                        "}",
-                true, true, userDTOForm.getFirstName(), userDTOForm.getLastName(), userDTOForm.getEmail(), userDTOForm.getPassword());
-        return new HttpEntity<>(userJson, httpHeaders);
-    }
-
-//    private HttpEntity<String> createRequestToKeycloackToNewUser(UserDTOForm userDTOForm){
-//
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-//        httpHeaders.setBearerAuth(jwtTokenHandler.getAdminToken());
-//        String userJson = String.format(
-//                "{" +
-//                        "\"username\": \"%s\"," +
-//                        "\"enabled\": %b," +
-//                        "\"emailVerified\": %b," +
-//                        "\"firstName\": \"%s\"," +
-//                        "\"lastName\": \"%s\"," +
-//                        "\"email\": \"%s\"," +
-//                        "\"credentials\": [" +
-//                        "{" +
-//                        "\"type\": \"password\"," +
-//                        "\"value\": \"%s\"," +
-//                        "\"temporary\": false" +
-//                        "}" +
-//                        "]" +
-//                        "}",
-//                userDTOForm.getUserName(), true, true, userDTOForm.getFirstName(), userDTOForm.getLastName(), userDTOForm.getEmail(), userDTOForm.getPassword());
-//        return new HttpEntity<String>(userJson, httpHeaders);
-//
-//    }
-
-
     public List<User> getAll() {
         return userRepository.findAll();
     }
 
-    public <S, T> List<T> mapList(List<S> source, Class<T> targetClass) {
-        return source
-                .stream()
-                .map(element -> mapper.map(element, targetClass))
-                .collect(Collectors.toList());
-    }
 
     //Esta funcionando a busca do usuário pelo email.
     //Metodo substituido pela rota que dispara o email e reset?
     public String resetUserPassword(UserDTORecovery userDTORecovery) {
         try{
             User userFound = userRepository.getOnByEmail(userDTORecovery.getEmail());
-            getUserIdFromKeyclock(userFound);
-            String userIDKeycloack = getUserIdFromKeyclock(userFound);
+            getUserIdFromKeycloak(userFound);
+            String userIDKeycloack = getUserIdFromKeycloak(userFound);
             log.info(userIDKeycloack);
 
             return "A password recovery email has been sent!";
         }catch (Exception e){
             throw new ServiceError("Could not found a user with that email: " + userDTORecovery.getEmail());
         }
-    }
-
-    //funcionando - lapidar para retornar só o ID necessário para o update
-    private String getUserIdFromKeyclock(User user){
-        RestTemplate restTemplate = new RestTemplate();
-        String keycloakUrl = "http://localhost:8080/admin/realms/SpringBootKeycloak/users?search=" + user.getEmail();
-        String token = jwtTokenHandler.getAdminToken();
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        //ResponseEntity<String> response = restTemplate.exchange(keycloakUrl, HttpMethod.GET, entity, String.class);
-        ResponseEntity<Map> response = restTemplate.exchange(keycloakUrl, HttpMethod.GET, entity, Map.class);
-        log.info(response.getBody());
-        return (String) response.getBody().get("id");
     }
 
 
@@ -181,6 +135,7 @@ public class UserService {
         );
     }
 
+
     public Tourist getTouristById(Long id) {
         User userFound = getOneById(id);
         if (userFound instanceof Tourist){
@@ -189,6 +144,7 @@ public class UserService {
             throw new ServiceError("User found with id: " + id + " is not a tourist so he can't make comments!");
         }
     }
+
 
     public Guide findGuideById(Long id) {
         User userFound = getOneById(id);
@@ -199,15 +155,18 @@ public class UserService {
         }
     }
 
+
     public User getOneById(Long id) {
         return userRepository.findById(id).orElseThrow(
                 () -> new ServiceError("Could not find user with id: " + id)
         );
     }
 
+
     public Boolean existsUserByEmail(String email) {
         return userRepository.existsUserByEmail(email);
     }
+
 
     public User update(UserDTO userDTO){
         User user = findById(userDTO.getId());
@@ -237,6 +196,9 @@ public class UserService {
         return userRepository.findAllGuides();
     }
 
+    public List<Guide> getAllUnapprovedGuides() {
+        return userRepository.findAllUnapprovedGuides();
+    }
 
     public Guide approveGuide(Long id){
         Guide guide = findGuideById(id);
@@ -246,6 +208,15 @@ public class UserService {
         if (guide.getIsApproved()){
             throw new ServiceError("Guide já está aprovado!");
         }
+
+        // Adicionando role GUIDE no keycloak:
+        try {
+            String userId = getUserIdFromKeycloak(guide);
+            this.addRoleToUser(userId, jwtTokenHandler.getAdminToken(), "GUIA");
+        } catch (Exception e) {
+            throw new ServiceError("Failed to assign role to user: " + e.getMessage());
+        }
+
         guide.setIsApproved(true);
         return userRepository.save(guide);
     }
@@ -262,5 +233,191 @@ public class UserService {
         guide.setIsApproved(false);
         return userRepository.save(guide);
     }
+
+
+    //////////////////////////////////////////////////
+    //////////////////////////////////////////////////
+    // Métodos relacionados ao KEYCLOAK:
+    //////////////////////////////////////////////////
+    //////////////////////////////////////////////////
+
+
+    private HttpEntity<String> createRequestToKeycloakToNewUser(UserDTOForm userDTOForm){
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.setBearerAuth(jwtTokenHandler.getAdminToken());
+        String userJson = String.format(
+                "{" +
+                        "\"enabled\": %b," +
+                        "\"emailVerified\": %b," +
+                        "\"firstName\": \"%s\"," +
+                        "\"lastName\": \"%s\"," +
+                        "\"email\": \"%s\"," +
+                        "\"credentials\": [" +
+                        "{" +
+                        "\"type\": \"password\"," +
+                        "\"value\": \"%s\"," +
+                        "\"temporary\": false" +
+                        "}" +
+                        "]" +
+                        "}",
+                true, true, userDTOForm.getFirstName(), userDTOForm.getLastName(), userDTOForm.getEmail(), userDTOForm.getPassword());
+        return new HttpEntity<>(userJson, httpHeaders);
+    }
+
+
+//    private String getUserIdFromKeycloak(User user){
+//        RestTemplate restTemplate = new RestTemplate();
+//        String keycloakUrl = "http://localhost:8080/admin/realms/SpringBootKeycloak/users?search=" + user.getEmail();
+//        String token = jwtTokenHandler.getAdminToken();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.set("Authorization", "Bearer " + token);
+//        HttpEntity<String> entity = new HttpEntity<>(headers);
+//        //ResponseEntity<String> response = restTemplate.exchange(keycloakUrl, HttpMethod.GET, entity, String.class);
+//        ResponseEntity<Map> response = restTemplate.exchange(keycloakUrl, HttpMethod.GET, entity, Map.class);
+//        log.info(response.getBody());
+//        return (String) response.getBody().get("id");
+//    }
+
+
+    private String getUserIdFromKeycloak(User user) {
+        RestTemplate restTemplate = new RestTemplate();
+        String keycloakUrl = "http://localhost:8080/admin/realms/SpringBootKeycloak/users?search=" + user.getEmail();
+        String token = jwtTokenHandler.getAdminToken();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<List<Map<String, Object>>> response = restTemplate.exchange(
+                keycloakUrl, HttpMethod.GET, entity, new ParameterizedTypeReference<List<Map<String, Object>>>() {});
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            List<Map<String, Object>> users = response.getBody();
+            if (users != null && !users.isEmpty()) {
+                return users.get(0).get("id").toString();
+            } else {
+                throw new ServiceError("User not found in Keycloak");
+            }
+        } else {
+            throw new ServiceError("Failed to retrieve user from Keycloak. Status: " + response.getStatusCode());
+        }
+    }
+
+
+    void addRoleToUser(String userId, String adminMasterToken, String roleName) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + adminMasterToken);
+
+        String roleId = getRoleId(roleName, adminMasterToken);
+
+        // Payload que representa a role a ser adicionada
+        String roleRepresentation = "[{\"id\": \"" + roleId + "\", \"name\": \"" + roleName + "\"}]";
+
+        HttpEntity<String> entity = new HttpEntity<>(roleRepresentation, headers);
+        restTemplate.exchange(
+                "http://localhost:8080/admin/realms/SpringBootKeycloak/users/" + userId + "/role-mappings/realm",
+                HttpMethod.POST, entity, String.class);
+    }
+
+
+    private String getRoleId(String role, String adminMasterToken) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + adminMasterToken);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        String url = "http://localhost:8080/admin/realms/SpringBootKeycloak/roles";
+
+        ResponseEntity<List<Map<String, Object>>> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET, entity, new ParameterizedTypeReference<List<Map<String, Object>>>() {});
+
+        return response.getBody().stream()
+                .filter(map -> role.equals(map.get("name")))
+                .findFirst()
+                .orElseThrow(() -> new ServiceError("Role not found"))
+                .get("id").toString();
+    }
+
+
+//    private void updateUserInKeycloak(UserDTO userDTO, String token) {
+//        RestTemplate restTemplate = new RestTemplate();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        headers.set("Authorization", "Bearer " + token);
+//
+//        String userJson = String.format(
+//                "{" +
+//                        "\"firstName\": \"%s\"," +
+//                        "\"lastName\": \"%s\"," +
+//                        "\"credentials\": [" +
+//                        "{" +
+//                        "\"type\": \"password\"," +
+//                        "\"value\": \"%s\"," +
+//                        "\"temporary\": false" +
+//                        "}" +
+//                        "]" +
+//                        "}",
+//                userDTO.getFirstName(), userDTO.getLastName(), userDTO.getPassword()
+//        );
+//
+//        HttpEntity<String> entity = new HttpEntity<>(userJson, headers);
+//        String url = "http://localhost:8080/admin/realms/springbootkeycloak/users/" + userDTO.getId();
+//
+//        try {
+//            restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
+//        } catch (Exception e) {
+//            throw new ServiceError("Failed to update user in Keycloak: " + e.getMessage());
+//        }
+//    }
+
+
+
+    //    private HttpEntity<String> createRequestToKeycloackToNewUser(UserDTOForm userDTOForm){
+//
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+//        httpHeaders.setBearerAuth(jwtTokenHandler.getAdminToken());
+//        String userJson = String.format(
+//                "{" +
+//                        "\"username\": \"%s\"," +
+//                        "\"enabled\": %b," +
+//                        "\"emailVerified\": %b," +
+//                        "\"firstName\": \"%s\"," +
+//                        "\"lastName\": \"%s\"," +
+//                        "\"email\": \"%s\"," +
+//                        "\"credentials\": [" +
+//                        "{" +
+//                        "\"type\": \"password\"," +
+//                        "\"value\": \"%s\"," +
+//                        "\"temporary\": false" +
+//                        "}" +
+//                        "]" +
+//                        "}",
+//                userDTOForm.getUserName(), true, true, userDTOForm.getFirstName(), userDTOForm.getLastName(), userDTOForm.getEmail(), userDTOForm.getPassword());
+//        return new HttpEntity<String>(userJson, httpHeaders);
+//
+//    }
+
+    //////////////////////////////////////////////////
+    //////////////////////////////////////////////////
+    // Outros métodos:
+    //////////////////////////////////////////////////
+    //////////////////////////////////////////////////
+
+
+    public <S, T> List<T> mapList(List<S> source, Class<T> targetClass) {
+        return source
+                .stream()
+                .map(element -> mapper.map(element, targetClass))
+                .collect(Collectors.toList());
+    }
+
 }
+
+
 
