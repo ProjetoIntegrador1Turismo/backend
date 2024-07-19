@@ -313,9 +313,6 @@ public class UserService {
         headers.set("Authorization", "Bearer " + token);
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        log.debug("Getting user ID from Keycloak for email: {}", user.getEmail());
-        log.debug("Keycloak URL: {}", keycloakUrl);
-        log.debug("Token: {}", token);
 
         ResponseEntity<List<Map<String, Object>>> response = restTemplate.exchange(
                 keycloakUrl, HttpMethod.GET, entity, new ParameterizedTypeReference<List<Map<String, Object>>>() {});
@@ -323,10 +320,8 @@ public class UserService {
         if (response.getStatusCode() == HttpStatus.OK) {
             List<Map<String, Object>> users = response.getBody();
             if (users != null && !users.isEmpty()) {
-                log.debug("User found in Keycloak: {}", users.get(0));
                 return users.get(0).get("id").toString();
             } else {
-                log.warn("User not found in Keycloak for email: {}", user.getEmail());
                 throw new ServiceError("User not found in Keycloak");
             }
         } else {
@@ -341,6 +336,7 @@ public class UserService {
     private void updateUserInKeycloak(User user, String newPassword) {
         RestTemplate restTemplate = new RestTemplate();
         String userId = getUserIdFromKeycloak(user);
+
         String token = jwtTokenHandler.getAdminToken();
 
         HttpHeaders headers = new HttpHeaders();
