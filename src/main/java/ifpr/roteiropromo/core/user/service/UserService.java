@@ -106,20 +106,33 @@ public class UserService {
     }
 
 
-    //Esta funcionando a busca do usuário pelo email.
-    //Metodo substituido pela rota que dispara o email e reset?
+    // OBS: PARA UTILIZAR ESSE MÉTODO É PRECISO JÁ ESTAR COM O CONTEINER NOVO ATUALIZADO... (O COM TEMA DO APP)
     public String resetUserPassword(UserDTORecovery userDTORecovery) {
-        try{
+        try {
             User userFound = userRepository.getOnByEmail(userDTORecovery.getEmail());
-            getUserIdFromKeycloak(userFound);
-            String userIDKeycloack = getUserIdFromKeycloak(userFound);
-            log.info(userIDKeycloack);
+            String userIDKeycloak = this.getUserIdFromKeycloak(userFound);
 
-            return "A password recovery email has been sent!";
-        }catch (Exception e){
-            throw new ServiceError("Could not found a user with that email: " + userDTORecovery.getEmail());
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setBearerAuth(jwtTokenHandler.getAdminToken());
+
+            String payload = "[\"UPDATE_PASSWORD\"]";
+            HttpEntity<String> entity = new HttpEntity<>(payload, headers);
+
+            String url = "http://localhost:8080/admin/realms/SpringBootKeycloak/users/" + userIDKeycloak + "/execute-actions-email";
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return "Email enviado com sucesso!";
+            } else {
+                throw new ServiceError("Erro ao enviar email para recuperação de senha: " + response.getStatusCode());
+            }
+        } catch (Exception e) {
+            throw new ServiceError("Erro ao enviar email para recuperação de senha: " + e.getMessage());
         }
     }
+
 
 
     public User getOneByEmail(String email) {

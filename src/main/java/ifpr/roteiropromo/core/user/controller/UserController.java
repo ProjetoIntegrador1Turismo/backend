@@ -56,12 +56,12 @@ public class UserController {
     }
 
 
-
-
-
-
-
-
+    // ENVIA e-mail de recuperação de senha para o usuário atual
+    // OBS: PARA UTILIZAR ESSA ROTA É PRECISO JÁ ESTAR COM O CONTEINER NOVO ATUALIZADO... (O COM TEMA DO APP)
+    @PostMapping("/recovery")
+    public ResponseEntity<String> resetPassword(@RequestBody UserDTORecovery userDTORecovery) {
+        return ResponseEntity.ok(userService.resetUserPassword(userDTORecovery));
+    }
 
 
     //    //Metodo pausado. Ponderar a rota já pronta para disparar o email de recuperação!
