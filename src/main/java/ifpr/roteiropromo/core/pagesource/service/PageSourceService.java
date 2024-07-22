@@ -1,10 +1,7 @@
 package ifpr.roteiropromo.core.pagesource.service;
 
-import ifpr.roteiropromo.core.interestPoint.domain.entities.Experience;
-import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
-import ifpr.roteiropromo.core.interestPoint.domain.entities.TouristPoint;
-import ifpr.roteiropromo.core.interestPoint.repository.ExperienceRepository;
-import ifpr.roteiropromo.core.interestPoint.repository.TouristPointRepository;
+import ifpr.roteiropromo.core.interestPoint.domain.entities.*;
+import ifpr.roteiropromo.core.interestPoint.repository.*;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
 import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
 import ifpr.roteiropromo.core.itinerary.repository.ItineraryRepository;
@@ -16,7 +13,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +25,9 @@ public class PageSourceService {
     private final TouristPointRepository touristPointRepository;
     private final ExperienceRepository experienceRepository;
     private final ItineraryRepository itineraryRepository;
+    private final RestaurantRepository restaurantRepository;
+    private final HotelRepository hotelRepository;
+    private final EventRepository eventRepository;
     private final ModelMapper modelMapper;
 
     public HomePageDTO getHomePageData(){
@@ -43,9 +42,30 @@ public class PageSourceService {
     private List<BasicPointDTO> getRandomPointsToSecondSlider() {
         List<BasicPointDTO> basicPointDTO = new ArrayList<>();
         basicPointDTO.addAll(getRandomRestaurant());
+        basicPointDTO.addAll(getRandomHotels());
+        basicPointDTO.addAll(getRandomEvents());
+        return basicPointDTO;
+    }
+
+    private List<BasicPointDTO> getRandomEvents() {
+        List<Event> events = eventRepository.findAll();
+        Collections.shuffle(events);
+        List<Event> random3Events = events.subList(0, 3);
+        return mapList(random3Events, BasicPointDTO.class);
+    }
+
+    private List<BasicPointDTO> getRandomHotels() {
+        List<Hotel> hotels = hotelRepository.findAll();
+        Collections.shuffle(hotels);
+        List<Hotel> random3Hotels = hotels.subList(0, 3);
+        return mapList(random3Hotels, BasicPointDTO.class);
     }
 
     private List<BasicPointDTO> getRandomRestaurant() {
+        List<Restaurant> restaurants = restaurantRepository.findAll();
+        Collections.shuffle(restaurants);
+        List<Restaurant> random3Restaurants = restaurants.subList(0, 3);
+        return mapList(random3Restaurants, BasicPointDTO.class);
     }
 
     private List<BasicPointDTO> getRandomPointsToFirstSlider() {
@@ -86,7 +106,7 @@ public class PageSourceService {
     }
 
 
-    //Ajustar para capturar o ponto de interesse no arquivo de configuração
+    //AJUSTAR PARA CAPTURAR OS 3 PONTOS DO ARQUIVO DE CONFIGURAÇÃO
     private List<InterestPointCardDTO> getTop3InterestPoints() {
         List<InterestPointCardDTO> top3InterestPoints = new ArrayList<>();
         InterestPoint cataratas = interestPointService.getOne(3L);
