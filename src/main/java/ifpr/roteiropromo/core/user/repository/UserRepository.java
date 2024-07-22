@@ -15,4 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
     @Query("SELECT g FROM Guide g")
     List<Guide> findAllGuides();
+
+    @Query("SELECT g FROM Guide g WHERE g.isApproved = false")
+    List<Guide> findAllUnapprovedGuides();
 }

@@ -3,6 +3,8 @@ package ifpr.roteiropromo.core.auth.service;
 import ifpr.roteiropromo.core.auth.domain.AuthenticatedUserDTO;
 import ifpr.roteiropromo.core.auth.domain.UserAuthenticationDTO;
 import ifpr.roteiropromo.core.errors.ServiceError;
+import ifpr.roteiropromo.core.user.domain.entities.Admin;
+import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.service.UserService;
@@ -33,7 +35,7 @@ public class AuthenticationService {
         if (!userExists(user.getUsername())) {
             throw new ServiceError("No user found with this email: " + user.getUsername());
         }
-        try{
+        try {
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
             MultiValueMap<String, String> userDataForm = new LinkedMultiValueMap<>();
@@ -51,17 +53,22 @@ public class AuthenticationService {
             authenticatedUserDTO.setAuthToken((String) response.getBody().get("access_token"));
             authenticatedUserDTO.setFirstName(userEntity.getFirstName());
             authenticatedUserDTO.setEmail(userEntity.getEmail());
-            if (userEntity instanceof Tourist){
+            if (userEntity instanceof Tourist) {
                 authenticatedUserDTO.setUserType("Tourist");
-            }else{
+            } else if (userEntity instanceof Admin) {
+                authenticatedUserDTO.setUserType("Admin");
+            } else if (userEntity instanceof Guide) {
                 authenticatedUserDTO.setUserType("Guide");
+            } else {
+                authenticatedUserDTO.setUserType("Unknown");
             }
             return authenticatedUserDTO;
 
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new ServiceError("Invalid username or password.");
         }
     }
+
 
 
 

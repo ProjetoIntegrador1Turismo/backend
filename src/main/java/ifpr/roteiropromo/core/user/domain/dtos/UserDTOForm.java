@@ -25,4 +25,7 @@ public class UserDTOForm {
 
     private String password;
 
+    // Opcional para cadastro de admins através do admin panel ** COM SENHA **
+    private boolean activeAdmin;
+
 }

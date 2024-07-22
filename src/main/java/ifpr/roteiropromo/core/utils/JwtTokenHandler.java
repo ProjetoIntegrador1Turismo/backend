@@ -64,6 +64,7 @@ public class JwtTokenHandler {
         return (String) response.getBody().get("access_token");
     }
 
+
     private HttpEntity<MultiValueMap<String, String>> createEntityRequestForAdmin(){
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -75,6 +76,5 @@ public class JwtTokenHandler {
         HttpEntity<MultiValueMap<String, String>> entityToRequestKeycloak = new HttpEntity<>(userDataForm, httpHeaders);
         return entityToRequestKeycloak;
     }
-
 
 }

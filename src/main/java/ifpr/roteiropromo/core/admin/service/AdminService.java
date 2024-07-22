@@ -1,6 +1,7 @@
 package ifpr.roteiropromo.core.admin.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
@@ -43,9 +44,20 @@ public class AdminService {
         objectMapper.writeValue(configFile, config);
     }
 
-    public List<InterestPoint> getSelectedInterestPoints() throws IOException {
-        List<Long> selectedInterestPointIds = readConfigFile().get("selectedInterestPoints");
-        return interestPointService.findAllByIds(selectedInterestPointIds);
+    public List<InterestPoint> getSelectedInterestPoints() {
+        List<Long> selectedInterestPointIds;
+        try {
+            selectedInterestPointIds = readConfigFile().get("selectedInterestPoints");
+        } catch (IOException e) {
+            throw new ServiceError("Error reading selected interest points");
+        }
+        try{
+            return interestPointService.findAllByIds(selectedInterestPointIds);
+        } catch (Exception e){
+            throw new ServiceError("Error fetching interest points");
+        }
+
+
     }
 
     public void updateSelectedInterestPoint(int index, Long newInterestPointId) throws IOException {
