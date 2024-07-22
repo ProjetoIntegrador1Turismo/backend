@@ -1,9 +1,6 @@
 package ifpr.roteiropromo.core.user.controller;
 
-import ifpr.roteiropromo.core.user.domain.dtos.UserDTO;
-import ifpr.roteiropromo.core.user.domain.dtos.UserDTOForm;
-import ifpr.roteiropromo.core.user.domain.dtos.UserDTORecovery;
-import ifpr.roteiropromo.core.user.domain.dtos.UserDTOUpdate;
+import ifpr.roteiropromo.core.user.domain.dtos.*;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.service.UserService;
@@ -26,13 +23,13 @@ public class UserController {
         this.userService = userService;
     }
 
-    //Cria um novo usuário - Turista ou Guia
+
     @PostMapping("/create")
     public ResponseEntity<UserDTO> createNewUser(@RequestBody UserDTOForm userDTOForm){
         return ResponseEntity.ok(userService.createNewUser(userDTOForm));
     }
 
-    //Recupera todos os usuários - Guia ou Turista. Acesso ADMIN apenas.
+
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<User>> getAllUsers(){
@@ -40,7 +37,6 @@ public class UserController {
     }
 
 
-    //Recupera um usuário pelo email - Acesso ADMIN apenas.
     @GetMapping("/email")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> getOne(@RequestParam String email){
@@ -64,22 +60,30 @@ public class UserController {
     }
 
 
-    //    //Metodo pausado. Ponderar a rota já pronta para disparar o email de recuperação!
-//    @GetMapping("/recovery")
-//    public ResponseEntity<String> resetPassword(
-//            @RequestBody UserDTORecovery userDTORecovery
-//            ){
-//        return ResponseEntity.ok(userService.resetUserPassword(userDTORecovery));
-//    }
+    //////////////////////////////////////////////////
+    //////////////////////////////////////////////////
+    // Rotas relacionadas a GUIDES:
+    //////////////////////////////////////////////////
+    //////////////////////////////////////////////////
 
 
-    //Metodo só para testes.
-//    @GetMapping()
-//    public String getAdminToken(){
-//        JwtTokenHandler jwtTokenHandler = new JwtTokenHandler();
-//        return jwtTokenHandler.getAdminToken();
-//    }
+    @PostMapping("/rate")
+    public ResponseEntity<GuideDTO> rateGuide(@RequestBody RatingDTO ratingDTO) {
+        GuideDTO guideDTO = userService.rateGuide(ratingDTO);
+        return ResponseEntity.ok(guideDTO);
+    }
 
+    @PutMapping("/rate")
+    public ResponseEntity<GuideDTO> updateRating(@RequestBody RatingDTO ratingDTO) {
+        GuideDTO guideDTO = userService.updateRating(ratingDTO);
+        return ResponseEntity.ok(guideDTO);
+    }
+
+    @GetMapping("/top-rated")
+    public ResponseEntity<List<GuideDTO>> getTopRatedGuides() {
+        List<GuideDTO> topRatedGuides = userService.getTopRatedGuides(5);
+        return ResponseEntity.ok(topRatedGuides);
+    }
 
 
 }

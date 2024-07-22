@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long>{
 
-    User getOnByEmail(String email);
+    User getOneByEmail(String email);
 
     Boolean existsUserByEmail(String email);
 

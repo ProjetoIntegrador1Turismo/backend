@@ -16,4 +16,5 @@ public class GuideDTO {
 
     private List<ItineraryDTO> itineraries;
 
+    private double averageRating;
 }

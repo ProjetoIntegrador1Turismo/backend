@@ -2,10 +2,7 @@ package ifpr.roteiropromo.core.user.service;
 
 
 import ifpr.roteiropromo.core.errors.ServiceError;
-import ifpr.roteiropromo.core.user.domain.dtos.UserDTO;
-import ifpr.roteiropromo.core.user.domain.dtos.UserDTOForm;
-import ifpr.roteiropromo.core.user.domain.dtos.UserDTORecovery;
-import ifpr.roteiropromo.core.user.domain.dtos.UserDTOUpdate;
+import ifpr.roteiropromo.core.user.domain.dtos.*;
 import ifpr.roteiropromo.core.user.domain.entities.Admin;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.domain.entities.Tourist;
@@ -109,7 +106,7 @@ public class UserService {
     // OBS: PARA UTILIZAR ESSE MÉTODO É PRECISO JÁ ESTAR COM O CONTEINER NOVO ATUALIZADO... (O COM TEMA DO APP)
     public String resetUserPassword(UserDTORecovery userDTORecovery) {
         try {
-            User userFound = userRepository.getOnByEmail(userDTORecovery.getEmail());
+            User userFound = userRepository.getOneByEmail(userDTORecovery.getEmail());
             String userIDKeycloak = this.getUserIdFromKeycloak(userFound);
 
             RestTemplate restTemplate = new RestTemplate();
@@ -136,7 +133,7 @@ public class UserService {
 
 
     public User getOneByEmail(String email) {
-        User userFound = userRepository.getOnByEmail(email);
+        User userFound = userRepository.getOneByEmail(email);
         if(userFound == null){
             throw new ServiceError("Could not find a user with that email: " + email);
         }
@@ -269,6 +266,74 @@ public class UserService {
         }
 
         return mapper.map(updatedUser, UserDTO.class);
+    }
+
+    //////////////////////////////////////////////////
+    //////////////////////////////////////////////////
+    // Métodos relacionados aos GUIDES:
+    //////////////////////////////////////////////////
+    //////////////////////////////////////////////////
+
+
+    // ** RATINGS: ** //
+
+    public GuideDTO rateGuide(RatingDTO ratingDTO) {
+        Guide guide = (Guide) userRepository.getOneByEmail(ratingDTO.getGuideEmail());
+        if (guide == null) {
+            throw new ServiceError("Guide not found with email: " + ratingDTO.getGuideEmail());
+        }
+
+        User user = userRepository.getOneByEmail(ratingDTO.getUserEmail());
+        if (user == null) {
+            throw new ServiceError("User not found with email: " + ratingDTO.getUserEmail());
+        }
+
+        if (ratingDTO.getRating() < 1 || ratingDTO.getRating() > 5) {
+            throw new ServiceError("Rating must be between 1 and 5.");
+        }
+
+        List<Integer> ratings = guide.getRatings();
+        ratings.add(ratingDTO.getRating());
+        guide.setRatings(ratings);
+        userRepository.save(guide);
+
+        return mapper.map(guide, GuideDTO.class);
+    }
+
+    public GuideDTO updateRating(RatingDTO ratingDTO) {
+        Guide guide = (Guide) userRepository.getOneByEmail(ratingDTO.getGuideEmail());
+        if (guide == null) {
+            throw new ServiceError("Guide not found with email: " + ratingDTO.getGuideEmail());
+        }
+
+        User user = userRepository.getOneByEmail(ratingDTO.getUserEmail());
+        if (user == null) {
+            throw new ServiceError("User not found with email: " + ratingDTO.getUserEmail());
+        }
+
+        if (ratingDTO.getRating() < 1 || ratingDTO.getRating() > 5) {
+            throw new ServiceError("Rating must be between 1 and 5.");
+        }
+
+        List<Integer> ratings = guide.getRatings();
+        ratings.set(user.getId().intValue() - 1, ratingDTO.getRating());
+        guide.setRatings(ratings);
+        userRepository.save(guide);
+
+        return mapper.map(guide, GuideDTO.class);
+    }
+
+    public List<GuideDTO> getTopRatedGuides(int topN) {
+        List<Guide> guides = userRepository.findAll().stream()
+                .filter(user -> user instanceof Guide)
+                .map(user -> (Guide) user)
+                .collect(Collectors.toList());
+
+        return guides.stream()
+                .sorted((g1, g2) -> Double.compare(g2.getAverageRating(), g1.getAverageRating()))
+                .limit(topN)
+                .map(guide -> mapper.map(guide, GuideDTO.class))
+                .collect(Collectors.toList());
     }
 
 

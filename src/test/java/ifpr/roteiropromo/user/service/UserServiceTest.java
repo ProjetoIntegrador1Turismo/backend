@@ -8,14 +8,12 @@ import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.repository.UserRepository;
 import ifpr.roteiropromo.core.user.service.UserService;
 import lombok.extern.log4j.Log4j2;
-import org.hibernate.service.spi.ServiceException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
@@ -60,7 +58,7 @@ public class UserServiceTest {
 
     @Test
     public void getOneByEmail_mustReturnTourist(){
-        when(userRepository.getOnByEmail(any())).thenReturn(tourist);
+        when(userRepository.getOneByEmail(any())).thenReturn(tourist);
         User userFound = userService.getOneByEmail("titeriteiro@gmail.com");
 
         Assertions.assertNotNull(userFound);
@@ -69,7 +67,7 @@ public class UserServiceTest {
 
     @Test
     public void getOneByEmail_mustReturnGuide(){
-        when(userRepository.getOnByEmail(any())).thenReturn(guide);
+        when(userRepository.getOneByEmail(any())).thenReturn(guide);
         User userFound = userService.getOneByEmail("loumar@turismo");
 
         Assertions.assertNotNull(userFound);
@@ -78,7 +76,7 @@ public class UserServiceTest {
 
     @Test
     public void getOneByEmail_mustThrowServiceErrorWhenNotFoundUser() {
-        when(userRepository.getOnByEmail(any())).thenReturn(null);
+        when(userRepository.getOneByEmail(any())).thenReturn(null);
         Assertions.assertThrows(ServiceError.class, () -> {userService.getOneByEmail("inexiste@gmail.com");});
     }
 
