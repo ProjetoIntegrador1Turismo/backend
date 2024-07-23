@@ -39,8 +39,21 @@ public class JwtTokenHandler {
             String token = jwtAuthenticationToken.getToken().getTokenValue();
 
             //Extrai os dados do token
+
+            // 23/07/2023 BKP:
+//            String idKeyclock = jwtAuthenticationToken.getName();
+//            Object userEmail = jwtAuthenticationToken.getTokenAttributes().get("email");
+//            Object userName = jwtAuthenticationToken.getTokenAttributes().get("given_name");
+//            log.info("Token JWT: " + token);
+//            log.info("Email: " + userEmail);
+//            log.info("User id keycloack: " + idKeyclock);
+//            log.info("User name: " + userName);
+//            userDTO.setEmail(userEmail.toString());
+//            userDTO.setFirstName(userName.toString());
+
+            // ATUALIZADO EM 23/07/2023 PARA PEGAR O E-MAIL A PARTIR DO CAMPO "PREFERED USERNAME" JÁ QUE NÃO TEM MAIS O CAMPO EMAIL NO KC.
             String idKeyclock = jwtAuthenticationToken.getName();
-            Object userEmail = jwtAuthenticationToken.getTokenAttributes().get("email");
+            Object userEmail = jwtAuthenticationToken.getTokenAttributes().get("preferred_username"); //ATUALIZADO AQUI
             Object userName = jwtAuthenticationToken.getTokenAttributes().get("given_name");
             log.info("Token JWT: " + token);
             log.info("Email: " + userEmail);
