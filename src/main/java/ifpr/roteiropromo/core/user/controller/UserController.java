@@ -68,12 +68,14 @@ public class UserController {
 
 
     @PostMapping("/rate")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<GuideDTO> rateGuide(@RequestBody RatingDTO ratingDTO) {
         GuideDTO guideDTO = userService.rateGuide(ratingDTO);
         return ResponseEntity.ok(guideDTO);
     }
 
     @PutMapping("/rate")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<GuideDTO> updateRating(@RequestBody RatingDTO ratingDTO) {
         GuideDTO guideDTO = userService.updateRating(ratingDTO);
         return ResponseEntity.ok(guideDTO);

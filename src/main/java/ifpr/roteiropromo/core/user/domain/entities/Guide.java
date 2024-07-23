@@ -1,12 +1,12 @@
 package ifpr.roteiropromo.core.user.domain.entities;
 
 import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @AllArgsConstructor
@@ -23,16 +23,17 @@ public class Guide extends User{
     private List<Itinerary> itineraries;
 
     @ElementCollection
-    private List<Integer> ratings;
+    @CollectionTable(name = "guide_ratings", joinColumns = @JoinColumn(name = "guide_id"))
+    @MapKeyColumn(name = "user_email")
+    @Column(name = "rating")
+    private Map<String, Integer> ratings = new HashMap<>();
 
     public double getAverageRating() {
-        if (ratings == null || ratings.isEmpty()) {
+        if (ratings.isEmpty()) {
             return 0.0;
         }
-        int sum = 0;
-        for (int rating : ratings) {
-            sum += rating;
-        }
+        int sum = ratings.values().stream().mapToInt(Integer::intValue).sum();
         return (double) sum / ratings.size();
     }
 }
+

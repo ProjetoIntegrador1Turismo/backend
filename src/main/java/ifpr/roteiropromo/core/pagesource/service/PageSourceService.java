@@ -1,5 +1,6 @@
 package ifpr.roteiropromo.core.pagesource.service;
 
+import ifpr.roteiropromo.core.admin.service.AdminService;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.*;
 import ifpr.roteiropromo.core.interestPoint.repository.*;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
@@ -8,6 +9,8 @@ import ifpr.roteiropromo.core.itinerary.repository.ItineraryRepository;
 import ifpr.roteiropromo.core.pagesource.domain.BasicPointDTO;
 import ifpr.roteiropromo.core.pagesource.domain.HomePageDTO;
 import ifpr.roteiropromo.core.pagesource.domain.InterestPointCardDTO;
+import ifpr.roteiropromo.core.pagesource.domain.TopGuideDTO;
+import ifpr.roteiropromo.core.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -29,13 +32,15 @@ public class PageSourceService {
     private final HotelRepository hotelRepository;
     private final EventRepository eventRepository;
     private final ModelMapper modelMapper;
+    private final UserService userService;
+    private final AdminService adminService;
 
     public HomePageDTO getHomePageData(){
         HomePageDTO homePageDTO = new HomePageDTO();
         homePageDTO.setTop3InterestPoints(getTop3InterestPoints());
         homePageDTO.setFirstSlider(getRandomPointsToFirstSlider()); ////pontos, roteiros ou experiencias
         homePageDTO.setSecondSlider(getRandomPointsToSecondSlider()); //restaurantes, hoteis e eventos
-
+        homePageDTO.setTopGuides(getTop5Guides());
         return homePageDTO;
     }
 
@@ -117,6 +122,37 @@ public class PageSourceService {
         top3InterestPoints.add(modelMapper.map(parque, InterestPointCardDTO.class));
         return top3InterestPoints;
     }
+
+//    private List<InterestPointCardDTO> getTop3InterestPoints() {
+//        List<InterestPointCardDTO> top3InterestPoints = new ArrayList<>();
+//        List<InterestPoint> selectedInterestPoints = adminService.getSelectedInterestPoints();
+//        for (InterestPoint interestPoint : selectedInterestPoints) {
+//            InterestPointCardDTO interestPointCardDTO = new InterestPointCardDTO();
+//            interestPointCardDTO.setId(interestPoint.getId());
+//            interestPointCardDTO.setName(interestPoint.getName());
+//            interestPointCardDTO.setDuration(interestPoint.getDuration());
+//            interestPointCardDTO.setImageCoverUrl(interestPoint.getImageCoverUrl());
+//            interestPointCardDTO.setaverageValue(1);
+//            top3InterestPoints.add(interestPointCardDTO);
+//        }
+//        return top3InterestPoints;
+//    }
+
+
+    // ** Get Top Guides ** //
+    private List<TopGuideDTO> getTop5Guides() {
+        return userService.getTopRatedGuides(5).stream()
+                .map(guideDTO -> {
+                    TopGuideDTO topGuideDTO = new TopGuideDTO();
+                    topGuideDTO.setId(guideDTO.getId());
+                    topGuideDTO.setFirstName(guideDTO.getFirstName());
+                    topGuideDTO.setAverageRating(guideDTO.getAverageRating());
+                    return topGuideDTO;
+                })
+                .collect(Collectors.toList());
+    }
+
+
 
     public <S, D> List<D> mapList(List<S> source, Class<D> destinationType) {
         return source.stream()

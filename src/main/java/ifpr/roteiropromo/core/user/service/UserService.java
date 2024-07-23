@@ -292,9 +292,12 @@ public class UserService {
             throw new ServiceError("Rating must be between 1 and 5.");
         }
 
-        List<Integer> ratings = guide.getRatings();
-        ratings.add(ratingDTO.getRating());
-        guide.setRatings(ratings);
+        // Verificar se o usuário já avaliou o guia
+        if (guide.getRatings().containsKey(user.getEmail())) {
+            throw new ServiceError("User has already rated this guide.");
+        }
+
+        guide.getRatings().put(user.getEmail(), ratingDTO.getRating());
         userRepository.save(guide);
 
         return mapper.map(guide, GuideDTO.class);
@@ -315,9 +318,8 @@ public class UserService {
             throw new ServiceError("Rating must be between 1 and 5.");
         }
 
-        List<Integer> ratings = guide.getRatings();
-        ratings.set(user.getId().intValue() - 1, ratingDTO.getRating());
-        guide.setRatings(ratings);
+        // Atualizar a avaliação existente
+        guide.getRatings().put(user.getEmail(), ratingDTO.getRating());
         userRepository.save(guide);
 
         return mapper.map(guide, GuideDTO.class);

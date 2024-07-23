@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 public class GuideDTO {
 
+    private Long id;
     private String email;
     private String firstName;
     private String cadasturCode;

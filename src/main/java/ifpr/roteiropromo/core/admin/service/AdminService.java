@@ -56,8 +56,6 @@ public class AdminService {
         } catch (Exception e){
             throw new ServiceError("Error fetching interest points");
         }
-
-
     }
 
     public void updateSelectedInterestPoint(int index, Long newInterestPointId) throws IOException {
