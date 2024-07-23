@@ -34,18 +34,19 @@ public class ItineraryService {
     private final InterestPointService interestPointService;
     private final JwtTokenHandler jwtTokenHandler;
     private final GuideRepository guideRepository;
+    private final UserRepository userRepository;
 
-    public ItineraryDTO create(ItineraryDTOForm itineraryDTOForm){
+    public ItineraryDTO create(ItineraryDTOForm itineraryDTOForm) {
         Guide guideFound = getGuideAuthenticated();
         if (guideFound == null) {
             throw new ServiceError("Guia não encontrado");
-        }else {
-            Itinerary newItinerary = modelMapper.map(itineraryDTOForm, Itinerary.class);
-            Itinerary itinerarySaved = itineraryRepository.save(newItinerary);
-            guideFound.getItineraries().add(itinerarySaved);
-            guideRepository.save(guideFound);
-         return modelMapper.map(itinerarySaved, ItineraryDTO.class);
         }
+
+        Itinerary newItinerary = modelMapper.map(itineraryDTOForm, Itinerary.class);
+        Itinerary itinerarySaved = itineraryRepository.save(newItinerary);
+        guideFound.getItineraries().add(itinerarySaved);
+        userRepository.save(guideFound);
+        return modelMapper.map(itinerarySaved, ItineraryDTO.class);
     }
 
     public ItineraryDTO update(Long id, ItineraryUpdateDTO itineraryDTO) {
@@ -71,14 +72,18 @@ public class ItineraryService {
         );
     }
 
-    public Guide getGuideAuthenticated(){
-        AuthenticatedUserDTO authenticatedUserDTO = jwtTokenHandler.getUserDataFromToken();
-        Guide guide = guideRepository.getOnByEmail(authenticatedUserDTO.getEmail());
-        if (guide == null) {
-            throw new ServiceError("Guia não encontrado");
-        }else{
-            return guide;
+    private Guide getGuideAuthenticated() {
+        AuthenticatedUserDTO userDTO = jwtTokenHandler.getUserDataFromToken();
+        String userEmail = userDTO.getEmail();
+        if (userEmail == null || userEmail.isEmpty()) {
+            throw new ServiceError("User email not found in token");
         }
+        Guide guide = (Guide) userRepository.getOneByEmail(userEmail);
+        if (guide == null) {
+            throw new ServiceError("Guide not found with email: " + userEmail);
+        }
+
+        return guide;
     }
 
     public Itinerary findOneById(Long id){

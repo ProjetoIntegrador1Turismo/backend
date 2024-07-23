@@ -25,6 +25,8 @@ public abstract class InterestPoint {
 
     private Integer averageValue;
 
+    private String duration;
+
     private String shortDescription;
 
     private String imageCoverUrl;

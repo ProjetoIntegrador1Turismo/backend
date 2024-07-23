@@ -22,7 +22,7 @@ public class ItineraryController {
     }
 
     @PostMapping()
-    @PreAuthorize("hasRole('GUIA')")
+//    @PreAuthorize("hasRole('GUIA')")
     public ResponseEntity<ItineraryDTO> saveOne(@RequestBody ItineraryDTOForm itineraryDTOForm){
         return ResponseEntity.ok(itineraryService.create(itineraryDTOForm));
     }

@@ -112,31 +112,31 @@ public class PageSourceService {
 
 
     //AJUSTAR PARA CAPTURAR OS 3 PONTOS DO ARQUIVO DE CONFIGURAÇÃO
-    private List<InterestPointCardDTO> getTop3InterestPoints() {
-        List<InterestPointCardDTO> top3InterestPoints = new ArrayList<>();
-        InterestPoint cataratas = interestPointService.getOne(3L);
-        InterestPoint itapu = interestPointService.getOne(4L);
-        InterestPoint parque = interestPointService.getOne(2L);
-        top3InterestPoints.add(modelMapper.map(cataratas, InterestPointCardDTO.class));
-        top3InterestPoints.add(modelMapper.map(itapu, InterestPointCardDTO.class));
-        top3InterestPoints.add(modelMapper.map(parque, InterestPointCardDTO.class));
-        return top3InterestPoints;
-    }
-
 //    private List<InterestPointCardDTO> getTop3InterestPoints() {
 //        List<InterestPointCardDTO> top3InterestPoints = new ArrayList<>();
-//        List<InterestPoint> selectedInterestPoints = adminService.getSelectedInterestPoints();
-//        for (InterestPoint interestPoint : selectedInterestPoints) {
-//            InterestPointCardDTO interestPointCardDTO = new InterestPointCardDTO();
-//            interestPointCardDTO.setId(interestPoint.getId());
-//            interestPointCardDTO.setName(interestPoint.getName());
-//            interestPointCardDTO.setDuration(interestPoint.getDuration());
-//            interestPointCardDTO.setImageCoverUrl(interestPoint.getImageCoverUrl());
-//            interestPointCardDTO.setaverageValue(1);
-//            top3InterestPoints.add(interestPointCardDTO);
-//        }
+//        InterestPoint cataratas = interestPointService.getOne(3L);
+//        InterestPoint itapu = interestPointService.getOne(4L);
+//        InterestPoint parque = interestPointService.getOne(2L);
+//        top3InterestPoints.add(modelMapper.map(cataratas, InterestPointCardDTO.class));
+//        top3InterestPoints.add(modelMapper.map(itapu, InterestPointCardDTO.class));
+//        top3InterestPoints.add(modelMapper.map(parque, InterestPointCardDTO.class));
 //        return top3InterestPoints;
 //    }
+
+    private List<InterestPointCardDTO> getTop3InterestPoints() {
+        List<InterestPointCardDTO> top3InterestPoints = new ArrayList<>();
+        List<InterestPoint> selectedInterestPoints = adminService.getSelectedInterestPoints();
+        for (InterestPoint interestPoint : selectedInterestPoints) {
+            InterestPointCardDTO interestPointCardDTO = new InterestPointCardDTO();
+            interestPointCardDTO.setId(interestPoint.getId());
+            interestPointCardDTO.setName(interestPoint.getName());
+//            interestPointCardDTO.setDuration(interestPoint.getDuration());
+            interestPointCardDTO.setImageCoverUrl(interestPoint.getImageCoverUrl());
+            interestPointCardDTO.setaverageValue(1);
+            top3InterestPoints.add(interestPointCardDTO);
+        }
+        return top3InterestPoints;
+    }
 
 
     // ** Get Top Guides ** //

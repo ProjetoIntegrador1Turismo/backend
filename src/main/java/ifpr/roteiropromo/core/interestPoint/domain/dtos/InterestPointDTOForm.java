@@ -13,4 +13,8 @@ public class InterestPointDTOForm {
     String shortDescription;
     String interestPointType;
 
+    // CAMPOS ADICIONADOS EM 23/07 PRA TESTE REMOVER DEPOIS
+    String duration;
+    String averageValue;
+
 }
