@@ -17,7 +17,6 @@ public class ImageService {
     @Value("${upload.dir}")
     private String uploadDir;
 
-
     @PostConstruct
     public void init() {
         try {
@@ -36,5 +35,5 @@ public class ImageService {
         Files.write(filePath, file.getBytes());
         return "http://localhost:8081/uploads/" + fileName;
     }
-
 }
+

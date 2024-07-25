@@ -204,13 +204,49 @@ public class UserService {
     }
 
 
+    public UserDTO updateUser(UserDTOUpdate userDTOUpdate) {
+        User user = userRepository.getOneByEmail(userDTOUpdate.getEmail());
+        if (user == null) {
+            throw new ServiceError("User not found with id: " + userDTOUpdate.getId());
+        }
+
+        // Atualizar nome no backend
+        user.setFirstName(userDTOUpdate.getFirstName());
+        user.setLastName(userDTOUpdate.getLastName());
+        User updatedUser = userRepository.save(user);
+
+        // Atualizar nome e senha no Keycloak
+        try {
+            updateUserInKeycloak(updatedUser, userDTOUpdate.getNewPassword());
+        } catch (Exception e) {
+            throw new ServiceError("Failed to update user in Keycloak: " + e.getMessage());
+        }
+
+        return mapper.map(updatedUser, UserDTO.class);
+    }
+
+
+    public void updateProfileImageUrl(Long id, String imageUrl) {
+        User userFound = userRepository.findById(id).orElseThrow(() -> new ServiceError("User not found with id: " + id));
+        userFound.setProfileImageUrl(imageUrl);
+        userRepository.save(userFound);
+    }
+
+    //////////////////////////////////////////////////
+    //////////////////////////////////////////////////
+    // Métodos relacionados aos GUIDES:
+    //////////////////////////////////////////////////
+    //////////////////////////////////////////////////
+
     public List<Guide> getAllGuides() {
         return userRepository.findAllGuides();
     }
 
+
     public List<Guide> getAllUnapprovedGuides() {
         return userRepository.findAllUnapprovedGuides();
     }
+
 
     public Guide approveGuide(Long id){
         Guide guide = findGuideById(id);
@@ -245,35 +281,6 @@ public class UserService {
         guide.setIsApproved(false);
         return userRepository.save(guide);
     }
-
-
-    public UserDTO updateUser(UserDTOUpdate userDTOUpdate) {
-        User user = findById(userDTOUpdate.getId());
-        if (user == null) {
-            throw new ServiceError("User not found with id: " + userDTOUpdate.getId());
-        }
-
-        // Atualizar nome no backend
-        user.setFirstName(userDTOUpdate.getFirstName());
-        user.setLastName(userDTOUpdate.getLastName());
-        User updatedUser = userRepository.save(user);
-
-        // Atualizar nome e senha no Keycloak
-        try {
-            updateUserInKeycloak(updatedUser, userDTOUpdate.getNewPassword());
-        } catch (Exception e) {
-            throw new ServiceError("Failed to update user in Keycloak: " + e.getMessage());
-        }
-
-        return mapper.map(updatedUser, UserDTO.class);
-    }
-
-    //////////////////////////////////////////////////
-    //////////////////////////////////////////////////
-    // Métodos relacionados aos GUIDES:
-    //////////////////////////////////////////////////
-    //////////////////////////////////////////////////
-
 
     // ** RATINGS: ** //
 
@@ -370,21 +377,6 @@ public class UserService {
         return new HttpEntity<>(userJson, httpHeaders);
     }
 
-
-//    private String getUserIdFromKeycloak(User user){
-//        RestTemplate restTemplate = new RestTemplate();
-//        String keycloakUrl = "http://localhost:8080/admin/realms/SpringBootKeycloak/users?search=" + user.getEmail();
-//        String token = jwtTokenHandler.getAdminToken();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.set("Authorization", "Bearer " + token);
-//        HttpEntity<String> entity = new HttpEntity<>(headers);
-//        //ResponseEntity<String> response = restTemplate.exchange(keycloakUrl, HttpMethod.GET, entity, String.class);
-//        ResponseEntity<Map> response = restTemplate.exchange(keycloakUrl, HttpMethod.GET, entity, Map.class);
-//        log.info(response.getBody());
-//        return (String) response.getBody().get("id");
-//    }
-
-
     private String getUserIdFromKeycloak(User user) {
         RestTemplate restTemplate = new RestTemplate();
         String keycloakUrl = "http://localhost:8080/admin/realms/SpringBootKeycloak/users?search=" + user.getEmail();
@@ -410,8 +402,6 @@ public class UserService {
             throw new ServiceError("Failed to retrieve user from Keycloak. Status: " + response.getStatusCode());
         }
     }
-
-
 
 
     private void updateUserInKeycloak(User user, String newPassword) {
@@ -459,7 +449,6 @@ public class UserService {
     }
 
 
-
     void addRoleToUser(String userId, String adminMasterToken, String roleName) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -498,32 +487,6 @@ public class UserService {
                 .get("id").toString();
     }
 
-
-    //    private HttpEntity<String> createRequestToKeycloackToNewUser(UserDTOForm userDTOForm){
-//
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-//        httpHeaders.setBearerAuth(jwtTokenHandler.getAdminToken());
-//        String userJson = String.format(
-//                "{" +
-//                        "\"username\": \"%s\"," +
-//                        "\"enabled\": %b," +
-//                        "\"emailVerified\": %b," +
-//                        "\"firstName\": \"%s\"," +
-//                        "\"lastName\": \"%s\"," +
-//                        "\"email\": \"%s\"," +
-//                        "\"credentials\": [" +
-//                        "{" +
-//                        "\"type\": \"password\"," +
-//                        "\"value\": \"%s\"," +
-//                        "\"temporary\": false" +
-//                        "}" +
-//                        "]" +
-//                        "}",
-//                userDTOForm.getUserName(), true, true, userDTOForm.getFirstName(), userDTOForm.getLastName(), userDTOForm.getEmail(), userDTOForm.getPassword());
-//        return new HttpEntity<String>(userJson, httpHeaders);
-//
-//    }
 
     //////////////////////////////////////////////////
     //////////////////////////////////////////////////
