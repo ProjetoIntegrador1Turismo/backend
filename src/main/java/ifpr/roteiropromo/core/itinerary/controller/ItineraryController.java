@@ -22,13 +22,13 @@ public class ItineraryController {
     }
 
     @PostMapping()
-//    @PreAuthorize("hasRole('GUIA')")
+    @PreAuthorize("hasRole('GUIA')")
     public ResponseEntity<ItineraryDTO> saveOne(@RequestBody ItineraryDTOForm itineraryDTOForm){
         return ResponseEntity.ok(itineraryService.create(itineraryDTOForm));
     }
 
     @PutMapping("/{id}")
-    //@PreAuthorize("hasRole('GUIA')")
+    @PreAuthorize("hasRole('GUIA')")
     public ResponseEntity<ItineraryDTO> update(@PathVariable Long id, @RequestBody ItineraryUpdateDTO itineraryDTO){
         return ResponseEntity.ok(itineraryService.update(id, itineraryDTO));
     }
