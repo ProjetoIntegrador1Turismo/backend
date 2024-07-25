@@ -40,27 +40,18 @@ public class JwtTokenHandler {
 
             //Extrai os dados do token
 
-            // 23/07/2023 BKP:
-//            String idKeyclock = jwtAuthenticationToken.getName();
-//            Object userEmail = jwtAuthenticationToken.getTokenAttributes().get("email");
-//            Object userName = jwtAuthenticationToken.getTokenAttributes().get("given_name");
-//            log.info("Token JWT: " + token);
-//            log.info("Email: " + userEmail);
-//            log.info("User id keycloack: " + idKeyclock);
-//            log.info("User name: " + userName);
-//            userDTO.setEmail(userEmail.toString());
-//            userDTO.setFirstName(userName.toString());
-
-            // ATUALIZADO EM 23/07/2023 PARA PEGAR O E-MAIL A PARTIR DO CAMPO "PREFERED USERNAME" JÁ QUE NÃO TEM MAIS O CAMPO EMAIL NO KC.
             String idKeyclock = jwtAuthenticationToken.getName();
             Object userEmail = jwtAuthenticationToken.getTokenAttributes().get("preferred_username"); //ATUALIZADO AQUI
             Object userName = jwtAuthenticationToken.getTokenAttributes().get("given_name");
+            Object userLastName = jwtAuthenticationToken.getTokenAttributes().get("family_name");
             log.info("Token JWT: " + token);
             log.info("Email: " + userEmail);
             log.info("User id keycloack: " + idKeyclock);
             log.info("User name: " + userName);
+            log.info("User last name: " + userLastName);
             userDTO.setEmail(userEmail.toString());
             userDTO.setFirstName(userName.toString());
+            userDTO.setLastName(userLastName.toString());
 
             return userDTO;
         } else {
@@ -83,7 +74,7 @@ public class JwtTokenHandler {
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, String> userDataForm = new LinkedMultiValueMap<>();
         userDataForm.add("client_id", "admin-cli");
-        userDataForm.add("username", "admin");
+        userDataForm.add("username", "guilherme.vieira.lazarotto@gmail.com");
         userDataForm.add("password", "anderson");
         userDataForm.add("grant_type", "password");
         HttpEntity<MultiValueMap<String, String>> entityToRequestKeycloak = new HttpEntity<>(userDataForm, httpHeaders);
