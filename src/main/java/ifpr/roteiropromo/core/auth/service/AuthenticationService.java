@@ -53,6 +53,7 @@ public class AuthenticationService {
             authenticatedUserDTO.setAuthToken((String) response.getBody().get("access_token"));
             authenticatedUserDTO.setFirstName(userEntity.getFirstName());
             authenticatedUserDTO.setEmail(userEntity.getEmail());
+            authenticatedUserDTO.setLastName(userEntity.getLastName());
             if (userEntity instanceof Tourist) {
                 authenticatedUserDTO.setUserType("Tourist");
             } else if (userEntity instanceof Admin) {
