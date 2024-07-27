@@ -31,12 +31,12 @@ public class AdminService {
     private final File configFile = new File("src/main/resources/selectedInterestPoints.json");
 
     //
-    // Select Interest Points
-    //
-    public List<InterestPoint> getSelectedInterestPointsDetails() throws IOException {
-        List<Long> selectedInterestPointIds = readConfigFile().get("selectedInterestPoints");
-        return interestPointService.findAllByIds(selectedInterestPointIds);
-    }
+    // Select Interest Points - METODO DUPLICADO??? - UTILIZAR getSelectedInterestPoints
+//    // AMBOS TEM O MESMO RETORNO - OS PONTOS DE INTERESSE PADRAO DOS CARDS
+//    public List<InterestPoint> getSelectedInterestPointsDetails() throws IOException {
+//        List<Long> selectedInterestPointIds = readConfigFile().get("selectedInterestPoints");
+//        return interestPointService.findAllByIds(selectedInterestPointIds);
+//    }
 
     public void selectInterestPoints(List<Long> interestPointIds) throws IOException {
         Map<String, List<Long>> config = new HashMap<>();
