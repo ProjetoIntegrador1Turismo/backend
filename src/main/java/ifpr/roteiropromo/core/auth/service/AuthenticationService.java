@@ -43,15 +43,6 @@ public class AuthenticationService {
             authenticatedUserDTO.setEmail(userEntity.getEmail());
             authenticatedUserDTO.setLastName(userEntity.getLastName());
             authenticatedUserDTO.setUserType(getUserType(userEntity));
-            if (userEntity instanceof Tourist) {
-                authenticatedUserDTO.setUserType("Tourist");
-            } else if (userEntity instanceof Admin) {
-                authenticatedUserDTO.setUserType("Admin");
-            } else if (userEntity instanceof Guide) {
-                authenticatedUserDTO.setUserType("Guide");
-            } else {
-                authenticatedUserDTO.setUserType("Unknown");
-            }
             return authenticatedUserDTO;
         }
     }
