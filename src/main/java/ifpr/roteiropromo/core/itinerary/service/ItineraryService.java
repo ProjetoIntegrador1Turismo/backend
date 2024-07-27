@@ -58,10 +58,12 @@ public class ItineraryService {
         return modelMapper.map(itineraryRepository.save(itinerary), ItineraryDTO.class);
     }
 
-    public ItineraryDTO addInterestPoint(Long itineraryId, Long interestPointIds) {
+    public ItineraryDTO addInterestPoint(Long itineraryId, Long interestPointId) {
         Guide guide = getGuideAuthenticated();
         Itinerary itineraryFound = getOneItineraryFromGuide(guide, itineraryId);
-        InterestPoint interestPointFound = interestPointService.findById(interestPointIds);
+        //Duplicated method!
+        //InterestPoint interestPointFound = interestPointService.findById(interestPointIds);
+        InterestPoint interestPointFound = interestPointService.getOne(interestPointId);
         itineraryFound.getInterestPoints().add(interestPointFound);
         return modelMapper.map(itineraryRepository.save(itineraryFound), ItineraryDTO.class);
     }
