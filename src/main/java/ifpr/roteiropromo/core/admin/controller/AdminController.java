@@ -34,7 +34,7 @@ public class AdminController {
     }
 
     @GetMapping("/selected-interest-points")
-    public ResponseEntity<List<InterestPoint>> getSelectedInterestPoints() throws IOException {
+    public ResponseEntity<List<InterestPoint>> getSelectedInterestPoints() {
         List<InterestPoint> selectedInterestPoints = adminService.getSelectedInterestPoints();
         return ResponseEntity.ok(selectedInterestPoints);
     }

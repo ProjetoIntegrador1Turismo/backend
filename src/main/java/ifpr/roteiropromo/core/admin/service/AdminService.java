@@ -49,12 +49,12 @@ public class AdminService {
         try {
             selectedInterestPointIds = readConfigFile().get("selectedInterestPoints");
         } catch (IOException e) {
-            throw new ServiceError("Error reading selected interest points");
+            throw new ServiceError("Admin Service: Error reading selected interest points from the configuration file!");
         }
         try{
             return interestPointService.findAllByIds(selectedInterestPointIds);
         } catch (Exception e){
-            throw new ServiceError("Error fetching interest points");
+            throw new ServiceError("Admin Service: Error fetching interest points from configuration file (probably doesn't exist!)");
         }
     }
 
