@@ -120,4 +120,12 @@ public class ItineraryService {
         guideRepository.save(guide);
         itineraryRepository.delete(itinerary);
     }
+
+
+    public void updateCoverImageUrl(Long id, String imageUrl) {
+        Itinerary itinerary = findOneById(id);
+        itinerary.setImageCoverUrl(imageUrl);
+        itineraryRepository.save(itinerary);
+    }
+
 }

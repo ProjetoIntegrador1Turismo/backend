@@ -27,14 +27,13 @@ public class Itinerary implements Serializable {
     private Long id;
 
     private String title;
-
     private String description;
-
     private float mediumCost;
-
     private Integer days;
 
     @ManyToMany
     private List<InterestPoint> interestPoints;
 
+    private String imageCoverUrl; // Novo campo para URL da imagem
 }
+
