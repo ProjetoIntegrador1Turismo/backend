@@ -24,7 +24,6 @@ public class InterestPointService {
 
 
     public InterestPoint create(InterestPointDTOForm interestPointDTOForm) {
-        log.info("Acessou o metodo com switch");
 
         if(interestPointAlreadyExist(interestPointDTOForm.getName())){
             throw new ServiceError("There is already a point of interest with that name: " + interestPointDTOForm.getName());
