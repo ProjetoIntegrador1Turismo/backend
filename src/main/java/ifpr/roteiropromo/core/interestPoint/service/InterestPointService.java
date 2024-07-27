@@ -66,9 +66,7 @@ public class InterestPointService {
     }
 
     public InterestPoint update(Long id, InterestPointDTO interestPointDTO) {
-        InterestPoint interestPointFound = interestPointRepository.findById(id).orElseThrow(
-                () -> new ServiceError("Não foi possível encontrar o ponto de interesse com o ID: " + id)
-        );
+        InterestPoint interestPointFound = getOne(id);
         modelMapper.map(interestPointDTO, interestPointFound);
         return interestPointRepository.save(interestPointFound);
     }
@@ -78,11 +76,12 @@ public class InterestPointService {
         return interestPointRepository.getOnByName(name);
     }
 
-    public InterestPoint findById(Long interestPointId) {
-        return interestPointRepository.findById(interestPointId).orElseThrow(
-                () -> new ServiceError("Não foi possível encontrar o ponto de interesse com o ID: " + interestPointId)
-        );
-    }
+    //Duplicated Method -> USE getOne()
+//    public InterestPoint findById(Long interestPointId) {
+//        return interestPointRepository.findById(interestPointId).orElseThrow(
+//                () -> new ServiceError("Não foi possível encontrar o ponto de interesse com o ID: " + interestPointId)
+//        );
+//    }
 
     public List<InterestPoint> findAllByIds(List<Long> ids) {
         List<InterestPoint> interestPoints = interestPointRepository.findAllById(ids);
