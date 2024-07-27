@@ -34,26 +34,15 @@ public class AuthenticationService {
     public AuthenticatedUserDTO getUSerTokenAndData(UserAuthenticationDTO user) {
         if (!userExists(user.getUsername())) {
             throw new ServiceError("No user found with this email: " + user.getUsername());
-        }
-        try {
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            MultiValueMap<String, String> userDataForm = new LinkedMultiValueMap<>();
-            userDataForm.add("client_id", "login-app");
-            userDataForm.add("username", user.getUsername());
-            userDataForm.add("password", user.getPassword());
-            userDataForm.add("grant_type", "password");
-            RestTemplate restTemplate = new RestTemplate();
-            HttpEntity<MultiValueMap<String, String>> entityToRequestKeycloak = new HttpEntity<>(userDataForm, httpHeaders);
-            ResponseEntity<Map> response = restTemplate.postForEntity(
-                    "http://localhost:8080/realms/SpringBootKeycloak/protocol/openid-connect/token",
-                    entityToRequestKeycloak, Map.class);
+        }else {
+            ResponseEntity<Map> response = requestResourceServeToValidateUserData(user);
             AuthenticatedUserDTO authenticatedUserDTO = new AuthenticatedUserDTO();
             User userEntity = userService.getOneByEmail(user.getUsername());
             authenticatedUserDTO.setAuthToken((String) response.getBody().get("access_token"));
             authenticatedUserDTO.setFirstName(userEntity.getFirstName());
             authenticatedUserDTO.setEmail(userEntity.getEmail());
             authenticatedUserDTO.setLastName(userEntity.getLastName());
+            authenticatedUserDTO.setUserType(getUserType(userEntity));
             if (userEntity instanceof Tourist) {
                 authenticatedUserDTO.setUserType("Tourist");
             } else if (userEntity instanceof Admin) {
@@ -64,14 +53,47 @@ public class AuthenticationService {
                 authenticatedUserDTO.setUserType("Unknown");
             }
             return authenticatedUserDTO;
+        }
+    }
 
+    private String getUserType(User user){
+        if (user instanceof Tourist) {
+           return "Tourist";
+        } else if (user instanceof Admin) {
+            return "Admin";
+        } else if (user instanceof Guide) {
+            return "Guide";
+        } else {
+            return "Unknown";
+        }
+    }
+
+    private ResponseEntity<Map> requestResourceServeToValidateUserData(UserAuthenticationDTO user){
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity<MultiValueMap<String, String>> entityToRequestKeycloak = new HttpEntity<>(buildFormRequestWithUserData(user), buildHeaderRequest());
+            return restTemplate.postForEntity(
+                    "http://localhost:8080/realms/SpringBootKeycloak/protocol/openid-connect/token",
+                    entityToRequestKeycloak, Map.class);
         } catch (Exception e) {
             throw new ServiceError("Invalid username or password.");
         }
     }
 
+    private HttpHeaders buildHeaderRequest(){
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        return httpHeaders;
+    }
 
-
+    private MultiValueMap<String, String> buildFormRequestWithUserData(UserAuthenticationDTO user){
+        MultiValueMap<String, String> userDataForm = new LinkedMultiValueMap<>();
+        userDataForm.add("client_id", "login-app");
+        userDataForm.add("username", user.getUsername());
+        userDataForm.add("password", user.getPassword());
+        userDataForm.add("grant_type", "password");
+        return userDataForm;
+    }
 
     private Boolean userExists(String email){
         return userService.existsUserByEmail(email);
