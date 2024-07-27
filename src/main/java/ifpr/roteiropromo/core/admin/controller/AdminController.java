@@ -3,6 +3,7 @@ package ifpr.roteiropromo.core.admin.controller;
 import ifpr.roteiropromo.core.admin.service.AdminService;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
+import ifpr.roteiropromo.core.user.service.GuideService;
 import ifpr.roteiropromo.core.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +21,16 @@ public class AdminController {
 
     private final AdminService adminService;
     private final UserService userService;
+    private final GuideService guideService;
 
-    @GetMapping("/selected-interest-points-details")
-    public ResponseEntity<List<InterestPoint>> getSelectedInterestPointsDetails() throws IOException {
-        List<InterestPoint> selectedInterestPoints = adminService.getSelectedInterestPointsDetails();
-        return ResponseEntity.ok(selectedInterestPoints);
-    }
+    //ROTA DUPLICADA - UTILIZAR A ROTA /selected-interest-points
+//    @GetMapping("/selected-interest-points-details")
+//    public ResponseEntity<List<InterestPoint>> getSelectedInterestPointsDetails() throws IOException {
+//        List<InterestPoint> selectedInterestPoints = adminService.getSelectedInterestPointsDetails();
+//        return ResponseEntity.ok(selectedInterestPoints);
+//    }
 
+    //TESTAR - E SE MANDAR NESSA ROTA OS VALORES 2 VEZES?
     @PostMapping("/select-interest-points")
     public ResponseEntity<Void> selectInterestPoints(@RequestBody List<Long> interestPointIds) throws IOException {
         adminService.selectInterestPoints(interestPointIds);
@@ -49,14 +53,14 @@ public class AdminController {
     @GetMapping("/unapproved-guides")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Guide>> getAllUnapprovedGuides(){
-        return ResponseEntity.ok(userService.getAllUnapprovedGuides());
+        return ResponseEntity.ok(guideService.getAllUnapprovedGuides());
     }
 
 
     // Aprovar Guia
     @PutMapping("/approve-guide/{guideId}")
     public ResponseEntity<Guide> approveGuide(@PathVariable Long guideId) {
-        Guide guide = userService.approveGuide(guideId);
+        Guide guide = guideService.approveGuide(guideId);
         return ResponseEntity.ok(guide);
     }
 
