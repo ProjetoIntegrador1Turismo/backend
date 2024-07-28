@@ -26,9 +26,19 @@ public class InterestPointService {
     public InterestPoint create(InterestPointDTOForm interestPointDTOForm) {
         log.info("Acessou o metodo com switch");
 
-        if(interestPointAlreadyExist(interestPointDTOForm.getName())){
+        // URL da imagem de capa padrão
+        final String DEFAULT_IMAGE_URL = "http://localhost:8081/uploads/interestpointplaceholder.webp";
+
+        // Verifica se o ponto de interesse já existe
+        if (interestPointAlreadyExist(interestPointDTOForm.getName())) {
             throw new ServiceError("There is already a point of interest with that name: " + interestPointDTOForm.getName());
-        }else{
+        } else {
+            // Verifica se a imagem de capa está presente, senão usa a padrão
+            if (interestPointDTOForm.getImageCoverUrl() == null || interestPointDTOForm.getImageCoverUrl().isEmpty()) {
+                interestPointDTOForm.setImageCoverUrl(DEFAULT_IMAGE_URL);
+            }
+
+            // Mapeia e salva o ponto de interesse de acordo com o tipo
             switch (interestPointDTOForm.getInterestPointType()) {
                 case "EVENT":
                     Event event = modelMapper.map(interestPointDTOForm, Event.class);
@@ -50,6 +60,7 @@ public class InterestPointService {
             }
         }
     }
+
 
     public List<InterestPoint> getAll() {
         return interestPointRepository.findAll();
