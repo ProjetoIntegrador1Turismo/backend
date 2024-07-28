@@ -35,10 +35,10 @@ public class AuthenticationService {
         if (!userExists(user.getUsername())) {
             throw new ServiceError("No user found with this email: " + user.getUsername());
         }else {
-            ResponseEntity<Map> response = requestResourceServeToValidateUserData(user);
             AuthenticatedUserDTO authenticatedUserDTO = new AuthenticatedUserDTO();
+            String userToken = validateUserLoginDataAndGetToken(user);
             User userEntity = userService.getOneByEmail(user.getUsername());
-            authenticatedUserDTO.setAuthToken((String) response.getBody().get("access_token"));
+            authenticatedUserDTO.setAuthToken(userToken);
             authenticatedUserDTO.setFirstName(userEntity.getFirstName());
             authenticatedUserDTO.setEmail(userEntity.getEmail());
             authenticatedUserDTO.setLastName(userEntity.getLastName());
@@ -59,13 +59,14 @@ public class AuthenticationService {
         }
     }
 
-    private ResponseEntity<Map> requestResourceServeToValidateUserData(UserAuthenticationDTO user){
+    private String validateUserLoginDataAndGetToken(UserAuthenticationDTO user){
         try {
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity<MultiValueMap<String, String>> entityToRequestKeycloak = new HttpEntity<>(buildFormRequestWithUserData(user), buildHeaderRequest());
-            return restTemplate.postForEntity(
+            ResponseEntity<Map> response = restTemplate.postForEntity(
                     "http://localhost:8080/realms/SpringBootKeycloak/protocol/openid-connect/token",
                     entityToRequestKeycloak, Map.class);
+            return (String) response.getBody().get("access_token");
         } catch (Exception e) {
             throw new ServiceError("Invalid username or password.");
         }
