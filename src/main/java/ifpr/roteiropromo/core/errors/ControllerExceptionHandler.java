@@ -21,4 +21,19 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(standartError, HttpStatus.BAD_REQUEST);
     }
 
+
+    @ExceptionHandler(ResourceServerError.class)
+    public ResponseEntity<StandartError> resourceServiceNotPossible(ResourceServerError e, WebRequest webRequest){
+        StandartError standartError = new StandartError();
+        standartError.setError("Could not execute request");
+        standartError.setPath(webRequest.getDescription(false));
+        standartError.setMessage(e.getMessage());
+        standartError.setTimestamp(Instant.now());
+        return new ResponseEntity<>(standartError, e.getHttpStatusCode());
+    }
+
+
+
+
+
 }
