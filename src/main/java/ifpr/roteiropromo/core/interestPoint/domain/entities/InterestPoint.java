@@ -9,12 +9,13 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+//@Inheritance(strategy = InheritanceType.JOINED)
 @Entity
 @Data
 public abstract class InterestPoint {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(unique = true)
@@ -24,14 +25,10 @@ public abstract class InterestPoint {
     private Address address;
 
     private Integer averageValue;
-
     private String duration;
-
     private String shortDescription;
-
     private String imageCoverUrl;
 
     @Enumerated(EnumType.STRING)
     private InterestPointType interestPointType;
-
 }

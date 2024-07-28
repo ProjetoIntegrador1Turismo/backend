@@ -2,6 +2,7 @@ package ifpr.roteiropromo.core.admin.controller;
 
 import ifpr.roteiropromo.core.admin.service.AdminService;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
+import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +49,7 @@ public class AdminController {
 
     @GetMapping("/unapproved-guides")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Guide>> getAllUnapprovedGuides(){
+    public ResponseEntity<List<GuideDTO>> getAllUnapprovedGuides(){
         return ResponseEntity.ok(userService.getAllUnapprovedGuides());
     }
 
@@ -66,6 +67,5 @@ public class AdminController {
         Guide guide = userService.disapproveGuide(guideId);
         return ResponseEntity.ok(guide);
     }
-
 
 }

@@ -16,10 +16,6 @@ import java.io.Serializable;
 public class Hotel extends InterestPoint implements Serializable {
 
     private Integer starsNumber;
-
     private Boolean isResort;
-
     private Boolean breakfastIncluded;
-
-
 }

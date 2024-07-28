@@ -35,7 +35,7 @@ public class CommentService {
         newComment.setInterestPoint(interestPointFound);
         newComment.setTouristName(touristFound.getFirstName());
         Comment commentSave = commentRepository.save(newComment);
-        touristFound.getComment().add(commentSave);
+        touristFound.getComments().add(commentSave);
         userService.updateTourist(touristFound);
         return mapper.map(commentSave, CommentDTO.class);
     }
@@ -61,7 +61,7 @@ public class CommentService {
 
     public void deleteComment(Long touristId, Long commentId) {
         Tourist touristFound = userService.getTouristById(touristId);
-        touristFound.getComment().removeIf(comment -> comment.getId().equals(commentId));
+        touristFound.getComments().removeIf(comment -> comment.getId().equals(commentId));
         Comment commentFound = commentRepository.findById(commentId).get();
         log.info(commentFound.getText());
         commentRepository.delete(commentFound);
