@@ -1,12 +1,15 @@
 package ifpr.roteiropromo.core.user.domain.dtos;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 public class RatingDTO {
     private String guideEmail;
     private String userEmail;
-    private int rating;
+    private String text;
+    private String date;
+    private Integer rating;
 }
+

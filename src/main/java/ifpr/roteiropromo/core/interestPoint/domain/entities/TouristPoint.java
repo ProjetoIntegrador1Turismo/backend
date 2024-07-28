@@ -13,5 +13,4 @@ public class TouristPoint extends InterestPoint{
 
     private String longDescription;
 
-
 }

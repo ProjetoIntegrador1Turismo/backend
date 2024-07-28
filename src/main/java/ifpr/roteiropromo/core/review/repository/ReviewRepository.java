@@ -1,12 +1,16 @@
 package ifpr.roteiropromo.core.review.repository;
 
-import ifpr.roteiropromo.core.guideprofile.domain.entities.GuideProfile;
 import ifpr.roteiropromo.core.review.domain.entities.Review;
+import ifpr.roteiropromo.core.user.domain.entities.Guide;
+import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-
-    Collection<Object> findAllByGuideProfile(GuideProfile guideProfileFound);
+    List<Review> findByGuideId(Long guideId);
+    boolean existsByGuideIdAndTourist(Long guideId, Tourist tourist);
+    Optional<Review> findByGuideIdAndTourist(Long guideId, Tourist tourist);
 }

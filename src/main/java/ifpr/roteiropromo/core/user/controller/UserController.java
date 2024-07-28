@@ -66,6 +66,24 @@ public class UserController {
     //////////////////////////////////////////////////
     //////////////////////////////////////////////////
 
+    @GetMapping("/guides")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<List<Guide>> getAllGuides(){
+        return ResponseEntity.ok(userService.getAllGuides());
+    }
+
+    @GetMapping("/guides-reviews")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<List<GuideDTO>> getAllGuidesWithReviews(){
+        return ResponseEntity.ok(userService.getAllGuidesWithReviews());
+    }
+
+    @GetMapping("/guides/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<GuideDTO> getGuideById(@PathVariable Long id){
+        return ResponseEntity.ok(userService.getGuideById(id));
+    }
+
 
     @PostMapping("/rate")
     @PreAuthorize("hasRole('USER')")
