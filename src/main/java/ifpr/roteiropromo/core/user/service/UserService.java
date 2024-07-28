@@ -1,6 +1,7 @@
 package ifpr.roteiropromo.core.user.service;
 
 
+import ifpr.roteiropromo.core.errors.ResourceServerError;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.review.domain.DTO.ReviewDTO;
 import ifpr.roteiropromo.core.review.domain.entities.Review;
@@ -40,68 +41,53 @@ public class UserService {
 
 
     public UserDTO createNewUser(UserDTOForm userDTOForm) {
-        ResponseEntity<Map> response;
-
-        // Verificando se o usuário já não é cadastrado:
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            response = restTemplate.postForEntity(
-                    "http://localhost:8080/admin/realms/SpringBootKeycloak/users",
-                    createRequestToKeycloakToNewUser(userDTOForm), Map.class);
-        } catch (HttpClientErrorException e) {
-            throw new ServiceError("E-mail already registered!");
-        } catch (Exception e) {
-            throw new ServiceError("An unexpected error occurred: " + e.getMessage());
-        }
+        //Primeiro: Cria - ou lança exceção - o usuario no servidor de autenticação
+        createUserOnResourceServer(userDTOForm);
 
         // Verificando de que tipo é o User que será cadastrado:
-        if (response.getStatusCode().equals(HttpStatus.CREATED)) {
-            User user;
-            if (userDTOForm.isActiveAdmin()) {
-                Admin admin = mapper.map(userDTOForm, Admin.class);
-                admin.setUserName(userDTOForm.getFirstName());
-                admin.setActiveAdmin(true);
-                user = admin;
+        //MOVER O CRIAR ADMIN PARA UM METODO PRÓPRIO - Ñ DEIXAR NO MESMO METODO DE USUARIOS NORMAIS
+        User user;
+        if (userDTOForm.isActiveAdmin()) {
+            Admin admin = mapper.map(userDTOForm, Admin.class);
+            admin.setUserName(userDTOForm.getFirstName());
+            admin.setActiveAdmin(true);
+            user = admin;
 
-                // Adicionando role ADMIN no keycloak:
-                try {
-                    String userId = getUserIdFromKeycloak(user);
-                    this.addRoleToUser(userId, jwtTokenHandler.getAdminToken(), "ADMIN");
-                } catch (Exception e) {
-                    throw new ServiceError("Failed to assign role to user: " + e.getMessage());
-                }
-
-            } else if (userDTOForm.getCadasturCode() == null) {
-                Tourist tourist = mapper.map(userDTOForm, Tourist.class);
-                tourist.setUserName(userDTOForm.getFirstName());
-                user = tourist;
-
-                // Adicionando role USER no keycloak:
-                try {
-                    String userId = getUserIdFromKeycloak(user);
-                    this.addRoleToUser(userId, jwtTokenHandler.getAdminToken(), "USER");
-                } catch (Exception e) {
-                    throw new ServiceError("Failed to assign role to user: " + e.getMessage());
-                }
-            } else {
-                Guide guide = mapper.map(userDTOForm, Guide.class);
-                guide.setUserName(userDTOForm.getFirstName());
-                guide.setIsApproved(false);
-                user = guide;
+            // Adicionando role ADMIN no keycloak:
+            try {
+                String userId = getUserIdFromKeycloak(user);
+                this.addRoleToUser(userId, jwtTokenHandler.getAdminToken(), "ADMIN");
+            } catch (Exception e) {
+                throw new ServiceError("Failed to assign role to user: " + e.getMessage());
             }
 
-
-            // Salvando no banco
-            User savedUser = userRepository.save(user);
-
-
-            return mapper.map(savedUser, UserDTO.class);
-
+        } else if (userDTOForm.getCadasturCode() == null) {
+            Tourist tourist = mapper.map(userDTOForm, Tourist.class);
+            tourist.setUserName(userDTOForm.getFirstName());
+            user = tourist;
         } else {
-            throw new ServiceError("An error occurred when creating the new user. Status: " + response.getStatusCode());
+            Guide guide = mapper.map(userDTOForm, Guide.class);
+            guide.setUserName(userDTOForm.getFirstName());
+            guide.setIsApproved(false);
+            user = guide;
         }
+
+        // Salvando no banco
+        User savedUser = userRepository.save(user);
+        return mapper.map(savedUser, UserDTO.class);
     }
 
+    private void createUserOnResourceServer(UserDTOForm userDTOForm){
+        try {
+            new RestTemplate().postForEntity(
+                    "http://localhost:8080/admin/realms/SpringBootKeycloak/users",
+                    createRequestToKeycloakToNewUser(userDTOForm), Map.class);
+        } catch (HttpClientErrorException.Conflict e) {
+            throw new ResourceServerError("User e-mail already registered!", HttpStatus.CONFLICT);
+        } catch (Exception e){
+            throw new ResourceServerError("Error when try to access resource server.", HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
 
     public List<User> getAll() {
         return userRepository.findAll();
