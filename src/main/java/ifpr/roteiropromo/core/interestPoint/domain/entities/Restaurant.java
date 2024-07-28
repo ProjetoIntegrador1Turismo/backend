@@ -13,5 +13,4 @@ public class Restaurant extends InterestPoint{
 
     private String foodType;
 
-
 }
