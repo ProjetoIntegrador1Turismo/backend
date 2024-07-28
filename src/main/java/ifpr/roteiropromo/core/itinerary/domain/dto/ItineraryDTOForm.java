@@ -1,6 +1,5 @@
 package ifpr.roteiropromo.core.itinerary.domain.dto;
 
-import ifpr.roteiropromo.core.guideprofile.domain.entities.GuideProfile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

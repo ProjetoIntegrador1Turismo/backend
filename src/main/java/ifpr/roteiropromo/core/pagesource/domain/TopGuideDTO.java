@@ -9,4 +9,5 @@ public class TopGuideDTO {
     private Long id;
     private String firstName;
     private double averageRating;
+
 }

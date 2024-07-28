@@ -15,12 +15,12 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class Tourist extends User{
+public class Tourist extends User {
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Comment> comment;
+    private List<Comment> comments;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Review> reviews;
 
-}
+    }

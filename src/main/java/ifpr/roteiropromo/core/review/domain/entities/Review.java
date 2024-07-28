@@ -1,10 +1,13 @@
 package ifpr.roteiropromo.core.review.domain.entities;
 
-import ifpr.roteiropromo.core.guideprofile.domain.entities.GuideProfile;
+import ifpr.roteiropromo.core.user.domain.entities.Guide;
+import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @Entity
 @AllArgsConstructor
@@ -18,11 +21,12 @@ public class Review {
     private String text;
     private String date;
     private Integer rating;
-    private String touristName;
+    private long guideId;
 
     @ManyToOne
-    private GuideProfile guideProfile;
-
-
+    @JoinColumn(name = "tourist_id", nullable = false)
+    private Tourist tourist;
 
 }
+
+

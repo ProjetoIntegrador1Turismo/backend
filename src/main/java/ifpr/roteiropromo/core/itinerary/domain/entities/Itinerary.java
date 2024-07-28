@@ -1,9 +1,5 @@
 package ifpr.roteiropromo.core.itinerary.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import ifpr.roteiropromo.core.guideprofile.domain.entities.GuideProfile;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -36,4 +32,5 @@ public class Itinerary implements Serializable {
 
     private String imageCoverUrl; // Novo campo para URL da imagem
 }
+
 

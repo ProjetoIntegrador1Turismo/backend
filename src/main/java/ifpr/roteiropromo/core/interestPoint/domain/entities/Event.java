@@ -10,10 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Event extends InterestPoint{
+public class Event extends InterestPoint {
 
     private String longDescription;
-
     private String date;
-
 }
