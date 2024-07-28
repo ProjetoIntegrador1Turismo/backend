@@ -10,6 +10,8 @@ import ifpr.roteiropromo.core.pagesource.domain.BasicPointDTO;
 import ifpr.roteiropromo.core.pagesource.domain.HomePageDTO;
 import ifpr.roteiropromo.core.pagesource.domain.InterestPointCardDTO;
 import ifpr.roteiropromo.core.pagesource.domain.TopGuideDTO;
+import ifpr.roteiropromo.core.review.domain.DTO.ReviewDTO;
+import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
 import ifpr.roteiropromo.core.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -141,12 +143,21 @@ public class PageSourceService {
 
     // ** Get Top Guides ** //
     private List<TopGuideDTO> getTop5Guides() {
-        return userService.getTopRatedGuides(5).stream()
+        List<GuideDTO> topRatedGuides = userService.getTopRatedGuides(5);
+
+        return topRatedGuides.stream()
                 .map(guideDTO -> {
                     TopGuideDTO topGuideDTO = new TopGuideDTO();
                     topGuideDTO.setId(guideDTO.getId());
                     topGuideDTO.setFirstName(guideDTO.getFirstName());
-                    topGuideDTO.setAverageRating(guideDTO.getAverageRating());
+
+                    // Calcular a média de rating
+                    double averageRating = guideDTO.getReviews().stream()
+                            .mapToDouble(ReviewDTO::getRating)
+                            .average()
+                            .orElse(0.0);
+
+                    topGuideDTO.setAverageRating(averageRating);
                     return topGuideDTO;
                 })
                 .collect(Collectors.toList());

@@ -402,19 +402,29 @@ public class UserService {
         Map<Guide, Double> guideAverageRatings = new HashMap<>();
         for (Guide guide : guides) {
             List<Review> reviews = reviewRepository.findByGuideId(guide.getId());
-            double averageRating = guide.getAverageRating(reviews);
+            double averageRating = calculateAverageRating(reviews);
             guideAverageRatings.put(guide, averageRating);
         }
 
         return guideAverageRatings.entrySet().stream()
                 .sorted(Map.Entry.<Guide, Double>comparingByValue().reversed())
                 .limit(topN)
-                .map(entry -> mapper.map(entry.getKey(), GuideDTO.class))
+                .map(entry -> {
+                    GuideDTO guideDTO = mapper.map(entry.getKey(), GuideDTO.class);
+                    guideDTO.setReviews(mapList(reviewRepository.findByGuideId(entry.getKey().getId()), ReviewDTO.class));  // Inicializa a lista de reviews
+                    guideDTO.setAverageRating(entry.getValue());
+                    return guideDTO;
+                })
                 .collect(Collectors.toList());
     }
 
-
-
+    private double calculateAverageRating(List<Review> reviews) {
+        if (reviews.isEmpty()) {
+            return 0.0;
+        }
+        int sum = reviews.stream().mapToInt(Review::getRating).sum();
+        return (double) sum / reviews.size();
+    }
 
 
 

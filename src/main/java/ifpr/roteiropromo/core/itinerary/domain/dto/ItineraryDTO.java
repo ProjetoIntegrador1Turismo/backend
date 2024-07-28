@@ -1,8 +1,6 @@
 package ifpr.roteiropromo.core.itinerary.domain.dto;
 
-import ifpr.roteiropromo.core.guideprofile.domain.dtos.GuideProfileDTO;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTO;
-import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

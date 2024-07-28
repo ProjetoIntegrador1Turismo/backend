@@ -14,6 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Data
 public class Review {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
