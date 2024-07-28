@@ -9,6 +9,7 @@ import ifpr.roteiropromo.core.interestPoint.repository.InterestPointRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
@@ -62,7 +63,7 @@ public class InterestPointService {
 
 
     public List<InterestPoint> getAll() {
-        return interestPointRepository.findAll();
+        return interestPointRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 
     private boolean interestPointAlreadyExist(String name){
@@ -76,10 +77,14 @@ public class InterestPointService {
         );
     }
 
-    public InterestPoint update(Long id, InterestPointDTO interestPointDTO) {
+    public InterestPoint update(Long id, InterestPointDTO interestPointDTO){
         InterestPoint interestPointFound = getOne(id);
         modelMapper.map(interestPointDTO, interestPointFound);
-        return interestPointRepository.save(interestPointFound);
+        try{
+            return interestPointRepository.save(interestPointFound);
+        }catch (Exception e){
+            throw new ServiceError(e.getCause().getCause().getMessage());
+        }
     }
 
 
