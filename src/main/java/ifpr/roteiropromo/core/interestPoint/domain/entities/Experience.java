@@ -1,6 +1,7 @@
 package ifpr.roteiropromo.core.interestPoint.domain.entities;
 
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,8 +13,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class Experience extends InterestPoint {
 
+    @Column(length = 500)
     private String longDescription;
-    private String category;
-    private String requiredTime;
     private String requiredAge;
+    private String duration;
 }

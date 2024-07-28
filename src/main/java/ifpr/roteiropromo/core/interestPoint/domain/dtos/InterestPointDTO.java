@@ -15,12 +15,13 @@ public class InterestPointDTO {
     private AddressDTO address;
     private Integer averageValue;
     private String shortDescription;
-    //Não permitir a att do tipo de ponto de interesse, pois são tabelas distintas!
-    //private String interestPointType;
     private String longDescription;
     private Integer starsNumber;
     private Boolean isResort;
     private Boolean breakfastIncluded;
     private String foodType;
+    private String date;
+    private String duration;
+    private String requiredAge;
 
 }

@@ -10,7 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class Restaurant extends InterestPoint{
-
     private String foodType;
-
 }
