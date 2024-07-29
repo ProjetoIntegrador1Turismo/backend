@@ -19,13 +19,6 @@ public class Guide extends User {
     @OneToMany()
     private List<Itinerary> itineraries;
 
-    public double getAverageRating(List<Review> reviews) {
-        if (reviews.isEmpty()) {
-            return 0.0;
-        }
-        int sum = reviews.stream().mapToInt(Review::getRating).sum();
-        return (double) sum / reviews.size();
-    }
 }
 
 
