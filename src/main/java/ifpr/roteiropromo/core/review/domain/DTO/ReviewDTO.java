@@ -11,6 +11,4 @@ public class ReviewDTO {
     private String text;
     private String date;
     private Integer rating;
-    private Long guideId;
-    private Long userId;
 }
