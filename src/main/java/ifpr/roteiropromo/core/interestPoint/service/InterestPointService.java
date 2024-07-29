@@ -89,7 +89,13 @@ public class InterestPointService {
 
 
     public InterestPoint getOneByName(String name) {
-        return interestPointRepository.getOnByName(name);
+        InterestPoint interestPoint = interestPointRepository.getOnByName(name);
+        if (interestPoint != null){
+            return interestPointRepository.getOnByName(name);
+        }else {
+            throw new ServiceError("Could not found a Interest Point with this name: " + name);
+        }
+
     }
 
     //Duplicated Method -> USE getOne()
