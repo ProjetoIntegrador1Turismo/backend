@@ -42,7 +42,7 @@ public class PageSourceService {
         homePageDTO.setTop3InterestPoints(getTop3InterestPoints());
         homePageDTO.setFirstSlider(getRandomPointsToFirstSlider()); ////pontos, roteiros ou experiencias
         homePageDTO.setSecondSlider(getRandomPointsToSecondSlider()); //restaurantes, hoteis e eventos
-        homePageDTO.setTopGuides(getTop5Guides());
+        //homePageDTO.setTopGuides(getTop5Guides());
         return homePageDTO;
     }
 
@@ -142,26 +142,26 @@ public class PageSourceService {
 
 
     // ** Get Top Guides ** //
-    private List<TopGuideDTO> getTop5Guides() {
-        List<GuideDTO> topRatedGuides = userService.getTopRatedGuides(5);
-
-        return topRatedGuides.stream()
-                .map(guideDTO -> {
-                    TopGuideDTO topGuideDTO = new TopGuideDTO();
-                    topGuideDTO.setId(guideDTO.getId());
-                    topGuideDTO.setFirstName(guideDTO.getFirstName());
-
-                    // Calcular a média de rating
-                    double averageRating = guideDTO.getReviews().stream()
-                            .mapToDouble(ReviewDTO::getRating)
-                            .average()
-                            .orElse(0.0);
-
-                    topGuideDTO.setAverageRating(averageRating);
-                    return topGuideDTO;
-                })
-                .collect(Collectors.toList());
-    }
+//    private List<TopGuideDTO> getTop5Guides() {
+//        List<GuideDTO> topRatedGuides = userService.getTopRatedGuides(5);
+//
+//        return topRatedGuides.stream()
+//                .map(guideDTO -> {
+//                    TopGuideDTO topGuideDTO = new TopGuideDTO();
+//                    topGuideDTO.setId(guideDTO.getId());
+//                    topGuideDTO.setFirstName(guideDTO.getFirstName());
+//
+//                    // Calcular a média de rating
+//                    double averageRating = guideDTO.getReviews().stream()
+//                            .mapToDouble(ReviewDTO::getRating)
+//                            .average()
+//                            .orElse(0.0);
+//
+//                    topGuideDTO.setAverageRating(averageRating);
+//                    return topGuideDTO;
+//                })
+//                .collect(Collectors.toList());
+//    }
 
 
 
