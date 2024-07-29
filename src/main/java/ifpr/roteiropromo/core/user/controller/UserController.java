@@ -72,11 +72,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllGuides());
     }
 
-    @GetMapping("/guides-reviews")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<List<GuideDTO>> getAllGuidesWithReviews(){
-        return ResponseEntity.ok(userService.getAllGuidesWithReviews());
-    }
+//    @GetMapping("/guides-reviews")
+//    @PreAuthorize("hasRole('USER')")
+//    public ResponseEntity<List<GuideDTO>> getAllGuidesWithReviews(){
+//        return ResponseEntity.ok(userService.getAllGuidesWithReviews());
+//    }
 
     @GetMapping("/guides/{id}")
     @PreAuthorize("hasRole('USER')")
@@ -85,25 +85,25 @@ public class UserController {
     }
 
 
-    @PostMapping("/rate")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<GuideDTO> rateGuide(@RequestBody RatingDTO ratingDTO) {
-        GuideDTO guideDTO = userService.rateGuide(ratingDTO);
-        return ResponseEntity.ok(guideDTO);
-    }
+//    @PostMapping("/rate")//MOVIDO PARA REVIEW CONTROLLER
+//    @PreAuthorize("hasRole('USER')")
+//    public ResponseEntity<GuideDTO> rateGuide(@RequestBody RatingDTO ratingDTO) {
+//        GuideDTO guideDTO = userService.rateGuide(ratingDTO);
+//        return ResponseEntity.ok(guideDTO);
+//    }
 
-    @PutMapping("/rate")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<GuideDTO> updateRating(@RequestBody RatingDTO ratingDTO) {
-        GuideDTO guideDTO = userService.updateRating(ratingDTO);
-        return ResponseEntity.ok(guideDTO);
-    }
+//    @PutMapping("/rate")
+//    @PreAuthorize("hasRole('USER')")
+//    public ResponseEntity<GuideDTO> updateRating(@RequestBody RatingDTO ratingDTO) {
+//        GuideDTO guideDTO = userService.updateRating(ratingDTO);
+//        return ResponseEntity.ok(guideDTO);
+//    }
 
-    @GetMapping("/top-rated")
-    public ResponseEntity<List<GuideDTO>> getTopRatedGuides() {
-        List<GuideDTO> topRatedGuides = userService.getTopRatedGuides(5);
-        return ResponseEntity.ok(topRatedGuides);
-    }
+//    @GetMapping("/top-rated")
+//    public ResponseEntity<List<GuideDTO>> getTopRatedGuides() {
+//        List<GuideDTO> topRatedGuides = userService.getTopRatedGuides(5);
+//        return ResponseEntity.ok(topRatedGuides);
+//    }
 
 
 }

@@ -178,8 +178,8 @@ public class UserService {
     }
 
 
-    public Tourist updateTourist(Tourist touristFound) {
-        return userRepository.save(touristFound);
+    public void updateTourist(Tourist touristFound) {
+        userRepository.save(touristFound);
     }
 
 
@@ -242,18 +242,18 @@ public class UserService {
     }
 
 
-    public List<GuideDTO> getAllGuidesWithReviews() {
-        List<Guide> guides = userRepository.findAllGuides();
-        return guides.stream()
-                .map(guide -> {
-                    GuideDTO guideDTO = mapper.map(guide, GuideDTO.class);
-                    List<Review> reviews = reviewRepository.findByGuideId(guide.getId());
-                    List<ReviewDTO> reviewDTOs = mapList(reviews, ReviewDTO.class);
-                    guideDTO.setReviews(reviewDTOs);
-                    return guideDTO;
-                })
-                .collect(Collectors.toList());
-    }
+//    public List<GuideDTO> getAllGuidesWithReviews() {
+//        List<Guide> guides = userRepository.findAllGuides();
+//        return guides.stream()
+//                .map(guide -> {
+//                    GuideDTO guideDTO = mapper.map(guide, GuideDTO.class);
+//                    List<Review> reviews = reviewRepository.findByGuideId(guide.getId());
+//                    List<ReviewDTO> reviewDTOs = mapList(reviews, ReviewDTO.class);
+//                    guideDTO.setReviews(reviewDTOs);
+//                    return guideDTO;
+//                })
+//                .collect(Collectors.toList());
+//    }
 
 
     public GuideDTO getGuideById(Long id) {
@@ -270,9 +270,9 @@ public class UserService {
     }
 
 
-    public List<Review> getReviewsByGuideId(Long guideId) {
-        return reviewRepository.findByGuideId(guideId);
-    }
+//    public List<Review> getReviewsByGuideId(Long guideId) {
+//        return reviewRepository.findByGuideId(guideId);
+//    }
 
     public Guide approveGuide(Long id) {
         Guide guide = this.findGuideById(id);
@@ -310,99 +310,98 @@ public class UserService {
 
     // ** RATINGS: ** //
 
-    public GuideDTO rateGuide(RatingDTO ratingDTO) {
-        Guide guide = (Guide) userRepository.getOneByEmail(ratingDTO.getGuideEmail());
-        if (guide == null) {
-            throw new ServiceError("Guide not found with email: " + ratingDTO.getGuideEmail());
-        }
-
-        Tourist tourist = (Tourist) userRepository.getOneByEmail(ratingDTO.getUserEmail());
-        if (tourist == null) {
-            throw new ServiceError("Tourist not found with email: " + ratingDTO.getUserEmail());
-        }
-
-        if (ratingDTO.getRating() < 1 || ratingDTO.getRating() > 5) {
-            throw new ServiceError("Rating must be between 1 and 5.");
-        }
-
-        boolean alreadyReviewed = reviewRepository.existsByGuideIdAndTourist(guide.getId(), tourist);
-        if (alreadyReviewed) {
-            throw new ServiceError("User has already rated this guide.");
-        }
-
-        Review review = new Review();
-        review.setText(ratingDTO.getText());
-        review.setDate(ratingDTO.getDate());
-        review.setRating(ratingDTO.getRating());
-        review.setGuideId(guide.getId());
-        review.setTourist(tourist);
-
-        reviewRepository.save(review);
-
-        return mapper.map(guide, GuideDTO.class);
-    }
-
-
-    public GuideDTO updateRating(RatingDTO ratingDTO) {
-        Guide guide = (Guide) userRepository.getOneByEmail(ratingDTO.getGuideEmail());
-        if (guide == null) {
-            throw new ServiceError("Guide not found with email: " + ratingDTO.getGuideEmail());
-        }
-
-        Tourist tourist = (Tourist) userRepository.getOneByEmail(ratingDTO.getUserEmail());
-        if (tourist == null) {
-            throw new ServiceError("Tourist not found with email: " + ratingDTO.getUserEmail());
-        }
-
-        if (ratingDTO.getRating() < 1 || ratingDTO.getRating() > 5) {
-            throw new ServiceError("Rating must be between 1 and 5.");
-        }
-
-        Review existingReview = reviewRepository.findByGuideIdAndTourist(guide.getId(), tourist)
-                .orElseThrow(() -> new ServiceError("User has not rated this guide yet."));
-
-        if (ratingDTO.getText() != null && !ratingDTO.getText().isEmpty()) {
-            existingReview.setText(ratingDTO.getText());
-        }
-
-        if (ratingDTO.getDate() != null && !ratingDTO.getDate().isEmpty()) {
-            existingReview.setDate(ratingDTO.getDate());
-        }
-
-        if (ratingDTO.getRating() != null) {
-            existingReview.setRating(ratingDTO.getRating());
-        }
-
-        reviewRepository.save(existingReview);
-
-        return modelMapper.map(guide, GuideDTO.class);
-    }
+//    public GuideDTO rateGuide(RatingDTO ratingDTO) {//MOVIDO P/ REVIEWSERVICE
+//        Guide guide = (Guide) userRepository.getOneByEmail(ratingDTO.getGuideEmail());
+//        if (guide == null) {
+//            throw new ServiceError("Guide not found with email: " + ratingDTO.getGuideEmail());
+//        }
+//
+//        Tourist tourist = (Tourist) userRepository.getOneByEmail(ratingDTO.getUserEmail());
+//        if (tourist == null) {
+//            throw new ServiceError("Tourist not found with email: " + ratingDTO.getUserEmail());
+//        }
+//
+//        if (ratingDTO.getRating() < 1 || ratingDTO.getRating() > 5) {
+//            throw new ServiceError("Rating must be between 1 and 5.");
+//        }
+//
+//        boolean alreadyReviewed = reviewRepository.existsByGuideIdAndTourist(guide.getId());
+//        if (alreadyReviewed) {
+//            throw new ServiceError("User has already rated this guide.");
+//        }
+//
+//        Review review = new Review();
+//        review.setText(ratingDTO.getText());
+//        review.setDate(ratingDTO.getDate());
+//        review.setRating(ratingDTO.getRating());
+//        review.setGuideId(guide.getId());
+//
+//        reviewRepository.save(review);
+//
+//        return mapper.map(guide, GuideDTO.class);
+//    }
 
 
-    public List<GuideDTO> getTopRatedGuides(int topN) {
-        List<Guide> guides = userRepository.findAll().stream()
-                .filter(user -> user instanceof Guide)
-                .map(user -> (Guide) user)
-                .collect(Collectors.toList());
+//    public GuideDTO updateRating(RatingDTO ratingDTO) {
+//        Guide guide = (Guide) userRepository.getOneByEmail(ratingDTO.getGuideEmail());
+//        if (guide == null) {
+//            throw new ServiceError("Guide not found with email: " + ratingDTO.getGuideEmail());
+//        }
+//
+//        Tourist tourist = (Tourist) userRepository.getOneByEmail(ratingDTO.getUserEmail());
+//        if (tourist == null) {
+//            throw new ServiceError("Tourist not found with email: " + ratingDTO.getUserEmail());
+//        }
+//
+//        if (ratingDTO.getRating() < 1 || ratingDTO.getRating() > 5) {
+//            throw new ServiceError("Rating must be between 1 and 5.");
+//        }
+//
+//        Review existingReview = reviewRepository.findByGuideIdAndTourist(guide.getId())
+//                .orElseThrow(() -> new ServiceError("User has not rated this guide yet."));
+//
+//        if (ratingDTO.getText() != null && !ratingDTO.getText().isEmpty()) {
+//            existingReview.setText(ratingDTO.getText());
+//        }
+//
+//        if (ratingDTO.getDate() != null && !ratingDTO.getDate().isEmpty()) {
+//            existingReview.setDate(ratingDTO.getDate());
+//        }
+//
+//        if (ratingDTO.getRating() != null) {
+//            existingReview.setRating(ratingDTO.getRating());
+//        }
+//
+//        reviewRepository.save(existingReview);
+//
+//        return modelMapper.map(guide, GuideDTO.class);
+//    }
 
-        Map<Guide, Double> guideAverageRatings = new HashMap<>();
-        for (Guide guide : guides) {
-            List<Review> reviews = reviewRepository.findByGuideId(guide.getId());
-            double averageRating = calculateAverageRating(reviews);
-            guideAverageRatings.put(guide, averageRating);
-        }
 
-        return guideAverageRatings.entrySet().stream()
-                .sorted(Map.Entry.<Guide, Double>comparingByValue().reversed())
-                .limit(topN)
-                .map(entry -> {
-                    GuideDTO guideDTO = mapper.map(entry.getKey(), GuideDTO.class);
-                    guideDTO.setReviews(mapList(reviewRepository.findByGuideId(entry.getKey().getId()), ReviewDTO.class));  // Inicializa a lista de reviews
-                    guideDTO.setAverageRating(entry.getValue());
-                    return guideDTO;
-                })
-                .collect(Collectors.toList());
-    }
+//    public List<GuideDTO> getTopRatedGuides(int topN) {
+//        List<Guide> guides = userRepository.findAll().stream()
+//                .filter(user -> user instanceof Guide)
+//                .map(user -> (Guide) user)
+//                .collect(Collectors.toList());
+//
+//        Map<Guide, Double> guideAverageRatings = new HashMap<>();
+//        for (Guide guide : guides) {
+//            List<Review> reviews = reviewRepository.findByGuideId(guide.getId());
+//            double averageRating = calculateAverageRating(reviews);
+//            guideAverageRatings.put(guide, averageRating);
+//        }
+//
+//        return guideAverageRatings.entrySet().stream()
+//                .sorted(Map.Entry.<Guide, Double>comparingByValue().reversed())
+//                .limit(topN)
+//                .map(entry -> {
+//                    GuideDTO guideDTO = mapper.map(entry.getKey(), GuideDTO.class);
+//                    guideDTO.setReviews(mapList(reviewRepository.findByGuideId(entry.getKey().getId()), ReviewDTO.class));  // Inicializa a lista de reviews
+//                    guideDTO.setAverageRating(entry.getValue());
+//                    return guideDTO;
+//                })
+//                .collect(Collectors.toList());
+//    }
 
     private double calculateAverageRating(List<Review> reviews) {
         if (reviews.isEmpty()) {
