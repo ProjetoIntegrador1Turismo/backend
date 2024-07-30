@@ -37,7 +37,7 @@
 #             (36, 'Loren Ipsum', '123', '85853-000'),
 #             (37, 'Loren Ipsum', '123', '85853-000');
 #
-#
+## SÓ NÃO INSERE O LINK DA IMAGEM
 # INSERT INTO
 #     tourist_point (id, average_value, long_description, name, short_description, interest_point_type)
 # VALUES(1, '65.00', 'O Parque Nacional do Iguaçu é uma Unidade de Conservação de Proteção Integral da natureza. Abriga as Cataratas do Iguaçu, uma das Sete Novas Maravilhas da Natureza.',
@@ -83,23 +83,23 @@
 #       (29, '299.00', true, true, 5, 'Hotel Resort de Luxo', 'Conforto e lazer', 'HOTEL', 29);
 #
 # INSERT INTO
-#     event (id, average_value, date, long_description, name, short_description, interest_point_type,address_id)
+#     event (id, average_value, date, long_description, name, short_description, interest_point_type,address_id, duration)
 # VALUES (30, '150.00', '31 de Dezembro', 'O reveillon de Foz do Iguaçu é um dos mais famosos do Brasil. A festa acontece na Avenida Paraná, com shows de artistas nacionais e internacionais, queima de fogos e muita animação.',
-#         'Reveillon de Foz do Iguaçu', 'Festa de Ano Novo', 'EVENT', 30),
+#         'Reveillon de Foz do Iguaçu', 'Festa de Ano Novo', 'EVENT', 30, '1 Dia'),
 #        (31, '50.00', '15 de Novembro', 'O Festival de Dança de Foz do Iguaçu é um evento que reúne bailarinos e coreógrafos de todo o Brasil. Durante o festival, são realizadas apresentações de dança em diversos estilos, como balé clássico, dança contemporânea e dança de salão.',
-#         'Festival de Dança de Foz do Iguaçu', 'Evento cultural', 'EVENT', 31),
+#         'Festival de Dança de Foz do Iguaçu', 'Evento cultural', 'EVENT', 31, '4 Dias'),
 #        (32, '200.00', '10 a 14 de Maio', 'Uma seria de shows com vários artitas locais e nacionais em um espaço amplo e confortavel.',
-#        'Fespop', 'Festa Popular De Santa Terezinha De Itaipu', 'EVENT', 32),
+#        'Fespop', 'Festa Popular De Santa Terezinha De Itaipu', 'EVENT', 32, '3 Dias'),
 #        (33, '45.00', '11, 12 e 13 de Outrubro', 'Festa em comemoração ao aniversário de Foz do Iguaçu que conta com shows de artistas de renome nacional, feira de artesanatos e alimentos com a participação das entidades assistenciais',
-#        'Fartal', 'Feira de Artesanato e Alimentos de Foz do Iguaçu', 'EVENT', 33);
+#        'Fartal', 'Feira de Artesanato e Alimentos de Foz do Iguaçu', 'EVENT', 33, '1 Dia');
 #
 # INSERT INTO
-#      experience (id, average_value, long_description, name, short_description, interest_point_type,address_id)
+#      experience (id, average_value, long_description, name, short_description, interest_point_type,address_id, duration, requiredAge)
 # VALUES(34, '150.00', 'O passeio de barco pelas Cataratas do Iguaçu é uma experiência única e inesquecível. Durante o passeio, é possível ver as quedas d\'água de perto e sentir toda a força e beleza da natureza.',
-#        'Passeio de Barco', 'Passeio pelas Cataratas do Iguaçu', 'EXPERIENCE', 34),
+#        'Passeio de Barco', 'Passeio pelas Cataratas do Iguaçu', 'EXPERIENCE', 34, '2 horas', '8 anos'),
 #       (35, '50.00', 'O passeio de helicóptero sobre as Cataratas do Iguaçu é uma experiência emocionante e inesquecível. Durante o voo, é possível ver as quedas d\'água de cima e apreciar toda a beleza da região.',
-#        'Passeio de Helicóptero', 'Voo sobre as Cataratas do Iguaçu', 'EXPERIENCE', 35),
+#        'Passeio de Helicóptero', 'Voo sobre as Cataratas do Iguaçu', 'EXPERIENCE', 35,'1 hora', '5 anos'),
 #       (36, '200.00', 'O passeio de bicicleta pela cidade de Foz do Iguaçu é uma experiência divertida e agradável. Durante o passeio, é possível conhecer os principais pontos turísticos da cidade e apreciar a beleza da região.',
-#        'Passeio de Bicicleta', 'Passeio pela cidade de Foz do Iguaçu', 'EXPERIENCE', 36),
+#        'Passeio de Bicicleta', 'Passeio pela cidade de Foz do Iguaçu', 'EXPERIENCE', 36, '4 horas', '15 anos'),
 #       (37, '45.00', 'O passeio de jipe pela região das Cataratas do Iguaçu é uma experiência emocionante e aventureira. Durante o passeio, é possível explorar trilhas e estradas de terra, conhecer a fauna e a flora da região e apreciar a beleza natural das Cataratas.',
-#        'Passeio de Jipe', 'Aventura pelas Cataratas do Iguaçu', 'EXPERIENCE', 37);
+#        'Passeio de Jipe', 'Aventura pelas Cataratas do Iguaçu', 'EXPERIENCE', 37, '2h30min', '6 anos');
