@@ -72,7 +72,7 @@ public class ReviewService {
             throw new ServiceError("Rating must be between 1 and 5.");
         }
 
-        if(reviewRepository.existsByGuideId(guideId)){
+        if(tourist.getReviews().stream().anyMatch(r -> r.getGuideId().equals(guideId))){
             throw new ServiceError("Authenticated tourist has already created a review for this guide.");
         }
     }
