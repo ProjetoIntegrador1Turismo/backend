@@ -6,6 +6,7 @@ import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,26 +18,14 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class AdminService {
 
-    @Autowired
     private InterestPointService interestPointService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
     private final File configFile = new File("src/main/resources/selectedInterestPoints.json");
 
-    //
-    // Select Interest Points - METODO DUPLICADO??? - UTILIZAR getSelectedInterestPoints
-//    // AMBOS TEM O MESMO RETORNO - OS PONTOS DE INTERESSE PADRAO DOS CARDS
-//    public List<InterestPoint> getSelectedInterestPointsDetails() throws IOException {
-//        List<Long> selectedInterestPointIds = readConfigFile().get("selectedInterestPoints");
-//        return interestPointService.findAllByIds(selectedInterestPointIds);
-//    }
 
     public void selectInterestPoints(List<Long> interestPointIds) throws IOException {
         Map<String, List<Long>> config = new HashMap<>();
