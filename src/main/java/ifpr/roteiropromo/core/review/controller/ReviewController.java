@@ -4,7 +4,6 @@ package ifpr.roteiropromo.core.review.controller;
 import ifpr.roteiropromo.core.review.domain.DTO.ReviewDTO;
 import ifpr.roteiropromo.core.review.domain.DTO.ReviewDTOForm;
 import ifpr.roteiropromo.core.review.service.ReviewService;
-import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -30,10 +29,16 @@ public class ReviewController {
 
     @PutMapping()
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ReviewDTO> updateRating(@RequestBody ReviewDTO reviewDto) {
+    public ResponseEntity<ReviewDTO> updateReview(@RequestBody ReviewDTO reviewDto) {
         return ResponseEntity.ok(reviewService.updateReview(reviewDto));
     }
 
+    @DeleteMapping("/{reviewId}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Void> deleteOneReview(@PathVariable Long reviewId){
+        reviewService.deleteReviewById(reviewId);
+        return ResponseEntity.noContent().build();
+    }
 
 
 }
