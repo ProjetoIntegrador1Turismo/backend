@@ -16,7 +16,7 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+
 
 
 @Service
@@ -49,12 +49,6 @@ public class ReviewService {
     }
 
     private Review getReviewFromTourist(Tourist tourist, Long id) {
-        //Review reviewToUpdate = getReviewByIdOrFail(id);
-//        if (tourist.getReviews().contains(reviewToUpdate)){
-//            return reviewToUpdate;
-//        }else {
-//            throw new ServiceError("Authenticated Tourist dont have one review with id: " + id);
-//        }
         Review reviewToUpdate = null;
         for (Review review: tourist.getReviews()) {
             if (review.getId().equals(id)){
@@ -101,4 +95,10 @@ public class ReviewService {
     }
 
 
+    public void deleteReviewById(Long reviewId) {
+        Tourist tourist = getTouristAuthenticated();
+        Review review = getReviewFromTourist(tourist, reviewId);
+        tourist.getReviews().remove(review);
+        userService.updateTourist(tourist);
+    }
 }
