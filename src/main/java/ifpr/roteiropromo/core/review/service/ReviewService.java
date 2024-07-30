@@ -62,11 +62,6 @@ public class ReviewService {
         }
     }
 
-    private Review getReviewByIdOrFail(Long id) {
-        return reviewRepository.findById(id).orElseThrow(() -> new ServiceError("Review not found with id: " + id));
-    }
-
-
     private void validateReview(ReviewDTOForm reviewDTOForm, Tourist tourist, Long guideId) {
         if (reviewDTOForm.getRating() < 1 || reviewDTOForm.getRating() > 5) {
             throw new ServiceError("Rating must be between 1 and 5.");
