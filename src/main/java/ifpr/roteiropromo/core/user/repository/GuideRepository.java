@@ -10,4 +10,6 @@ public interface GuideRepository extends JpaRepository<Guide, Long> {
 
     Guide getByItineraries(Itinerary itinerary);
 
+    Guide getOneById(Long id);
+
 }
