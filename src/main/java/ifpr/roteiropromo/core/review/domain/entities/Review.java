@@ -21,7 +21,8 @@ public class Review implements Serializable {
     private String text;
     private String date;
     private Integer rating;
-    private long guideId;
+    private Long guideId;
+    private String touristName;
 
 }
 
