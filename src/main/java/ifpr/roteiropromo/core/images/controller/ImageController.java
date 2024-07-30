@@ -33,6 +33,7 @@ public class ImageController {
     @PostMapping("/upload/interest-point")
     public ResponseEntity<String> uploadInterestPointImage(@RequestParam MultipartFile file, @RequestParam Long id) {
         try {
+            //Tratar erro quando uma imagem nao é enviada!
             String imageUrl = imageService.saveImage(file);
             interestPointService.updateCoverImageUrl(id, imageUrl);
             return ResponseEntity.ok(imageUrl);
