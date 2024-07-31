@@ -19,12 +19,11 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @PostMapping("/{touristId}/create/{interestPointId}")
+    @PostMapping("/create/{interestPointId}")
     public ResponseEntity<CommentDTO> createComment(
             @PathVariable Long interestPointId,
-            @RequestBody CommentDTOForm commentDTOForm,
-            @PathVariable Long touristId){
-        return ResponseEntity.ok(commentService.createComment(touristId, interestPointId, commentDTOForm));
+            @RequestBody CommentDTOForm commentDTOForm){
+        return ResponseEntity.ok(commentService.createComment(interestPointId, commentDTOForm));
     }
 
     @GetMapping
@@ -32,7 +31,7 @@ public class CommentController {
         return ResponseEntity.ok(commentService.getAll());
     }
 
-    @GetMapping("{commentId}")
+    @GetMapping("/{commentId}")
     public ResponseEntity<CommentDTO> getOne(@PathVariable Long commentId){
         return ResponseEntity.ok(commentService.getOne(commentId));
     }
@@ -42,9 +41,9 @@ public class CommentController {
         return ResponseEntity.ok(commentService.getAllByInterestPoint(interestPointId));
     }
 
-    @DeleteMapping("/{touristId}/delete/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long touristId, @PathVariable Long commentId){
-        commentService.deleteComment(touristId, commentId);
+    @DeleteMapping("/delete/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId){
+        commentService.deleteComment(commentId);
         return ResponseEntity.noContent().build();
     }
 
