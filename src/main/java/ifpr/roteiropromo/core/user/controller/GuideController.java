@@ -1,4 +1,5 @@
 package ifpr.roteiropromo.core.user.controller;
+import ifpr.roteiropromo.core.pagesource.domain.TopGuideDTO;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.service.GuideService;
 import ifpr.roteiropromo.core.user.service.UserService;
@@ -9,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -27,8 +29,8 @@ public class GuideController {
 
 
     @GetMapping("/test")
-    public List<Long> test(){
-        return guideService.getTopFiveGuidesId();
+    public List<TopGuideDTO> test(){
+        return guideService.getTopGuidesDTO();
     }
 
 
