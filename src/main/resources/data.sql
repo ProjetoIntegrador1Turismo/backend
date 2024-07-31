@@ -1,7 +1,7 @@
 # INSERT INTO address (id, road, number, zip_code)
 # VALUES (1, 'Avenida das Cataratas', 'BR 469, Km 18', '85859-899'),
 #        (2, 'Avenida das Cataratas', '12.450', '85859-899'),
-#        (3, 'Avenida Tancredo Neves', '6.731', '85856-970'),
+#        (3, 'Avenida Tancredo Neves', '6.731', '85856-970');
 #        (4, 'Rua Dr. Josivalter Vila Nova', '99', '85867-504'),
 #        (5, 'R. Tarobá', '1009', '85851-220'),
 #        (6, 'Av. das Cataratas', '8.100', '85853-000'),
@@ -37,15 +37,17 @@
 #             (36, 'Loren Ipsum', '123', '85853-000'),
 #             (37, 'Loren Ipsum', '123', '85853-000');
 #
-## SÓ NÃO INSERE O LINK DA IMAGEM
+## "http://localhost:8081/uploads/cataratas.jpeg"
+## "http://localhost:8081/uploads/parque.webp"
+## "http://localhost:8081/uploads/itaipu.jpeg"
 # INSERT INTO
-#     tourist_point (id, average_value, long_description, name, short_description, interest_point_type)
+#     tourist_point (id, average_value, long_description, name, short_description, interest_point_type, address_id, image_cover_url)
 # VALUES(1, '65.00', 'O Parque Nacional do Iguaçu é uma Unidade de Conservação de Proteção Integral da natureza. Abriga as Cataratas do Iguaçu, uma das Sete Novas Maravilhas da Natureza.',
-#        'Parque Nacional do Iguaçu', 'Uma das sete maravilhas do mundo', 'TOURIST_POINT');
+#        'Parque Nacional do Iguaçu', 'Uma das sete maravilhas do mundo', 'TOURIST_POINT', 1, 'http://localhost:8081/uploads/cataratas.jpeg'),
 #       (2, '45.00', 'O Parque das Aves é um parque particular dedicado à conservação de aves da Mata Atlântica. Localizado próximo ao Parque Nacional do Iguaçu, é uma excelente opção para quem deseja conhecer de perto a fauna da região.',
-#        'Parque das Aves', 'Passeio livre em viveiros', 'TOURIST_POINT', 2),
+#        'Parque das Aves', 'Passeio livre em viveiros', 'TOURIST_POINT', 2, 'http://localhost:8081/uploads/parque.webp'),
 #       (3, '35.00', 'A Hidroeletrica Itaipu Binacional é uma empresa binacional, responsável pela operação da usina hidrelétrica de Itaipu. Localizada no Rio Paraná, é a maior usina hidrelétrica do mundo em geração de energia.',
-#        'Itaipu Binacional', 'A maior Hidroelétria do mundo', 'TOURIST_POINT', 3),
+#        'Itaipu Binacional', 'A maior Hidroelétria do mundo', 'TOURIST_POINT', 3, 'http://localhost:8081/uploads/itaipu.jpeg');
 #       (4, '0.00', 'O templo budista é um lugar de paz e tranquilidade, onde é possível meditar e refletir sobre a vida. Localizado em uma área verde, o templo é um convite ao relaxamento e à espiritualidade.',
 #        'Templo Budista Chen Tien', 'Lugar de paz e tranquilidade.', 'TOURIST_POINT', 4),
 #       (5, '35.00', 'O Marco das Três Fronteiras é um monumento que marca a divisa entre Brasil, Argentina e Paraguai. Localizado na cidade de Foz do Iguaçu, o local é um ponto turístico importante e oferece uma vista privilegiada dos três países.',
@@ -93,13 +95,6 @@
 #        (33, '45.00', '11, 12 e 13 de Outrubro', 'Festa em comemoração ao aniversário de Foz do Iguaçu que conta com shows de artistas de renome nacional, feira de artesanatos e alimentos com a participação das entidades assistenciais',
 #        'Fartal', 'Feira de Artesanato e Alimentos de Foz do Iguaçu', 'EVENT', 33, '1 Dia');
 #
-# INSERT INTO
-#      experience (id, average_value, long_description, name, short_description, interest_point_type,address_id, duration, requiredAge)
-# VALUES(34, '150.00', 'O passeio de barco pelas Cataratas do Iguaçu é uma experiência única e inesquecível. Durante o passeio, é possível ver as quedas d\'água de perto e sentir toda a força e beleza da natureza.',
-#        'Passeio de Barco', 'Passeio pelas Cataratas do Iguaçu', 'EXPERIENCE', 34, '2 horas', '8 anos'),
-#       (35, '50.00', 'O passeio de helicóptero sobre as Cataratas do Iguaçu é uma experiência emocionante e inesquecível. Durante o voo, é possível ver as quedas d\'água de cima e apreciar toda a beleza da região.',
-#        'Passeio de Helicóptero', 'Voo sobre as Cataratas do Iguaçu', 'EXPERIENCE', 35,'1 hora', '5 anos'),
-#       (36, '200.00', 'O passeio de bicicleta pela cidade de Foz do Iguaçu é uma experiência divertida e agradável. Durante o passeio, é possível conhecer os principais pontos turísticos da cidade e apreciar a beleza da região.',
-#        'Passeio de Bicicleta', 'Passeio pela cidade de Foz do Iguaçu', 'EXPERIENCE', 36, '4 horas', '15 anos'),
-#       (37, '45.00', 'O passeio de jipe pela região das Cataratas do Iguaçu é uma experiência emocionante e aventureira. Durante o passeio, é possível explorar trilhas e estradas de terra, conhecer a fauna e a flora da região e apreciar a beleza natural das Cataratas.',
-#        'Passeio de Jipe', 'Aventura pelas Cataratas do Iguaçu', 'EXPERIENCE', 37, '2h30min', '6 anos');
+
+
+
