@@ -18,12 +18,13 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
         show_sql: false
         format_sql: true
   mvc:
     static-path-pattern: /uploads/**
+    log-request-details: true
 
 
   #docker run --name roteirodb -p 3307:3306 -e MYSQL_ROOT_PASSWORD=admin -e MYSQL_DATABASE=roteiro -e MYSQL_USER=projeto -e MYSQL_PASSWORD=12345 -d mysql:latest
@@ -49,6 +50,8 @@ spring:
 
 logging:
   level:
+#    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
     ifpr:
       roteiropromo: debug
     web: debug
