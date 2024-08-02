@@ -12,8 +12,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
 import org.springframework.security.web.SecurityFilterChain;
-
-
+import org.springframework.web.cors.CorsUtils;
 
 
 @Configuration
@@ -29,6 +28,7 @@ class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth").permitAll()
                         .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
