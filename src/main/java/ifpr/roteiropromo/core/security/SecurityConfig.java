@@ -44,7 +44,8 @@ class SecurityConfig {
                                 .jwtAuthenticationConverter(new JwtConverter()
                                 )
                         )
-                );
+                )
+                .addFilterBefore(new LoggingFilter(), org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
