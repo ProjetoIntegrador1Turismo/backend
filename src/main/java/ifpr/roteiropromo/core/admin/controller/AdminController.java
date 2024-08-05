@@ -57,6 +57,7 @@ public class AdminController {
 
     // Aprovar Guia
     @PutMapping("/approve-guide/{guideId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Guide> approveGuide(@PathVariable Long guideId) {
         Guide guide = userService.approveGuide(guideId);
         return ResponseEntity.ok(guide);
@@ -64,6 +65,7 @@ public class AdminController {
 
 
     @PutMapping("/disapprove-guide/{guideId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Guide> disapproveGuide(@PathVariable Long guideId) {
         Guide guide = userService.disapproveGuide(guideId);
         return ResponseEntity.ok(guide);
