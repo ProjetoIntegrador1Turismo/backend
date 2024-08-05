@@ -1,5 +1,7 @@
 package ifpr.roteiropromo.core.security;
 
+
+import ifpr.roteiropromo.core.utils.LoggingFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
