@@ -1,9 +1,11 @@
 package ifpr.roteiropromo.core.interestPoint.service;
 
 
+import ifpr.roteiropromo.core.address.model.dtos.AddressDTO;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTO;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTOForm;
+import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointUpdateDTO;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.*;
 import ifpr.roteiropromo.core.interestPoint.repository.InterestPointRepository;
 import lombok.RequiredArgsConstructor;
@@ -77,9 +79,14 @@ public class InterestPointService {
         );
     }
 
-    public InterestPoint update(Long id, InterestPointDTO interestPointDTO){
+    public InterestPoint update(Long id, InterestPointUpdateDTO interestPointDTO){
         InterestPoint interestPointFound = getOne(id);
+        AddressDTO addressDTO = new AddressDTO();
+        addressDTO.setRoad(interestPointDTO.getRoad());
+        addressDTO.setNumber(interestPointDTO.getNumber());
+        addressDTO.setZipCode(interestPointDTO.getZipCode());
         modelMapper.map(interestPointDTO, interestPointFound);
+        modelMapper.map(addressDTO, interestPointFound.getAddress());
         try{
             return interestPointRepository.save(interestPointFound);
         }catch (Exception e){
