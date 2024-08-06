@@ -6,6 +6,8 @@ import ifpr.roteiropromo.core.enums.InterestPointType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -24,10 +26,12 @@ public abstract class InterestPoint {
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
-    //MUDAR VALOR PARA LONG
-    private Integer averageValue;
+
+    private Float averageValue;
     private String shortDescription;
     private String imageCoverUrl;
+    @ElementCollection
+    private List<String> images;
 
     @Enumerated(EnumType.STRING)
     private InterestPointType interestPointType;
