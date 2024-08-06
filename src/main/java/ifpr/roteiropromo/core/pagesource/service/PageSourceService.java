@@ -12,6 +12,9 @@ import ifpr.roteiropromo.core.pagesource.domain.InterestPointCardDTO;
 import ifpr.roteiropromo.core.pagesource.domain.TopGuideDTO;
 import ifpr.roteiropromo.core.review.domain.DTO.ReviewDTO;
 import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
+import ifpr.roteiropromo.core.user.domain.entities.Guide;
+import ifpr.roteiropromo.core.user.repository.GuideRepository;
+import ifpr.roteiropromo.core.user.service.GuideService;
 import ifpr.roteiropromo.core.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,15 +38,15 @@ public class PageSourceService {
     private final HotelRepository hotelRepository;
     private final EventRepository eventRepository;
     private final ModelMapper modelMapper;
-    private final UserService userService;
     private final AdminService adminService;
+    private final GuideService guideService;
 
     public HomePageDTO getHomePageData(){
         HomePageDTO homePageDTO = new HomePageDTO();
-        homePageDTO.setTop3InterestPoints(getTop3InterestPoints());
+        //homePageDTO.setTop3InterestPoints(getTop3InterestPoints());
         homePageDTO.setFirstSlider(getRandomPointsToFirstSlider()); ////pontos, roteiros ou experiencias
         homePageDTO.setSecondSlider(getRandomPointsToSecondSlider()); //restaurantes, hoteis e eventos
-        //homePageDTO.setTopGuides(getTop5Guides());
+        homePageDTO.setTopGuides(getTop5Guides());
         return homePageDTO;
     }
 
@@ -57,22 +61,31 @@ public class PageSourceService {
     private List<BasicPointDTO> getRandomEvents() {
         List<Event> events = eventRepository.findAll();
         Collections.shuffle(events);
-        List<Event> random3Events = events.subList(0, 3);
-        return mapList(random3Events, BasicPointDTO.class);
+        List<Event> random3events = new ArrayList<>();
+        for (int i = 0; i < Math.min(3, events.size()); i++) {
+            random3events.add(events.get(i));
+        }
+        return mapList(random3events, BasicPointDTO.class);
     }
 
     private List<BasicPointDTO> getRandomHotels() {
         List<Hotel> hotels = hotelRepository.findAll();
         Collections.shuffle(hotels);
-        List<Hotel> random3Hotels = hotels.subList(0, 3);
-        return mapList(random3Hotels, BasicPointDTO.class);
+        List<Hotel> random3hotels = new ArrayList<>();
+        for (int i = 0; i < Math.min(3, hotels.size()); i++) {
+            random3hotels.add(hotels.get(i));
+        }
+        return mapList(random3hotels, BasicPointDTO.class);
     }
 
     private List<BasicPointDTO> getRandomRestaurant() {
         List<Restaurant> restaurants = restaurantRepository.findAll();
         Collections.shuffle(restaurants);
-        List<Restaurant> random3Restaurants = restaurants.subList(0, 3);
-        return mapList(random3Restaurants, BasicPointDTO.class);
+        List<Restaurant> random3restaurants = new ArrayList<>();
+        for (int i = 0; i < Math.min(3, restaurants.size()); i++) {
+            random3restaurants.add(restaurants.get(i));
+        }
+        return mapList(random3restaurants, BasicPointDTO.class);
     }
 
     private List<BasicPointDTO> getRandomPointsToFirstSlider() {
@@ -86,23 +99,35 @@ public class PageSourceService {
     private List<BasicPointDTO> getRandomExperiences() {
         List<Experience> experiences = experienceRepository.findAll();
         Collections.shuffle(experiences);
-        List<Experience> random3Experiences = experiences.subList(0, 3);
-        return mapList(random3Experiences, BasicPointDTO.class);
+        List<Experience> random3Experience = new ArrayList<>();
+        for (int i = 0; i < Math.min(3, experiences.size()); i++) {
+            random3Experience.add(experiences.get(i));
+        }
+        return mapList(random3Experience, BasicPointDTO.class);
     }
 
     private List<BasicPointDTO> getRandomTouristPoints() {
         List<TouristPoint> touristPoints = touristPointRepository.findAll();
         Collections.shuffle(touristPoints);
-        List<TouristPoint> random3TouristPoints = touristPoints.subList(0, 3);
+        List<TouristPoint> random3TouristPoints = new ArrayList<>();
+        for (int i = 0; i < Math.min(3, touristPoints.size()); i++) {
+            random3TouristPoints.add(touristPoints.get(i));
+        }
         return mapList(random3TouristPoints, BasicPointDTO.class);
     }
 
     private List<BasicPointDTO> getRandomItineraries() {
         List<Itinerary> itineraries = itineraryRepository.findAll();
         Collections.shuffle(itineraries);
-        List<Itinerary> random3Itineraries = itineraries.subList(0, 3);
+        List<Itinerary> random3itineraries = new ArrayList<>();
+        for (int i = 0; i < Math.min(3, itineraries.size()); i++) {
+            random3itineraries.add(itineraries.get(i));
+        }
+
+
+
         List<BasicPointDTO> basicPointDTO = new ArrayList<>();
-        for (Itinerary itinerary : random3Itineraries) {
+        for (Itinerary itinerary : random3itineraries) {
             BasicPointDTO basicPoint = new BasicPointDTO();
             basicPoint.setId(itinerary.getId());
             basicPoint.setName(itinerary.getTitle());
@@ -113,7 +138,7 @@ public class PageSourceService {
     }
 
 
-    //AJUSTAR PARA CAPTURAR OS 3 PONTOS DO ARQUIVO DE CONFIGURAÇÃO
+//    //AJUSTAR PARA CAPTURAR OS 3 PONTOS DO ARQUIVO DE CONFIGURAÇÃO
 //    private List<InterestPointCardDTO> getTop3InterestPoints() {
 //        List<InterestPointCardDTO> top3InterestPoints = new ArrayList<>();
 //        InterestPoint cataratas = interestPointService.getOne(3L);
@@ -124,7 +149,7 @@ public class PageSourceService {
 //        top3InterestPoints.add(modelMapper.map(parque, InterestPointCardDTO.class));
 //        return top3InterestPoints;
 //    }
-
+//
     private List<InterestPointCardDTO> getTop3InterestPoints() {
         List<InterestPointCardDTO> top3InterestPoints = new ArrayList<>();
         List<InterestPoint> selectedInterestPoints = adminService.getSelectedInterestPoints();
@@ -132,7 +157,7 @@ public class PageSourceService {
             InterestPointCardDTO interestPointCardDTO = new InterestPointCardDTO();
             interestPointCardDTO.setId(interestPoint.getId());
             interestPointCardDTO.setName(interestPoint.getName());
-//            interestPointCardDTO.setDuration(interestPoint.getDuration());
+            //interestPointCardDTO.setDuration(interestPoint.getDuration());
             interestPointCardDTO.setImageCoverUrl(interestPoint.getImageCoverUrl());
             interestPointCardDTO.setaverageValue(1);
             top3InterestPoints.add(interestPointCardDTO);
@@ -141,27 +166,9 @@ public class PageSourceService {
     }
 
 
-    // ** Get Top Guides ** //
-//    private List<TopGuideDTO> getTop5Guides() {
-//        List<GuideDTO> topRatedGuides = userService.getTopRatedGuides(5);
-//
-//        return topRatedGuides.stream()
-//                .map(guideDTO -> {
-//                    TopGuideDTO topGuideDTO = new TopGuideDTO();
-//                    topGuideDTO.setId(guideDTO.getId());
-//                    topGuideDTO.setFirstName(guideDTO.getFirstName());
-//
-//                    // Calcular a média de rating
-//                    double averageRating = guideDTO.getReviews().stream()
-//                            .mapToDouble(ReviewDTO::getRating)
-//                            .average()
-//                            .orElse(0.0);
-//
-//                    topGuideDTO.setAverageRating(averageRating);
-//                    return topGuideDTO;
-//                })
-//                .collect(Collectors.toList());
-//    }
+    private List<TopGuideDTO> getTop5Guides() {
+        return guideService.getTopGuidesDTO();
+    }
 
 
 
