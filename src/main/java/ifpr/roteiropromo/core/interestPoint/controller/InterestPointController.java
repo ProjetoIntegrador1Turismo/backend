@@ -1,5 +1,6 @@
 package ifpr.roteiropromo.core.interestPoint.controller;
 
+import ifpr.roteiropromo.core.enums.InterestPointType;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTO;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTOForm;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointUpdateDTO;
@@ -61,8 +62,16 @@ public class InterestPointController {
 
     @GetMapping("/type")
     public ResponseEntity<List<InterestPointDTO>> getAllByType(@RequestParam String type) {
-        return ResponseEntity.ok(interestPointService.getAllByType(type));
+        InterestPointType interestPointType;
+        try {
+            interestPointType = InterestPointType.valueOf(type.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        return ResponseEntity.ok(interestPointService.getAllByType(interestPointType));
     }
+
 
 
 

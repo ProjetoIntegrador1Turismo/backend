@@ -24,7 +24,6 @@ public abstract class InterestPoint {
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
-    //MUDAR VALOR PARA LONG
     private Integer averageValue;
     private String shortDescription;
     private String imageCoverUrl;

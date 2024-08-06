@@ -12,6 +12,6 @@ public interface InterestPointRepository extends JpaRepository<InterestPoint, Lo
     InterestPoint getOnByName(String name);
 
 
-    List<InterestPoint> getAllByInterestPointType(String interestPointType);
+    List<InterestPoint> getAllByInterestPointType(InterestPointType interestPointType);
 
 }

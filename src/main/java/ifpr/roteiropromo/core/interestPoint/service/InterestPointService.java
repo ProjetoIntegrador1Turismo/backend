@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -126,16 +127,14 @@ public class InterestPointService {
         interestPointRepository.save(interestPointFound);
     }
 
-    public List<InterestPointDTO> getAllByType(String type){
-        String typeString;
-        try{
-            typeString = InterestPointType.valueOf(type).toString();
-        } catch (IllegalArgumentException e){
-            throw new ServiceError("Tipo de ponto de interesse não encontrado: " + type);
-        }
-
-        List<InterestPoint> interestPoints = interestPointRepository.getAllByInterestPointType(typeString);
-        return interestPoints.stream().map(interestPoint -> modelMapper.map(interestPoint, InterestPointDTO.class)).toList();
+    public List<InterestPointDTO> getAllByType(InterestPointType interestPointType) {
+        List<InterestPoint> interestPoints = interestPointRepository.getAllByInterestPointType(interestPointType);
+        return interestPoints.stream()
+                .map(interestPoint -> modelMapper.map(interestPoint, InterestPointDTO.class))
+                .collect(Collectors.toList());
     }
+
+
+
 
 }
