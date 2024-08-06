@@ -2,6 +2,7 @@ package ifpr.roteiropromo.core.interestPoint.controller;
 
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTO;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTOForm;
+import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointUpdateDTO;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
 import lombok.extern.log4j.Log4j2;
@@ -32,7 +33,7 @@ public class InterestPointController {
     }
 
     @GetMapping()
-    @PreAuthorize("hasRole('USER')")
+    //@PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<InterestPoint>> getAllInterestPoints(){
         return ResponseEntity.ok(interestPointService.getAll());
     }
@@ -53,9 +54,14 @@ public class InterestPointController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<InterestPoint> updateOneById(
             @PathVariable Long id,
-            @RequestBody InterestPointDTO interestPointDTO
+            @RequestBody InterestPointUpdateDTO interestPointDTO
     ){
         return ResponseEntity.ok(interestPointService.update(id, interestPointDTO));
+    }
+
+    @GetMapping("/type")
+    public ResponseEntity<List<InterestPointDTO>> getAllByType(@RequestParam String type) {
+        return ResponseEntity.ok(interestPointService.getAllByType(type));
     }
 
 

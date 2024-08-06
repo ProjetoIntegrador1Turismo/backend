@@ -1,9 +1,12 @@
 package ifpr.roteiropromo.core.interestPoint.service;
 
 
+import ifpr.roteiropromo.core.address.model.entities.Address;
+import ifpr.roteiropromo.core.enums.InterestPointType;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTO;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTOForm;
+import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointUpdateDTO;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.*;
 import ifpr.roteiropromo.core.interestPoint.repository.InterestPointRepository;
 import lombok.RequiredArgsConstructor;
@@ -77,8 +80,12 @@ public class InterestPointService {
         );
     }
 
-    public InterestPoint update(Long id, InterestPointDTO interestPointDTO){
+    public InterestPoint update(Long id, InterestPointUpdateDTO interestPointDTO){
         InterestPoint interestPointFound = getOne(id);
+
+        interestPointDTO.setRoad(interestPointFound.getAddress().getRoad());
+        interestPointDTO.setNumber(interestPointFound.getAddress().getNumber());
+        interestPointDTO.setZipCode(interestPointFound.getAddress().getZipCode());
         modelMapper.map(interestPointDTO, interestPointFound);
         try{
             return interestPointRepository.save(interestPointFound);
@@ -117,6 +124,18 @@ public class InterestPointService {
         InterestPoint interestPointFound = getOne(id);
         interestPointFound.setImageCoverUrl(imageUrl);
         interestPointRepository.save(interestPointFound);
+    }
+
+    public List<InterestPointDTO> getAllByType(String type){
+        String typeString;
+        try{
+            typeString = InterestPointType.valueOf(type).toString();
+        } catch (IllegalArgumentException e){
+            throw new ServiceError("Tipo de ponto de interesse não encontrado: " + type);
+        }
+
+        List<InterestPoint> interestPoints = interestPointRepository.getAllByInterestPointType(typeString);
+        return interestPoints.stream().map(interestPoint -> modelMapper.map(interestPoint, InterestPointDTO.class)).toList();
     }
 
 }
