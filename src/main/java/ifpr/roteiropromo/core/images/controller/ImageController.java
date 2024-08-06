@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("/file")
 public class ImageController {
@@ -37,6 +40,20 @@ public class ImageController {
             String imageUrl = imageService.saveImage(file);
             interestPointService.updateCoverImageUrl(id, imageUrl);
             return ResponseEntity.ok(imageUrl);
+        } catch (Exception e) {
+            throw new ServiceError("Could not upload image");
+        }
+    }
+
+    @PostMapping("/upload/interest-point/multiples")
+    public ResponseEntity<String> uploadInterestPointImages(@RequestParam List<MultipartFile> files, @RequestParam Long id) {
+        try {
+            List<String> imagesUrl = new ArrayList<>();
+            for (MultipartFile file: files ) {
+                imagesUrl.add(imageService.saveImage(file));
+            }
+            interestPointService.saveMultipleImages(id, imagesUrl);
+            return ResponseEntity.ok("Images saved");
         } catch (Exception e) {
             throw new ServiceError("Could not upload image");
         }

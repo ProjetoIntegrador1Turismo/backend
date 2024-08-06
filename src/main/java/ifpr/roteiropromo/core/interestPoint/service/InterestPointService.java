@@ -126,4 +126,9 @@ public class InterestPointService {
         interestPointRepository.save(interestPointFound);
     }
 
+    public void saveMultipleImages(Long id, List<String> imagesUrl) {
+        InterestPoint interestPoint = getOne(id);
+        interestPoint.getImages().addAll(imagesUrl);
+        interestPointRepository.save(interestPoint);
+    }
 }
