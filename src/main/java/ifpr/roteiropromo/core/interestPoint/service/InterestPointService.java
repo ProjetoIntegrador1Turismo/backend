@@ -2,6 +2,8 @@ package ifpr.roteiropromo.core.interestPoint.service;
 
 
 import ifpr.roteiropromo.core.address.model.dtos.AddressDTO;
+import ifpr.roteiropromo.core.address.model.entities.Address;
+import ifpr.roteiropromo.core.enums.InterestPointType;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTO;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTOForm;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -125,6 +128,16 @@ public class InterestPointService {
         interestPointFound.setImageCoverUrl(imageUrl);
         interestPointRepository.save(interestPointFound);
     }
+
+    public List<InterestPointDTO> getAllByType(InterestPointType interestPointType) {
+        List<InterestPoint> interestPoints = interestPointRepository.getAllByInterestPointType(interestPointType);
+        return interestPoints.stream()
+                .map(interestPoint -> modelMapper.map(interestPoint, InterestPointDTO.class))
+                .collect(Collectors.toList());
+    }
+
+
+
 
     public void saveMultipleImages(Long id, List<String> imagesUrl) {
         InterestPoint interestPoint = getOne(id);

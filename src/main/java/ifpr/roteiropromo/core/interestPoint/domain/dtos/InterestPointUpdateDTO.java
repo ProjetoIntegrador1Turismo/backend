@@ -20,4 +20,10 @@ public class InterestPointUpdateDTO {
     private Boolean isResort;
     private Boolean breakfastIncluded;
     private String foodType;
+<<<<<<< HEAD
+=======
+    private String date;
+    private String duration;
+    private String requiredAge;
+>>>>>>> origin/main
 }
