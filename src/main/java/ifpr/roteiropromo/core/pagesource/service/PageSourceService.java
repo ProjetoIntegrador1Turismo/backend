@@ -20,10 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,7 +40,7 @@ public class PageSourceService {
 
     public HomePageDTO getHomePageData(){
         HomePageDTO homePageDTO = new HomePageDTO();
-        //homePageDTO.setTop3InterestPoints(getTop3InterestPoints());
+        homePageDTO.setTop3InterestPoints(getTop3InterestPoints());
         homePageDTO.setFirstSlider(getRandomPointsToFirstSlider()); ////pontos, roteiros ou experiencias
         homePageDTO.setSecondSlider(getRandomPointsToSecondSlider()); //restaurantes, hoteis e eventos
         homePageDTO.setTopGuides(getTop5Guides());
@@ -151,18 +148,22 @@ public class PageSourceService {
 //    }
 //
     private List<InterestPointCardDTO> getTop3InterestPoints() {
-        List<InterestPointCardDTO> top3InterestPoints = new ArrayList<>();
-        List<InterestPoint> selectedInterestPoints = adminService.getSelectedInterestPoints();
-        for (InterestPoint interestPoint : selectedInterestPoints) {
-            InterestPointCardDTO interestPointCardDTO = new InterestPointCardDTO();
-            interestPointCardDTO.setId(interestPoint.getId());
-            interestPointCardDTO.setName(interestPoint.getName());
-            //interestPointCardDTO.setDuration(interestPoint.getDuration());
-            interestPointCardDTO.setImageCoverUrl(interestPoint.getImageCoverUrl());
-            interestPointCardDTO.setaverageValue(1);
-            top3InterestPoints.add(interestPointCardDTO);
+        List<TouristPoint> touristPoints = touristPointRepository.findAll();
+        List<Long> touristPointsIdSelected = adminService.getSelectedInterestPointsId();
+        List<TouristPoint> pointsFound = new ArrayList<>();
+        for (Long id : touristPointsIdSelected){
+            for (TouristPoint touristPoint : touristPoints){
+                if (Objects.equals(touristPoint.getId(), id)){
+                    pointsFound.add(touristPoint);
+                }
+            }
         }
-        return top3InterestPoints;
+        List<InterestPointCardDTO> interestPointCardDTOS = mapList(pointsFound, InterestPointCardDTO.class);
+        if (interestPointCardDTOS.size() < 3){
+            TouristPoint touristPoint = touristPoints.getLast();
+            interestPointCardDTOS.add(modelMapper.map(touristPoint, InterestPointCardDTO.class));
+        }
+        return interestPointCardDTOS;
     }
 
 
