@@ -47,6 +47,18 @@ public class AdminService {
         }
     }
 
+    public List<Long> getSelectedInterestPointsId() {
+        List<Long> selectedInterestPointIds;
+        try {
+            selectedInterestPointIds = readConfigFile().get("selectedInterestPoints");
+        } catch (IOException e) {
+            throw new ServiceError("Admin Service: Error reading selected interest points from the configuration file!");
+        }
+        return selectedInterestPointIds;
+    }
+
+
+
     public void updateSelectedInterestPoint(int index, Long newInterestPointId) throws IOException {
         Map<String, List<Long>> config = readConfigFile();
         List<Long> selectedInterestPointIds = config.get("selectedInterestPoints");
