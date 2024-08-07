@@ -25,9 +25,9 @@ public class InterestPointController {
     private final ImageService imageService;
 
 
-    public InterestPointController(InterestPointService interestPointService, ImageService imageService, ImageService imageService1){
+    public InterestPointController(InterestPointService interestPointService, ImageService imageService){
         this.interestPointService = interestPointService;
-        this.imageService = imageService1;
+        this.imageService = imageService;
     }
 
     //Cria um novo ponto de interesse com todos os dados
@@ -49,7 +49,6 @@ public class InterestPointController {
 
 
     @GetMapping()
-    //@PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<InterestPoint>> getAllInterestPoints(){
         return ResponseEntity.ok(interestPointService.getAll());
     }
@@ -60,7 +59,6 @@ public class InterestPointController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<InterestPoint> getOneById(@PathVariable Long id){
         return ResponseEntity.ok(interestPointService.getOne(id));
     }
