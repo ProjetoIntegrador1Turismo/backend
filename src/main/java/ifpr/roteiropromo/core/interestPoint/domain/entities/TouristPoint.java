@@ -14,5 +14,6 @@ public class TouristPoint extends InterestPoint{
 
     @Column(length = 500)
     private String longDescription;
+    private String duration;
 
 }
