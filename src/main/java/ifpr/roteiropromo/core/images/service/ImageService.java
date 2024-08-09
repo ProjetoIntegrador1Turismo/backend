@@ -1,6 +1,7 @@
 package ifpr.roteiropromo.core.images.service;
 
 
+import ifpr.roteiropromo.core.errors.ServiceError;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,11 +30,15 @@ public class ImageService {
         }
     }
 
-    public String saveImage(MultipartFile file) throws IOException {
-        String fileName = file.getOriginalFilename();
-        Path filePath = Paths.get(uploadDir, fileName);
-        Files.write(filePath, file.getBytes());
-        return "http://localhost:8081/uploads/" + fileName;
+    public String saveImage(MultipartFile file) {
+        try{
+            String fileName = file.getOriginalFilename();
+            Path filePath = Paths.get(uploadDir, fileName);
+            Files.write(filePath, file.getBytes());
+            return "http://localhost:8081/uploads/" + fileName;
+        }catch (IOException e){
+            throw new ServiceError("An error occurred when trying to store image!");
+        }
     }
 }
 
