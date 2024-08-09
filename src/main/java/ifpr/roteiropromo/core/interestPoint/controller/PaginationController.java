@@ -21,8 +21,18 @@ public class PaginationController {
     }
 
     @GetMapping("/events")
-    public Page<BasicGenericDTO> getEvent(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
-        return paginatedService.findPaginated(page, size);
+    public Page<BasicGenericDTO> getEvents(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
+        return paginatedService.findEventPaginated(page, size);
+    }
+
+    @GetMapping("/hotels")
+    public Page<BasicGenericDTO> getHotels(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
+        return paginatedService.findHotelPaginated(page, size);
+    }
+
+    @GetMapping("/experiences")
+    public Page<BasicGenericDTO> getExperiences(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
+        return paginatedService.findExperiencesPaginated(page, size);
     }
 
 
