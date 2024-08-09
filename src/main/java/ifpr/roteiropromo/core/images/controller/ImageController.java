@@ -7,7 +7,6 @@ import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
 import ifpr.roteiropromo.core.itinerary.service.ItineraryService;
 import ifpr.roteiropromo.core.user.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@Log4j2
 @RequestMapping("/file")
 public class ImageController {
 
@@ -46,16 +46,28 @@ public class ImageController {
     }
 
     @PostMapping("/upload/interest-point/multiples")
-    public ResponseEntity<String> uploadInterestPointImages(@RequestParam List<MultipartFile> files, @RequestParam Long id) {
-        try {
-            List<String> imagesUrl = new ArrayList<>();
-            for (MultipartFile file: files ) {
-                imagesUrl.add(imageService.saveImage(file));
+    public ResponseEntity<String> uploadInterestPointImages(
+            @RequestParam (required = false) MultipartFile imgCover,
+            @RequestParam (required = false) List<MultipartFile> files,
+            @RequestParam Long id)
+    {
+
+
+        if (imgCover.isEmpty() && files.get(0).isEmpty()){
+            throw new ServiceError("At least one image needs to be sent!");
+        }else {
+            if(!imgCover.isEmpty()){
+                String imageCover = imageService.saveImage(imgCover);
+                interestPointService.updateCoverImageUrl(id, imageCover);
             }
-            interestPointService.saveMultipleImages(id, imagesUrl);
+            if (!files.get(0).isEmpty()){
+                List<String> imagesUrl = new ArrayList<>();
+                for (MultipartFile file: files ) {
+                    imagesUrl.add(imageService.saveImage(file));
+                }
+                interestPointService.saveMultipleImages(id, imagesUrl);
+            }
             return ResponseEntity.ok("Images saved");
-        } catch (Exception e) {
-            throw new ServiceError("Could not upload image");
         }
     }
 
