@@ -11,20 +11,12 @@ public class InterestPointCardDTO implements Serializable {
 
     private Long id;
     private String name;
-    private String averageValue; //1, 2, 3
+    private Integer averageValue;
     private String duration;
     private String imageCoverUrl;
 
 
-    public void setaverageValue(Integer price) {
-        if(price <= 150){
-            this.averageValue = "1";
-        }else if (price <= 300){
-            this.averageValue = "2";
-        }else{
-            this.averageValue = "3";
-        }
-    }
+
 
 
 }
