@@ -37,6 +37,7 @@ class SecurityConfig {
                         .requestMatchers("/user/**").permitAll()
                         .requestMatchers("/file/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/interestpoint").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/paginated/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/page-source/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                         .anyRequest().authenticated()
