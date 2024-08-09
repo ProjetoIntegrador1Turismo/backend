@@ -15,7 +15,7 @@ public class InterestPointDTOForm {
     String interestPointType;
     String imageCoverUrl;
     String duration;
-    String averageValue;
+    Integer averageValue;
     AddressDTO address;
     String longDescription;
     String requiredAge;
