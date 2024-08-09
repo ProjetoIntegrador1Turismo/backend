@@ -27,7 +27,7 @@ public abstract class InterestPoint {
     private Address address;
 
 
-    private Float averageValue;
+    private Integer averageValue;
     private String shortDescription;
     private String imageCoverUrl;
     @ElementCollection
