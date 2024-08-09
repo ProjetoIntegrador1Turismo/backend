@@ -40,7 +40,7 @@ public class PageSourceService {
 
     public HomePageDTO getHomePageData(){
         HomePageDTO homePageDTO = new HomePageDTO();
-        //homePageDTO.setTop3InterestPoints(getTop3InterestPoints());
+        homePageDTO.setTop3InterestPoints(getTop3InterestPoints());
         homePageDTO.setFirstSlider(getRandomPointsToFirstSlider()); ////pontos, roteiros ou experiencias
         homePageDTO.setSecondSlider(getRandomPointsToSecondSlider()); //restaurantes, hoteis e eventos
         homePageDTO.setTopGuides(getTop5Guides());
@@ -135,33 +135,19 @@ public class PageSourceService {
     }
 
 
-//    //AJUSTAR PARA CAPTURAR OS 3 PONTOS DO ARQUIVO DE CONFIGURAÇÃO
-//    private List<InterestPointCardDTO> getTop3InterestPoints() {
-//        List<InterestPointCardDTO> top3InterestPoints = new ArrayList<>();
-//        InterestPoint cataratas = interestPointService.getOne(3L);
-//        InterestPoint itapu = interestPointService.getOne(4L);
-//        InterestPoint parque = interestPointService.getOne(2L);
-//        top3InterestPoints.add(modelMapper.map(cataratas, InterestPointCardDTO.class));
-//        top3InterestPoints.add(modelMapper.map(itapu, InterestPointCardDTO.class));
-//        top3InterestPoints.add(modelMapper.map(parque, InterestPointCardDTO.class));
-//        return top3InterestPoints;
-//    }
-//
-
-//
-//    private List<InterestPointCardDTO> getTop3InterestPoints() {
-//        List<TouristPoint> touristPoints = touristPointRepository.findAll();
-//        List<Long> touristPointsIdSelected = adminService.getSelectedInterestPointsId();
-//        List<TouristPoint> pointsFound = new ArrayList<>();
-//        for (Long id : touristPointsIdSelected){
-//            for (TouristPoint touristPoint : touristPoints){
-//                if (Objects.equals(touristPoint.getId(), id)){
-//                    pointsFound.add(touristPoint);
-//                }
-//            }
-//        }
-//        return mapList(pointsFound, InterestPointCardDTO.class);
-//    }
+    private List<InterestPointCardDTO> getTop3InterestPoints() {
+        List<TouristPoint> touristPoints = touristPointRepository.findAll();
+        List<Long> touristPointsIdSelected = adminService.getSelectedInterestPointsId();
+        List<TouristPoint> pointsFound = new ArrayList<>();
+        for (Long id : touristPointsIdSelected){
+            for (TouristPoint touristPoint : touristPoints){
+                if (Objects.equals(touristPoint.getId(), id)){
+                    pointsFound.add(touristPoint);
+                }
+            }
+        }
+        return mapList(pointsFound, InterestPointCardDTO.class);
+    }
 
 
     private List<TopGuideDTO> getTop5Guides() {
