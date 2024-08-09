@@ -2,12 +2,8 @@ package ifpr.roteiropromo.core.interestPoint.service;
 
 
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.simple.BasicGenericDTO;
-import ifpr.roteiropromo.core.interestPoint.domain.entities.Event;
-import ifpr.roteiropromo.core.interestPoint.domain.entities.Experience;
-import ifpr.roteiropromo.core.interestPoint.domain.entities.Hotel;
-import ifpr.roteiropromo.core.interestPoint.repository.EventRepository;
-import ifpr.roteiropromo.core.interestPoint.repository.ExperienceRepository;
-import ifpr.roteiropromo.core.interestPoint.repository.HotelRepository;
+import ifpr.roteiropromo.core.interestPoint.domain.entities.*;
+import ifpr.roteiropromo.core.interestPoint.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -23,6 +19,8 @@ public class PaginatedService {
     private final EventRepository eventRepository;
     private final HotelRepository hotelRepository;
     private final ExperienceRepository experienceRepository;
+    private final RestaurantRepository restaurantRepository;
+    private final TouristPointRepository touristPointRepository;
 
     public Page<BasicGenericDTO> findEventPaginated(int page, int size){
         Pageable pageable = PageRequest.of(page, size);
@@ -54,6 +52,28 @@ public class PaginatedService {
                 exp.getImageCoverUrl(),
                 exp.getName(),
                 exp.getShortDescription()
+        ));
+    }
+
+    public Page<BasicGenericDTO> findRestaurantsPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Restaurant> restoPage = restaurantRepository.findAll(pageable);
+        return restoPage.map(resto -> new BasicGenericDTO(
+                resto.getId(),
+                resto.getImageCoverUrl(),
+                resto.getName(),
+                resto.getShortDescription()
+        ));
+    }
+
+    public Page<BasicGenericDTO> findTouristPointsPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<TouristPoint> touristPointPage = touristPointRepository.findAll(pageable);
+        return touristPointPage.map(touristPoint -> new BasicGenericDTO(
+                touristPoint.getId(),
+                touristPoint.getImageCoverUrl(),
+                touristPoint.getName(),
+                touristPoint.getShortDescription()
         ));
     }
 }

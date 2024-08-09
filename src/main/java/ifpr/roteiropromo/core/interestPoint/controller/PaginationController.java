@@ -35,6 +35,16 @@ public class PaginationController {
         return paginatedService.findExperiencesPaginated(page, size);
     }
 
+    @GetMapping("/restaurants")
+    public Page<BasicGenericDTO> getRestaurants(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
+        return paginatedService.findRestaurantsPaginated(page, size);
+    }
+
+    @GetMapping("/tourist-points")
+    public Page<BasicGenericDTO> getTouristPoints(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
+        return paginatedService.findTouristPointsPaginated(page, size);
+    }
+
 
 
 
