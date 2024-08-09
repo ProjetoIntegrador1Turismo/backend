@@ -9,7 +9,7 @@ public class InterestPointUpdateDTO {
     private String shortDescription;
     private String interestPointType;
     private String duration;
-    private String averageValue;
+    private Integer averageValue;
     private String road;
     private String number;
     private String zipCode;
