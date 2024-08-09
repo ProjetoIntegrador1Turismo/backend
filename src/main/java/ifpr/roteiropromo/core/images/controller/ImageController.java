@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@Log4j2
 @RequestMapping("/file")
 public class ImageController {
 
