@@ -22,9 +22,14 @@ public class PaginatedService {
     private final RestaurantRepository restaurantRepository;
     private final TouristPointRepository touristPointRepository;
 
-    public Page<BasicGenericDTO> findEventPaginated(int page, int size){
+    public Page<BasicGenericDTO> findEventPaginated(int page, int size, String name){
         Pageable pageable = PageRequest.of(page, size);
-        Page<Event> eventPage = eventRepository.findAll(pageable);
+        Page<Event> eventPage;
+        if (name.isEmpty()){
+            eventPage = eventRepository.findAll(pageable);
+        } else {
+            eventPage = eventRepository.findByNameContainingIgnoreCase(name, pageable);
+        }
         return eventPage.map(event -> new BasicGenericDTO(
                 event.getId(),
                 event.getImageCoverUrl(),
@@ -33,9 +38,14 @@ public class PaginatedService {
         ));
     }
 
-    public Page<BasicGenericDTO> findHotelPaginated(int page, int size) {
+    public Page<BasicGenericDTO> findHotelPaginated(int page, int size, String name) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Hotel> hotelPage = hotelRepository.findAll(pageable);
+        Page<Hotel> hotelPage;
+        if (name.isEmpty()){
+            hotelPage = hotelRepository.findAll(pageable);
+        } else {
+            hotelPage = hotelRepository.findByNameContainingIgnoreCase(name, pageable);
+        }
         return hotelPage.map(hotel -> new BasicGenericDTO(
                 hotel.getId(),
                 hotel.getImageCoverUrl(),
@@ -44,9 +54,14 @@ public class PaginatedService {
         ));
     }
 
-    public Page<BasicGenericDTO> findExperiencesPaginated(int page, int size) {
+    public Page<BasicGenericDTO> findExperiencesPaginated(int page, int size, String name) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Experience> experiencePage = experienceRepository.findAll(pageable);
+        Page<Experience> experiencePage;
+        if (name.isEmpty()){
+            experiencePage = experienceRepository.findAll(pageable);
+        } else {
+            experiencePage = experienceRepository.findByNameContainingIgnoreCase(name, pageable);
+        }
         return experiencePage.map(exp -> new BasicGenericDTO(
                 exp.getId(),
                 exp.getImageCoverUrl(),
@@ -55,9 +70,14 @@ public class PaginatedService {
         ));
     }
 
-    public Page<BasicGenericDTO> findRestaurantsPaginated(int page, int size) {
+    public Page<BasicGenericDTO> findRestaurantsPaginated(int page, int size, String name) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Restaurant> restoPage = restaurantRepository.findAll(pageable);
+        Page<Restaurant> restoPage;
+        if (name.isEmpty()){
+            restoPage = restaurantRepository.findAll(pageable);
+        }else {
+            restoPage = restaurantRepository.findByNameContainingIgnoreCase(name, pageable);
+        }
         return restoPage.map(resto -> new BasicGenericDTO(
                 resto.getId(),
                 resto.getImageCoverUrl(),
@@ -66,9 +86,14 @@ public class PaginatedService {
         ));
     }
 
-    public Page<BasicGenericDTO> findTouristPointsPaginated(int page, int size) {
+    public Page<BasicGenericDTO> findTouristPointsPaginated(int page, int size, String name) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<TouristPoint> touristPointPage = touristPointRepository.findAll(pageable);
+        Page<TouristPoint> touristPointPage;
+        if (name.isEmpty()){
+            touristPointPage = touristPointRepository.findAll(pageable);
+        }else {
+            touristPointPage = touristPointRepository.findByNameContainingIgnoreCase(name, pageable);
+        }
         return touristPointPage.map(touristPoint -> new BasicGenericDTO(
                 touristPoint.getId(),
                 touristPoint.getImageCoverUrl(),

@@ -21,28 +21,28 @@ public class PaginationController {
     }
 
     @GetMapping("/events")
-    public Page<BasicGenericDTO> getEvents(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
-        return paginatedService.findEventPaginated(page, size);
+    public Page<BasicGenericDTO> getEvents(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @RequestParam(defaultValue = "") String query){
+        return paginatedService.findEventPaginated(page, size, query);
     }
 
     @GetMapping("/hotels")
-    public Page<BasicGenericDTO> getHotels(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
-        return paginatedService.findHotelPaginated(page, size);
+    public Page<BasicGenericDTO> getHotels(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @RequestParam(defaultValue = "") String query){
+        return paginatedService.findHotelPaginated(page, size ,query);
     }
 
     @GetMapping("/experiences")
-    public Page<BasicGenericDTO> getExperiences(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
-        return paginatedService.findExperiencesPaginated(page, size);
+    public Page<BasicGenericDTO> getExperiences(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @RequestParam(defaultValue = "") String query){
+        return paginatedService.findExperiencesPaginated(page, size, query);
     }
 
     @GetMapping("/restaurants")
-    public Page<BasicGenericDTO> getRestaurants(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
-        return paginatedService.findRestaurantsPaginated(page, size);
+    public Page<BasicGenericDTO> getRestaurants(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @RequestParam(defaultValue = "") String query){
+        return paginatedService.findRestaurantsPaginated(page, size, query);
     }
 
     @GetMapping("/tourist-points")
-    public Page<BasicGenericDTO> getTouristPoints(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
-        return paginatedService.findTouristPointsPaginated(page, size);
+    public Page<BasicGenericDTO> getTouristPoints(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @RequestParam(defaultValue = "") String query){
+        return paginatedService.findTouristPointsPaginated(page, size, query);
     }
 
 
