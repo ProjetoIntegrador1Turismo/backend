@@ -27,52 +27,52 @@ public class AdminService {
     private final File configFile = new File("src/main/resources/selectedInterestPoints.json");
 
 
-    public void selectInterestPoints(List<Long> interestPointIds) throws IOException {
-        Map<String, List<Long>> config = new HashMap<>();
-        config.put("selectedInterestPoints", interestPointIds);
-        objectMapper.writeValue(configFile, config);
-    }
+//    public void selectInterestPoints(List<Long> interestPointIds) throws IOException {
+//        Map<String, List<Long>> config = new HashMap<>();
+//        config.put("selectedInterestPoints", interestPointIds);
+//        objectMapper.writeValue(configFile, config);
+//    }
+//
+//    public List<InterestPoint> getSelectedInterestPoints() {
+//        List<Long> selectedInterestPointIds;
+//        try {
+//            selectedInterestPointIds = readConfigFile().get("selectedInterestPoints");
+//        } catch (IOException e) {
+//            throw new ServiceError("Admin Service: Error reading selected interest points from the configuration file!");
+//        }
+//        try{
+//            return interestPointService.findAllByIds(selectedInterestPointIds);
+//        } catch (Exception e){
+//            throw new ServiceError("Admin Service: Error fetching interest points from configuration file (probably doesn't exist!)");
+//        }
+//    }
+//
+//    public List<Long> getSelectedInterestPointsId() {
+//        List<Long> selectedInterestPointIds;
+//        try {
+//            selectedInterestPointIds = readConfigFile().get("selectedInterestPoints");
+//        } catch (IOException e) {
+//            throw new ServiceError("Admin Service: Error reading selected interest points from the configuration file!");
+//        }
+//        return selectedInterestPointIds;
+//    }
+//
+//
+//
+//    public void updateSelectedInterestPoint(int index, Long newInterestPointId) throws IOException {
+//        Map<String, List<Long>> config = readConfigFile();
+//        List<Long> selectedInterestPointIds = config.get("selectedInterestPoints");
+//        selectedInterestPointIds.set(index, newInterestPointId);
+//        objectMapper.writeValue(configFile, config);
+//    }
 
-    public List<InterestPoint> getSelectedInterestPoints() {
-        List<Long> selectedInterestPointIds;
-        try {
-            selectedInterestPointIds = readConfigFile().get("selectedInterestPoints");
-        } catch (IOException e) {
-            throw new ServiceError("Admin Service: Error reading selected interest points from the configuration file!");
-        }
-        try{
-            return interestPointService.findAllByIds(selectedInterestPointIds);
-        } catch (Exception e){
-            throw new ServiceError("Admin Service: Error fetching interest points from configuration file (probably doesn't exist!)");
-        }
-    }
-
-    public List<Long> getSelectedInterestPointsId() {
-        List<Long> selectedInterestPointIds;
-        try {
-            selectedInterestPointIds = readConfigFile().get("selectedInterestPoints");
-        } catch (IOException e) {
-            throw new ServiceError("Admin Service: Error reading selected interest points from the configuration file!");
-        }
-        return selectedInterestPointIds;
-    }
-
-
-
-    public void updateSelectedInterestPoint(int index, Long newInterestPointId) throws IOException {
-        Map<String, List<Long>> config = readConfigFile();
-        List<Long> selectedInterestPointIds = config.get("selectedInterestPoints");
-        selectedInterestPointIds.set(index, newInterestPointId);
-        objectMapper.writeValue(configFile, config);
-    }
-
-    private Map<String, List<Long>> readConfigFile() throws IOException {
-        if (configFile.length() == 0) {
-            return new HashMap<String, List<Long>>() {{
-                put("selectedInterestPoints", new ArrayList<>());
-            }};
-        } else {
-            return objectMapper.readValue(configFile, Map.class);
-        }
-    }
+//    private Map<String, List<Long>> readConfigFile() throws IOException {
+//        if (configFile.length() == 0) {
+//            return new HashMap<String, List<Long>>() {{
+//                put("selectedInterestPoints", new ArrayList<>());
+//            }};
+//        } else {
+//            return objectMapper.readValue(configFile, Map.class);
+//        }
+//    }
 }

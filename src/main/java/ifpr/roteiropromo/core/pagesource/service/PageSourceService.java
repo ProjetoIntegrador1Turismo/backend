@@ -137,16 +137,18 @@ public class PageSourceService {
 
     private List<InterestPointCardDTO> getTop3InterestPoints() {
         List<TouristPoint> touristPoints = touristPointRepository.findAll();
-        List<Long> touristPointsIdSelected = adminService.getSelectedInterestPointsId();
-        List<TouristPoint> pointsFound = new ArrayList<>();
-        for (Long id : touristPointsIdSelected){
-            for (TouristPoint touristPoint : touristPoints){
-                if (Objects.equals(touristPoint.getId(), id)){
-                    pointsFound.add(touristPoint);
-                }
+        List<String> names = new ArrayList<>();
+        names.add("Cataratas do Iguaçu");
+        names.add("Parque das Aves");
+        names.add("Itaipu Binacional");
+        List<InterestPointCardDTO> interestPointCardDTOS = new ArrayList<>();
+        for (String name : names){
+            Optional<TouristPoint> touristPoint = touristPoints.stream().filter(point -> point.getName().equals(name)).findAny();
+            if (touristPoint.isPresent()){
+                interestPointCardDTOS.add(modelMapper.map(touristPoint.get(), InterestPointCardDTO.class));
             }
         }
-        return mapList(pointsFound, InterestPointCardDTO.class);
+        return interestPointCardDTOS;
     }
 
 
