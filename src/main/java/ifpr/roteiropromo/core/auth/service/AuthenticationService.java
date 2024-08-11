@@ -19,6 +19,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -36,13 +37,16 @@ public class AuthenticationService {
             throw new ServiceError("No user found with this email: " + user.getUsername());
         }else {
             AuthenticatedUserDTO authenticatedUserDTO = new AuthenticatedUserDTO();
-            String userToken = validateUserLoginDataAndGetToken(user);
+            Map<String,String> userTokenData = validateUserLoginDataAndGetToken(user);
             User userEntity = userService.getOneByEmail(user.getUsername());
-            authenticatedUserDTO.setAuthToken(userToken);
+            authenticatedUserDTO.setAuthToken(userTokenData.get("authToken"));
             authenticatedUserDTO.setFirstName(userEntity.getFirstName());
             authenticatedUserDTO.setEmail(userEntity.getEmail());
             authenticatedUserDTO.setLastName(userEntity.getLastName());
             authenticatedUserDTO.setUserType(getUserType(userEntity));
+            authenticatedUserDTO.setRefreshToken(userTokenData.get("refreshToken"));
+            authenticatedUserDTO.setAuthTokenExpiresIn(userTokenData.get("authTokenExpiresIn"));
+            authenticatedUserDTO.setRefreshTokenExpiresIn("refreshTokenExpiresIn");
             return authenticatedUserDTO;
         }
     }
@@ -59,14 +63,20 @@ public class AuthenticationService {
         }
     }
 
-    private String validateUserLoginDataAndGetToken(UserAuthenticationDTO user){
+    private Map<String, String> validateUserLoginDataAndGetToken(UserAuthenticationDTO user){
         try {
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity<MultiValueMap<String, String>> entityToRequestKeycloak = new HttpEntity<>(buildFormRequestWithUserData(user), buildHeaderRequest());
             ResponseEntity<Map> response = restTemplate.postForEntity(
                     "http://localhost:8080/realms/SpringBootKeycloak/protocol/openid-connect/token",
                     entityToRequestKeycloak, Map.class);
-            return (String) response.getBody().get("access_token");
+            Map<String, String> tokenData = new HashMap<>();
+            tokenData.put("authToken", response.getBody().get("access_token").toString());
+            tokenData.put("authTokenExpiresIn", response.getBody().get("expires_in").toString());
+            tokenData.put("refreshToken", response.getBody().get("refresh_token").toString());
+            tokenData.put("refreshTokenExpiresIn", response.getBody().get("refresh_expires_in").toString());
+            log.info(tokenData);
+            return tokenData;
         } catch (Exception e) {
             throw new ServiceError("Invalid username or password.");
         }

@@ -11,5 +11,8 @@ public class AuthenticatedUserDTO {
     private String email;
     private String userType;
     private String authToken;
+    private String authTokenExpiresIn;
+    private String refreshToken;
+    private String refreshTokenExpiresIn;
 
 }
