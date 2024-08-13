@@ -16,8 +16,13 @@ public class PaginationController {
     private final PaginatedService paginatedService;
 
 
-    public PaginationController(PaginatedService eventService) {
-        this.paginatedService = eventService;
+    public PaginationController(PaginatedService paginatedService) {
+        this.paginatedService = paginatedService;
+    }
+
+    @GetMapping("/all")
+    public Page<BasicGenericDTO> getAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @RequestParam(defaultValue = "") String query){
+        return paginatedService.findAllPaginated(page, size, query);
     }
 
     @GetMapping("/events")

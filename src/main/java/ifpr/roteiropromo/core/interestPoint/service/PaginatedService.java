@@ -21,6 +21,7 @@ public class PaginatedService {
     private final ExperienceRepository experienceRepository;
     private final RestaurantRepository restaurantRepository;
     private final TouristPointRepository touristPointRepository;
+    private final InterestPointRepository interestPointRepository;
 
     public Page<BasicGenericDTO> findEventPaginated(int page, int size, String name){
         Pageable pageable = PageRequest.of(page, size);
@@ -99,6 +100,22 @@ public class PaginatedService {
                 touristPoint.getImageCoverUrl(),
                 touristPoint.getName(),
                 touristPoint.getShortDescription()
+        ));
+    }
+
+    public Page<BasicGenericDTO> findAllPaginated(int page, int size, String name) {
+        Pageable pageable = PageRequest.of(page,size);
+        Page<InterestPoint> interestPointsPage;
+        if(name.isEmpty()){
+            interestPointsPage = interestPointRepository.findAll(pageable);
+        }else {
+            interestPointsPage = interestPointRepository.findByNameContainingIgnoreCase(name, pageable);
+        }
+        return interestPointsPage.map(interestPoint -> new BasicGenericDTO(
+                interestPoint.getId(),
+                interestPoint.getImageCoverUrl(),
+                interestPoint.getName(),
+                interestPoint.getShortDescription()
         ));
     }
 }
