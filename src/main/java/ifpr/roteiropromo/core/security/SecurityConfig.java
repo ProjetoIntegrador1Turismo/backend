@@ -23,8 +23,6 @@ import org.springframework.web.cors.CorsUtils;
 @Profile(value = {"!application-test"})
 class SecurityConfig {
 
-    //Configuração da cadeia de segurança. Foi desabilitada a exigencia de authenticação de forma geral.
-    //A necessidade de autenticação, bem como, a permissão, será realizada com a anotação @PreAuthorize("hasRole('ADMIN')")
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -59,33 +57,3 @@ class SecurityConfig {
 
 }
 
-
-
-//http.authorizeHttpRequests(auth -> auth
-//        .requestMatchers(new AntPathRequestMatcher("/itinerary"))
-//        .authenticated()
-//        .requestMatchers(new AntPathRequestMatcher("/authentication"))
-//        .permitAll());
-//
-//        http.oauth2ResourceServer((oauth2) -> oauth2
-//        .jwt(Customizer.withDefaults()));
-//
-//        return http.build();
-
-
-/* Metodo original
-* public SecurityFilterChain resourceServerFilterChain(HttpSecurity http) throws Exception {
-
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(
-                        jwt -> jwt.jwtAuthenticationConverter(new JwtConverter())
-                        )
-                );
-        return http.build();
-    }
-*
-*
-*
-*
-* */
