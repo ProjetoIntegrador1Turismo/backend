@@ -1,6 +1,7 @@
 package ifpr.roteiropromo.core.itinerary.domain.dto;
 
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTO;
+import ifpr.roteiropromo.core.interestPoint.domain.dtos.simple.BasicGenericDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,5 +19,5 @@ public class ItineraryDTO {
     private String description;
     private Float mediumCost;
     private Integer days;
-    private List<InterestPointDTO> interestPoints;
+    private List<BasicGenericDTO> interestPoints;
 }
