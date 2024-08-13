@@ -3,6 +3,7 @@ package ifpr.roteiropromo.core.user.service;
 import ifpr.roteiropromo.core.pagesource.domain.TopGuideDTO;
 import ifpr.roteiropromo.core.review.domain.entities.Review;
 import ifpr.roteiropromo.core.review.repository.ReviewRepository;
+import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.repository.GuideRepository;
@@ -59,6 +60,10 @@ public class GuideService {
                         (e1, e2) -> e1,
                         LinkedHashMap::new
                 ));
+    }
+
+    public List<Guide> getGuidesWhoOfferTour(Long id){
+         return guideRepository.findGuidesByInterestPoint(id);
     }
 
     private Map<Long, Double> calculateAverageRatingForEachGuide(List<Review> reviews) {
