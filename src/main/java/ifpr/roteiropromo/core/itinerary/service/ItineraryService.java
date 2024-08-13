@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,15 +36,26 @@ public class ItineraryService {
 
     public ItineraryDTO create(ItineraryDTOForm itineraryDTOForm) {
         Guide guideFound = getGuideAuthenticated();
-        if (guideFound == null) {
-            throw new ServiceError("Guia não encontrado");
-        }
-
-        Itinerary newItinerary = modelMapper.map(itineraryDTOForm, Itinerary.class);
+        Itinerary newItinerary = fillItineraryDataAndPoints(itineraryDTOForm);
         Itinerary itinerarySaved = itineraryRepository.save(newItinerary);
         guideFound.getItineraries().add(itinerarySaved);
         userRepository.save(guideFound);
         return modelMapper.map(itinerarySaved, ItineraryDTO.class);
+    }
+
+    private Itinerary fillItineraryDataAndPoints(ItineraryDTOForm itineraryDTOForm) {
+        Itinerary itinerary = modelMapper.map(itineraryDTOForm, Itinerary.class);
+        List<InterestPoint> interestPoints = getInterestPoints(itineraryDTOForm.getInterestPointsId());
+        itinerary.setInterestPoints(interestPoints);
+        return itinerary;
+    }
+
+    private List<InterestPoint> getInterestPoints(List<Long> interestPointsId) {
+        List<InterestPoint> interestPoints = new ArrayList<>();
+        for (Long interestId : interestPointsId){
+            interestPoints.add(interestPointService.getOne(interestId));
+        }
+        return interestPoints;
     }
 
     public ItineraryDTO update(Long id, ItineraryUpdateDTO itineraryDTO) {
