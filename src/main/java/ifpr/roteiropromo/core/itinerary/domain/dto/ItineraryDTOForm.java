@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -15,5 +17,6 @@ public class ItineraryDTOForm {
     private String description;
     private Float mediumCost;
     private Integer days;
+    private List<Long> interestPointsId;
 
 }
