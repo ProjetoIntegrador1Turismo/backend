@@ -35,7 +35,8 @@ public class PaginatedService {
                 event.getId(),
                 event.getImageCoverUrl(),
                 event.getName(),
-                event.getShortDescription()
+                event.getShortDescription(),
+                event.getInterestPointType()
         ));
     }
 
@@ -51,7 +52,8 @@ public class PaginatedService {
                 hotel.getId(),
                 hotel.getImageCoverUrl(),
                 hotel.getName(),
-                hotel.getShortDescription()
+                hotel.getShortDescription(),
+                hotel.getInterestPointType()
         ));
     }
 
@@ -67,7 +69,8 @@ public class PaginatedService {
                 exp.getId(),
                 exp.getImageCoverUrl(),
                 exp.getName(),
-                exp.getShortDescription()
+                exp.getShortDescription(),
+                exp.getInterestPointType()
         ));
     }
 
@@ -83,7 +86,8 @@ public class PaginatedService {
                 resto.getId(),
                 resto.getImageCoverUrl(),
                 resto.getName(),
-                resto.getShortDescription()
+                resto.getShortDescription(),
+                resto.getInterestPointType()
         ));
     }
 
@@ -99,7 +103,8 @@ public class PaginatedService {
                 touristPoint.getId(),
                 touristPoint.getImageCoverUrl(),
                 touristPoint.getName(),
-                touristPoint.getShortDescription()
+                touristPoint.getShortDescription(),
+                touristPoint.getInterestPointType()
         ));
     }
 
@@ -115,7 +120,8 @@ public class PaginatedService {
                 interestPoint.getId(),
                 interestPoint.getImageCoverUrl(),
                 interestPoint.getName(),
-                interestPoint.getShortDescription()
+                interestPoint.getShortDescription(),
+                interestPoint.getInterestPointType()
         ));
     }
 }
