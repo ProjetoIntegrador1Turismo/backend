@@ -1,7 +1,6 @@
 package ifpr.roteiropromo.core.admin.controller;
 
 import ifpr.roteiropromo.core.admin.service.AdminService;
-import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.service.UserService;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -18,40 +16,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminController {
 
-    private final AdminService adminService;
     private final UserService userService;
-
-    //ROTA DUPLICADA - UTILIZAR A ROTA /selected-interest-points
-//    @GetMapping("/selected-interest-points-details")
-//    public ResponseEntity<List<InterestPoint>> getSelectedInterestPointsDetails() throws IOException {
-//        List<InterestPoint> selectedInterestPoints = adminService.getSelectedInterestPointsDetails();
-//        return ResponseEntity.ok(selectedInterestPoints);
-//    }
-
-    //TESTAR - E SE MANDAR NESSA ROTA OS VALORES 2 VEZES?
-//    @PostMapping("/select-interest-points")
-//    public ResponseEntity<Void> selectInterestPoints(@RequestBody List<Long> interestPointIds) throws IOException {
-//        adminService.selectInterestPoints(interestPointIds);
-//        return ResponseEntity.ok().build();
-//    }
-
-//    @GetMapping("/selected-interest-points")
-//    public ResponseEntity<List<InterestPoint>> getSelectedInterestPoints() {
-//        List<InterestPoint> selectedInterestPoints = adminService.getSelectedInterestPoints();
-//        return ResponseEntity.ok(selectedInterestPoints);
-//    }
-
-//    @PutMapping("/selected-interest-points/{index}/{newInterestPointId}")
-//    public ResponseEntity<Void> updateSelectedInterestPoint(@PathVariable int index, @PathVariable Long newInterestPointId) throws IOException {
-//        adminService.updateSelectedInterestPoint(index, newInterestPointId);
-//        return ResponseEntity.ok().build();
-//    }
+    private final AdminService adminService;
 
 
     @GetMapping("/unapproved-guides")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<GuideDTO>> getAllUnapprovedGuides(){
-        return ResponseEntity.ok(userService.getAllUnapprovedGuides());
+        //return ResponseEntity.ok(userService.getAllUnapprovedGuides());
+        return ResponseEntity.ok(adminService.getAllUnapprovedGuides());
     }
 
 
@@ -59,7 +32,8 @@ public class AdminController {
     @PutMapping("/approve-guide/{guideId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Guide> approveGuide(@PathVariable Long guideId) {
-        Guide guide = userService.approveGuide(guideId);
+        //Guide guide = userService.approveGuide(guideId);
+        Guide guide = adminService.approveGuide(guideId);
         return ResponseEntity.ok(guide);
     }
 
@@ -67,7 +41,8 @@ public class AdminController {
     @PutMapping("/disapprove-guide/{guideId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Guide> disapproveGuide(@PathVariable Long guideId) {
-        Guide guide = userService.disapproveGuide(guideId);
+//        Guide guide = userService.disapproveGuide(guideId);
+        Guide guide = adminService.disapproveGuide(guideId);
         return ResponseEntity.ok(guide);
     }
 

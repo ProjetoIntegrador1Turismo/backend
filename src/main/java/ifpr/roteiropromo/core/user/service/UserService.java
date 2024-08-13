@@ -183,18 +183,6 @@ public class UserService {
     }
 
 
-    public Guide createGuide(UserDTOForm userDTOForm) {
-        if (userDTOForm.getCadasturCode() == null || userDTOForm.getCadasturCode().isEmpty()) {
-            throw new ServiceError("CadasturCode é necessário para se cadastrar como guia!");
-        }
-        Guide guide = mapper.map(userDTOForm, Guide.class);
-        guide.setUserName(userDTOForm.getFirstName());
-        guide.setCadasturCode(userDTOForm.getCadasturCode());
-        guide.setIsApproved(false);
-        return userRepository.save(guide);
-    }
-
-
     public UserDTO updateUser(UserDTOUpdate userDTOUpdate) {
         User user = userRepository.getOneByEmail(userDTOUpdate.getEmail());
         if (user == null) {
@@ -223,52 +211,6 @@ public class UserService {
         userRepository.save(userFound);
     }
 
-    //////////////////////////////////////////////////
-    //////////////////////////////////////////////////
-    // Métodos relacionados aos GUIDES:
-    //////////////////////////////////////////////////
-    //////////////////////////////////////////////////
-
-    public List<GuideDTO> getAllUnapprovedGuides() {
-        List<Guide> guides = userRepository.findAllUnapprovedGuides();
-        return guides.stream()
-                .map(guide -> modelMapper.map(guide, GuideDTO.class))
-                .collect(Collectors.toList());
-    }
-
-    public Guide approveGuide(Long id) {
-        Guide guide = this.findGuideById(id);
-
-        if (guide.getIsApproved()) {
-            throw new ServiceError("Guide já está aprovado!");
-        }
-
-        // Adicionando role GUIDE no keycloak:
-        try {
-            String userId = getUserIdFromKeycloak(guide);
-            this.addRoleToUser(userId, jwtTokenHandler.getAdminToken(), "GUIA");
-        } catch (Exception e) {
-            throw new ServiceError("Failed to assign role to user: " + e.getMessage());
-        }
-
-        guide.setIsApproved(true);
-        userRepository.save(guide);
-
-        return guide;
-    }
-
-
-    public Guide disapproveGuide(Long guideId) {
-        Guide guide = findGuideById(guideId);
-        if (guide == null){
-            throw new ServiceError("Guide não encontrado.");
-        }
-        if (!guide.getIsApproved()){
-            throw new ServiceError("Guide já está desativado!");
-        }
-        guide.setIsApproved(false);
-        return userRepository.save(guide);
-    }
 
 
     //////////////////////////////////////////////////
@@ -302,7 +244,7 @@ public class UserService {
         return new HttpEntity<>(userJson, httpHeaders);
     }
 
-    private String getUserIdFromKeycloak(User user) {
+    public String getUserIdFromKeycloak(User user) {
         RestTemplate restTemplate = new RestTemplate();
         String keycloakUrl = "http://localhost:8080/admin/realms/SpringBootKeycloak/users?search=" + user.getEmail();
         String token = jwtTokenHandler.getAdminToken();
@@ -374,7 +316,7 @@ public class UserService {
     }
 
 
-    void addRoleToUser(String userId, String adminMasterToken, String roleName) {
+    public void addRoleToUser(String userId, String adminMasterToken, String roleName) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
