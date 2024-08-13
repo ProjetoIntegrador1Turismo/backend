@@ -10,6 +10,7 @@ import lombok.ToString;
 @ToString
 public class InterestPointDTO {
 
+    private Long id;
     private String name;
     private AddressDTO address;
     private Integer averageValue;
