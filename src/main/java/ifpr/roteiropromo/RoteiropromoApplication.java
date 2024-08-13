@@ -1,5 +1,6 @@
 package ifpr.roteiropromo;
 
+import ifpr.roteiropromo.core.config.EnvConfig;
 import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 public class RoteiropromoApplication {
 
 	public static void main(String[] args) {
+		EnvConfig.loadEnvFile();
 		SpringApplication.run(RoteiropromoApplication.class, args);
 	}
 

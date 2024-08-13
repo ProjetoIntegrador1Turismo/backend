@@ -12,8 +12,8 @@ spring:
 #    active: application-test
   datasource:
     url: jdbc:mysql://localhost:3307/roteiro?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: projeto
-    password: 12345
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
@@ -50,9 +50,10 @@ spring:
 
 logging:
   level:
-#    org.springframework.web: DEBUG
+    org.springframework.web: DEBUG
     org.springframework.security: DEBUG
     ifpr:
-      roteiropromo: debug
-    web: debug
+      roteiropromo: DEBUG
+    web: DEBUG
+    security: DEBUG
 

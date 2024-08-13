@@ -26,6 +26,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JwtTokenHandler {
 
+    private final String keycloackClientID = System.getProperty("CLIENT_ID");
+    private final String keycloackAdminUser = System.getProperty("KC_ADMIN_NAME");
+    private final String keycloackAdminPassword = System.getProperty("KC_ADMIN_PASSWORD");
+
 
     //Extrai os dados do usuario a partir do token enviado na requisição
     public AuthenticatedUserDTO getUserDataFromToken() {
@@ -73,9 +77,9 @@ public class JwtTokenHandler {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, String> userDataForm = new LinkedMultiValueMap<>();
-        userDataForm.add("client_id", "admin-cli");
-        userDataForm.add("username", "guilherme.vieira.lazarotto@gmail.com");
-        userDataForm.add("password", "anderson");
+        userDataForm.add("client_id", this.keycloackClientID);
+        userDataForm.add("username", this.keycloackAdminUser);
+        userDataForm.add("password", this.keycloackAdminPassword);
         userDataForm.add("grant_type", "password");
         HttpEntity<MultiValueMap<String, String>> entityToRequestKeycloak = new HttpEntity<>(userDataForm, httpHeaders);
         return entityToRequestKeycloak;
