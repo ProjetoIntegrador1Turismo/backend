@@ -51,15 +51,14 @@ public class ImageController {
             @RequestParam Long id)
     {
 
-
-        if (imgCover.isEmpty() && files.get(0).isEmpty()){
+        if (imgCover == null && files == null){
             throw new ServiceError("At least one image needs to be sent!");
         }else {
-            if(!imgCover.isEmpty()){
+            if(imgCover != null){
                 String imageCover = imageService.saveImage(imgCover);
                 interestPointService.updateCoverImageUrl(id, imageCover);
             }
-            if (!files.get(0).isEmpty()){
+            if (files != null){
                 List<String> imagesUrl = new ArrayList<>();
                 for (MultipartFile file: files ) {
                     imagesUrl.add(imageService.saveImage(file));
