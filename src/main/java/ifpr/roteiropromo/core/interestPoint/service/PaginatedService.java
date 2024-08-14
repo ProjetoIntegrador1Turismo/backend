@@ -33,9 +33,9 @@ public class PaginatedService {
         }
         return eventPage.map(event -> new BasicGenericDTO(
                 event.getId(),
-                event.getImageCoverUrl(),
                 event.getName(),
                 event.getShortDescription(),
+                event.getImageCoverUrl(),
                 event.getInterestPointType()
         ));
     }
@@ -50,9 +50,9 @@ public class PaginatedService {
         }
         return hotelPage.map(hotel -> new BasicGenericDTO(
                 hotel.getId(),
-                hotel.getImageCoverUrl(),
                 hotel.getName(),
                 hotel.getShortDescription(),
+                hotel.getImageCoverUrl(),
                 hotel.getInterestPointType()
         ));
     }
@@ -67,9 +67,9 @@ public class PaginatedService {
         }
         return experiencePage.map(exp -> new BasicGenericDTO(
                 exp.getId(),
-                exp.getImageCoverUrl(),
                 exp.getName(),
                 exp.getShortDescription(),
+                exp.getImageCoverUrl(),
                 exp.getInterestPointType()
         ));
     }
@@ -84,9 +84,9 @@ public class PaginatedService {
         }
         return restoPage.map(resto -> new BasicGenericDTO(
                 resto.getId(),
-                resto.getImageCoverUrl(),
                 resto.getName(),
                 resto.getShortDescription(),
+                resto.getImageCoverUrl(),
                 resto.getInterestPointType()
         ));
     }
@@ -101,9 +101,9 @@ public class PaginatedService {
         }
         return touristPointPage.map(touristPoint -> new BasicGenericDTO(
                 touristPoint.getId(),
-                touristPoint.getImageCoverUrl(),
                 touristPoint.getName(),
                 touristPoint.getShortDescription(),
+                touristPoint.getImageCoverUrl(),
                 touristPoint.getInterestPointType()
         ));
     }
@@ -118,9 +118,9 @@ public class PaginatedService {
         }
         return interestPointsPage.map(interestPoint -> new BasicGenericDTO(
                 interestPoint.getId(),
-                interestPoint.getImageCoverUrl(),
                 interestPoint.getName(),
                 interestPoint.getShortDescription(),
+                interestPoint.getImageCoverUrl(),
                 interestPoint.getInterestPointType()
         ));
     }
