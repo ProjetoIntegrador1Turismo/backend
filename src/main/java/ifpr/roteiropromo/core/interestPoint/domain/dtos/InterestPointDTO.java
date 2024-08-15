@@ -23,5 +23,6 @@ public class InterestPointDTO {
     private String date;
     private String duration;
     private String requiredAge;
+    private String imageCoverUrl;
 
 }
