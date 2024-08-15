@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Setter
 @Getter
 @ToString
@@ -24,5 +26,6 @@ public class InterestPointDTO {
     private String duration;
     private String requiredAge;
     private String imageCoverUrl;
+    private List<String> images;
 
 }
