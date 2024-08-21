@@ -22,8 +22,8 @@ public class ControllerExceptionHandler {
     }
 
 
-    @ExceptionHandler(ResourceServerError.class)
-    public ResponseEntity<StandartError> resourceServiceNotPossible(ResourceServerError e, WebRequest webRequest){
+    @ExceptionHandler(AuthenticationServerError.class)
+    public ResponseEntity<StandartError> authenticationServiceNotPossible(AuthenticationServerError e, WebRequest webRequest){
         StandartError standartError = new StandartError();
         standartError.setError("Could not execute request");
         standartError.setPath(webRequest.getDescription(false));
