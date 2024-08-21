@@ -46,7 +46,7 @@ public class AuthenticationService {
             authenticatedUserDTO.setUserType(getUserType(userEntity));
             authenticatedUserDTO.setRefreshToken(userTokenData.get("refreshToken"));
             authenticatedUserDTO.setAuthTokenExpiresIn(userTokenData.get("authTokenExpiresIn"));
-            authenticatedUserDTO.setRefreshTokenExpiresIn("refreshTokenExpiresIn");
+            authenticatedUserDTO.setRefreshTokenExpiresIn(userTokenData.get("refreshTokenExpiresIn"));
             return authenticatedUserDTO;
         }
     }
