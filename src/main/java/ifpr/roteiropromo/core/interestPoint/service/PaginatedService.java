@@ -4,6 +4,8 @@ package ifpr.roteiropromo.core.interestPoint.service;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.simple.BasicGenericDTO;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.*;
 import ifpr.roteiropromo.core.interestPoint.repository.*;
+import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
+import ifpr.roteiropromo.core.itinerary.repository.ItineraryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -22,6 +24,7 @@ public class PaginatedService {
     private final RestaurantRepository restaurantRepository;
     private final TouristPointRepository touristPointRepository;
     private final InterestPointRepository interestPointRepository;
+    private final ItineraryRepository itineraryRepository;
 
     public Page<BasicGenericDTO> findEventPaginated(int page, int size, String name){
         Pageable pageable = PageRequest.of(page, size);
@@ -123,5 +126,16 @@ public class PaginatedService {
                 interestPoint.getImageCoverUrl(),
                 interestPoint.getInterestPointType()
         ));
+    }
+
+    public Page<Itinerary> findItinerariesPaginated(int page, int size, String query) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Itinerary> itineraryPage;
+        if (query.isEmpty()){
+            itineraryPage = itineraryRepository.findAll(pageable);
+        }else {
+            itineraryPage = itineraryRepository.findItinerariesByTitleContainingIgnoreCase(query, pageable);
+        }
+        return itineraryPage;
     }
 }
