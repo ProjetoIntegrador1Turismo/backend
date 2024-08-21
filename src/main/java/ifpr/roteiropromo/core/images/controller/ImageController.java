@@ -23,7 +23,7 @@ public class ImageController {
     private final ImageService imageService;
     private final InterestPointService interestPointService;
     private final UserService userService;
-    private final ItineraryService   itineraryService;
+    private final ItineraryService itineraryService;
 
     public ImageController(ImageService imageService, InterestPointService interestPointService, UserService userService, ItineraryService itineraryService) {
         this.imageService = imageService;
