@@ -6,15 +6,15 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
-public class ResourceServerError extends RuntimeException{
+public class AuthenticationServerError extends RuntimeException{
 
     private String message;
     private HttpStatus httpStatusCode;
 
 
-    public ResourceServerError(){ super();}
+    public AuthenticationServerError(){ super();}
 
-    public ResourceServerError(String message, HttpStatus httpStatusCode) {
+    public AuthenticationServerError(String message, HttpStatus httpStatusCode) {
         this.message = message;
         this.httpStatusCode = httpStatusCode;
     }
