@@ -1,10 +1,8 @@
 package ifpr.roteiropromo.core.user.service;
 
 
-import ifpr.roteiropromo.core.errors.ResourceServerError;
+import ifpr.roteiropromo.core.errors.AuthenticationServerError;
 import ifpr.roteiropromo.core.errors.ServiceError;
-import ifpr.roteiropromo.core.review.domain.DTO.ReviewDTO;
-import ifpr.roteiropromo.core.review.domain.entities.Review;
 import ifpr.roteiropromo.core.review.repository.ReviewRepository;
 import ifpr.roteiropromo.core.user.domain.dtos.*;
 import ifpr.roteiropromo.core.user.domain.entities.Admin;
@@ -83,9 +81,9 @@ public class UserService {
                     "http://localhost:8080/admin/realms/SpringBootKeycloak/users",
                     createRequestToKeycloakToNewUser(userDTOForm), Map.class);
         } catch (HttpClientErrorException.Conflict e) {
-            throw new ResourceServerError("User e-mail already registered!", HttpStatus.CONFLICT);
+            throw new AuthenticationServerError("User e-mail already registered!", HttpStatus.CONFLICT);
         } catch (Exception e){
-            throw new ResourceServerError("Error when try to access resource server.", HttpStatus.SERVICE_UNAVAILABLE);
+            throw new AuthenticationServerError("Error when try to access resource server.", HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
