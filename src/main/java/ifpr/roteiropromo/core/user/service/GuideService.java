@@ -1,5 +1,7 @@
 package ifpr.roteiropromo.core.user.service;
 
+import ifpr.roteiropromo.core.auth.domain.AuthenticatedUserDTO;
+import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
 import ifpr.roteiropromo.core.pagesource.domain.TopGuideDTO;
 import ifpr.roteiropromo.core.review.domain.entities.Review;
 import ifpr.roteiropromo.core.review.repository.ReviewRepository;
@@ -8,6 +10,7 @@ import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.repository.GuideRepository;
 import ifpr.roteiropromo.core.user.repository.UserRepository;
+import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Sort;
@@ -22,6 +25,7 @@ public class GuideService {
 
     private final GuideRepository guideRepository;
     private final ReviewRepository reviewRepository;
+    private final JwtTokenHandler jwtTokenHandler;
 
     public List<TopGuideDTO> getTopGuidesDTO(){
         Map<Long, Double> topGuides = getTopFiveGuidesId();
@@ -76,5 +80,11 @@ public class GuideService {
 
     public List<Guide> getAllGuides() {
         return new ArrayList<>(guideRepository.findAll());
+    }
+
+    public List<Itinerary> getItinerariesFromAuthenticatedGuide() {
+        AuthenticatedUserDTO guideAuthenticated = jwtTokenHandler.getUserDataFromToken();
+        Guide guide = guideRepository.getOnByEmail(guideAuthenticated.getEmail());
+        return guide.getItineraries();
     }
 }
