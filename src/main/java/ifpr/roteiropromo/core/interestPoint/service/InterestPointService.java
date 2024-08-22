@@ -144,4 +144,10 @@ public class InterestPointService {
         interestPoint.getImages().addAll(imagesUrl);
         interestPointRepository.save(interestPoint);
     }
+
+    public void delete(Long id) {
+        InterestPoint interestPoint = getOne(id);
+        interestPointRepository.delete(interestPoint);
+    }
+
 }
