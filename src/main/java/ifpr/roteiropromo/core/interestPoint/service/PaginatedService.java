@@ -6,6 +6,7 @@ import ifpr.roteiropromo.core.interestPoint.domain.entities.*;
 import ifpr.roteiropromo.core.interestPoint.repository.*;
 import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
 import ifpr.roteiropromo.core.itinerary.repository.ItineraryRepository;
+import ifpr.roteiropromo.core.pagesource.domain.BasicItineraryDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -128,7 +129,7 @@ public class PaginatedService {
         ));
     }
 
-    public Page<Itinerary> findItinerariesPaginated(int page, int size, String query) {
+    public Page<BasicItineraryDTO> findItinerariesPaginated(int page, int size, String query) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Itinerary> itineraryPage;
         if (query.isEmpty()){
@@ -136,6 +137,10 @@ public class PaginatedService {
         }else {
             itineraryPage = itineraryRepository.findItinerariesByTitleContainingIgnoreCase(query, pageable);
         }
-        return itineraryPage;
+        return itineraryPage.map(itinerary -> new BasicItineraryDTO(
+                itinerary.getId(),
+                itinerary.getTitle(),
+                itinerary.getImageCoverUrl()
+        ));
     }
 }
