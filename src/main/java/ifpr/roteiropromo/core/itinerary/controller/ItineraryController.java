@@ -39,7 +39,6 @@ public class ItineraryController {
     }
 
     @GetMapping()
-    //@PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<ItineraryDTO>> getAll(){
         return ResponseEntity.ok(itineraryService.findAll());
     }
