@@ -1,6 +1,7 @@
 package ifpr.roteiropromo.core.user.service;
 
 
+import ifpr.roteiropromo.core.auth.domain.AuthenticatedUserDTO;
 import ifpr.roteiropromo.core.errors.AuthenticationServerError;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.review.repository.ReviewRepository;
@@ -82,6 +83,8 @@ public class UserService {
                     createRequestToKeycloakToNewUser(userDTOForm), Map.class);
         } catch (HttpClientErrorException.Conflict e) {
             throw new AuthenticationServerError("User e-mail already registered!", HttpStatus.CONFLICT);
+        } catch (HttpClientErrorException.BadRequest e){
+            throw new AuthenticationServerError("Invalid user data.", HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             throw new AuthenticationServerError("Error when try to access resource server.", HttpStatus.SERVICE_UNAVAILABLE);
         }
@@ -93,9 +96,9 @@ public class UserService {
 
 
     // OBS: PARA UTILIZAR ESSE MÉTODO É PRECISO JÁ ESTAR COM O CONTEINER NOVO ATUALIZADO... (O COM TEMA DO APP)
-    public String resetUserPassword(UserDTORecovery userDTORecovery) {
+    public String resetUserPassword(String email) {
         try {
-            User userFound = userRepository.getOneByEmail(userDTORecovery.getEmail());
+            User userFound = getOneByEmail(email);
             String userIDKeycloak = this.getUserIdFromKeycloak(userFound);
 
             RestTemplate restTemplate = new RestTemplate();
@@ -152,7 +155,7 @@ public class UserService {
         if (userFound instanceof Guide){
             return (Guide) userFound;
         }else{
-            throw new ServiceError("User found with id: " + id + " is not a guide so he can't make comments!");
+            throw new ServiceError("User found with id: " + id + " is not a guide!");
         }
     }
 
@@ -203,8 +206,9 @@ public class UserService {
     }
 
 
-    public void updateProfileImageUrl(Long id, String imageUrl) {
-        User userFound = userRepository.findById(id).orElseThrow(() -> new ServiceError("User not found with id: " + id));
+    public void updateProfileImageUrl(String imageUrl) {
+        AuthenticatedUserDTO authenticatedUser = jwtTokenHandler.getUserDataFromToken();
+        User userFound = getOneByEmail(authenticatedUser.getEmail());
         userFound.setProfileImageUrl(imageUrl);
         userRepository.save(userFound);
     }
