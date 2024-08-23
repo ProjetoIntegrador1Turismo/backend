@@ -13,6 +13,8 @@ import java.util.List;
 @Getter
 @Setter
 public class Guide extends User {
+
+    @Column(unique = true)
     private String cadasturCode;
     private Boolean isApproved;
 
