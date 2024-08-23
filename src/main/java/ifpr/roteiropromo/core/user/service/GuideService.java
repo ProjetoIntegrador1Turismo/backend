@@ -73,7 +73,7 @@ public class GuideService {
     private Map<Long, Double> calculateAverageRatingForEachGuide(List<Review> reviews) {
         return reviews.stream()
                 .collect(Collectors.groupingBy(
-                        Review::getGuideId,
+                        review -> review.getGuide().getId(),
                         Collectors.averagingInt(Review::getRating)
                 ));
     }
