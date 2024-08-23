@@ -35,7 +35,6 @@ public class ReviewService {
         validateReview(reviewDTOForm, tourist, guideToReview.getId());
         Review review = new Review();
         mapper.map(reviewDTOForm, review);
-        review.setGuideId(guideToReview.getId());
         review.setTouristName(tourist.getFirstName() + " " + tourist.getLastName());
         tourist.getReviews().add(review);
         userService.updateTourist(tourist);
@@ -68,7 +67,7 @@ public class ReviewService {
             throw new ServiceError("Rating must be between 1 and 5.");
         }
 
-        if(tourist.getReviews().stream().anyMatch(r -> r.getGuideId().equals(guideId))){
+        if(tourist.getReviews().stream().anyMatch(r -> r.getGuide().getId().equals(guideId))){
             throw new ServiceError("Authenticated tourist has already created a review for this guide.");
         }
     }
