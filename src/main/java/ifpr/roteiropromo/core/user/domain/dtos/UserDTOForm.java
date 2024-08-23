@@ -12,17 +12,10 @@ import lombok.Setter;
 @Setter
 public class UserDTOForm {
 
-    //private String userName;
-
     private String firstName;
-
     private String lastName;
-
     private String email;
-
-    //Atributo opcional p/ cadastros de guia.
     private String cadasturCode;
-
     private String password;
 
     // Opcional para cadastro de admins através do admin panel ** COM SENHA **
