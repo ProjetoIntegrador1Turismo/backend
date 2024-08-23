@@ -3,6 +3,8 @@ package ifpr.roteiropromo.core.interestPoint.service;
 
 import ifpr.roteiropromo.core.address.model.dtos.AddressDTO;
 import ifpr.roteiropromo.core.address.model.entities.Address;
+import ifpr.roteiropromo.core.comments.domain.entities.Comment;
+import ifpr.roteiropromo.core.comments.repository.CommentRepository;
 import ifpr.roteiropromo.core.enums.InterestPointType;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTO;
@@ -10,6 +12,10 @@ import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTOForm;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointUpdateDTO;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.*;
 import ifpr.roteiropromo.core.interestPoint.repository.InterestPointRepository;
+import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
+import ifpr.roteiropromo.core.itinerary.repository.ItineraryRepository;
+import ifpr.roteiropromo.core.user.domain.entities.Tourist;
+import ifpr.roteiropromo.core.user.repository.TouristRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -27,6 +33,8 @@ public class InterestPointService {
 
     private final ModelMapper modelMapper;
     private final InterestPointRepository interestPointRepository;
+    private final ItineraryRepository itineraryRepository;
+    private final TouristRepository touristRepository;
 
 
     public InterestPoint create(InterestPointDTOForm interestPointDTOForm) {
@@ -146,7 +154,19 @@ public class InterestPointService {
     }
 
     public void delete(Long id) {
+        //O ponto de interesse tem relações com o itinerario e com os comentarios
+        //Antes de deletar um ponto, necessário antes remover as referencias a ele no itinerario e nos comentarios
         InterestPoint interestPoint = getOne(id);
+        List<Itinerary> itineraries = itineraryRepository.findAll();
+        List<Tourist> tourists = touristRepository.findAllByCommentsInterestPointId(interestPoint.getId());
+        for (Itinerary itinerary : itineraries){
+            itinerary.getInterestPoints().remove(interestPoint);
+            itineraryRepository.save(itinerary);
+        }
+        for (Tourist tourist : tourists){
+            tourist.getComments().removeIf(comment -> comment.getInterestPoint().getId().equals(interestPoint.getId()));
+            touristRepository.save(tourist);
+        }
         interestPointRepository.delete(interestPoint);
     }
 
