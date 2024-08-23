@@ -4,6 +4,7 @@ package ifpr.roteiropromo.core.comments.controller;
 import ifpr.roteiropromo.core.comments.domain.DTO.CommentDTO;
 import ifpr.roteiropromo.core.comments.domain.DTO.CommentDTOForm;
 import ifpr.roteiropromo.core.comments.service.CommentService;
+import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -24,6 +24,4 @@ public class Comment {
     @ManyToOne
     private InterestPoint interestPoint;
 
-
-
 }

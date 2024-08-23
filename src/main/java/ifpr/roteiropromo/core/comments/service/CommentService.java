@@ -12,11 +12,13 @@ import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
 import ifpr.roteiropromo.core.review.domain.DTO.ReviewDTOForm;
 import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import ifpr.roteiropromo.core.user.domain.entities.User;
+import ifpr.roteiropromo.core.user.repository.TouristRepository;
 import ifpr.roteiropromo.core.user.service.UserService;
 import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +33,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserService userService;
     private final JwtTokenHandler jwtTokenHandler;
+    private final TouristRepository touristRepository;
 
     public CommentDTO createComment(Long interestPointId, CommentDTOForm commentDTOForm) {
         Tourist tourist = getTouristAuthenticated();
