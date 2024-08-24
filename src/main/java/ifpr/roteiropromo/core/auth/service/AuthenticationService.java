@@ -2,6 +2,7 @@ package ifpr.roteiropromo.core.auth.service;
 
 import ifpr.roteiropromo.core.auth.domain.AuthenticatedUserDTO;
 import ifpr.roteiropromo.core.auth.domain.UserAuthenticationDTO;
+import ifpr.roteiropromo.core.errors.AuthenticationServerError;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.user.domain.entities.Admin;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
@@ -10,11 +11,9 @@ import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.ResponseEntity;
+import org.modelmapper.ModelMapper;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -28,6 +27,7 @@ import java.util.Map;
 public class AuthenticationService {
 
     private final UserService userService;
+    private final ModelMapper mapper;
 
 
     //Retorna os dados do usuario e o token de autenticação caso exista
@@ -35,19 +35,34 @@ public class AuthenticationService {
     public AuthenticatedUserDTO getUSerTokenAndData(UserAuthenticationDTO user) {
         if (!userExists(user.getUsername())) {
             throw new ServiceError("No user found with this email: " + user.getUsername());
-        }else {
-            AuthenticatedUserDTO authenticatedUserDTO = new AuthenticatedUserDTO();
-            Map<String,String> userTokenData = validateUserLoginDataAndGetToken(user);
-            User userEntity = userService.getOneByEmail(user.getUsername());
-            authenticatedUserDTO.setAuthToken(userTokenData.get("authToken"));
-            authenticatedUserDTO.setFirstName(userEntity.getFirstName());
-            authenticatedUserDTO.setEmail(userEntity.getEmail());
-            authenticatedUserDTO.setLastName(userEntity.getLastName());
-            authenticatedUserDTO.setUserType(getUserType(userEntity));
-            authenticatedUserDTO.setRefreshToken(userTokenData.get("refreshToken"));
-            authenticatedUserDTO.setAuthTokenExpiresIn(userTokenData.get("authTokenExpiresIn"));
-            authenticatedUserDTO.setRefreshTokenExpiresIn(userTokenData.get("refreshTokenExpiresIn"));
-            return authenticatedUserDTO;
+        }
+
+        Map<String,String> userTokenData = validateUserLoginDataAndGetToken(user);
+
+        if(guideIsNotApproved(user.getUsername())){
+            throw new AuthenticationServerError("Guide not approved yet", HttpStatus.UNAUTHORIZED);
+        }
+
+        AuthenticatedUserDTO authenticatedUserDTO = new AuthenticatedUserDTO();
+        User userEntity = userService.getOneByEmail(user.getUsername());
+        authenticatedUserDTO.setAuthToken(userTokenData.get("authToken"));
+        authenticatedUserDTO.setFirstName(userEntity.getFirstName());
+        authenticatedUserDTO.setEmail(userEntity.getEmail());
+        authenticatedUserDTO.setLastName(userEntity.getLastName());
+        authenticatedUserDTO.setUserType(getUserType(userEntity));
+        authenticatedUserDTO.setRefreshToken(userTokenData.get("refreshToken"));
+        authenticatedUserDTO.setAuthTokenExpiresIn(userTokenData.get("authTokenExpiresIn"));
+        authenticatedUserDTO.setRefreshTokenExpiresIn(userTokenData.get("refreshTokenExpiresIn"));
+        return authenticatedUserDTO;
+    }
+
+    private boolean guideIsNotApproved(String username) {
+        User user = userService.getOneByEmail(username);
+        if(getUserType(user).equals("Tourist") || getUserType(user).equals("Admin") ){
+            return false;
+        }else{
+            Guide guide = mapper.map(user, Guide.class);
+            return !guide.getIsApproved();
         }
     }
 

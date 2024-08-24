@@ -16,7 +16,7 @@ public class Guide extends User {
 
     @Column(unique = true)
     private String cadasturCode;
-    private Boolean isApproved;
+    private Boolean isApproved = false;
 
     @OneToMany()
     private List<Itinerary> itineraries;
