@@ -39,7 +39,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "User created successfully",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = UserDTO.class)) }),
-            @ApiResponse(responseCode = "409", description = "User email already registered",
+            @ApiResponse(responseCode = "409", description = "User email or CadasturCode already registered",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = StandartError.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid data for user creation",
