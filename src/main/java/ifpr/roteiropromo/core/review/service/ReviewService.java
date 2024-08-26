@@ -36,6 +36,7 @@ public class ReviewService {
         Review review = new Review();
         mapper.map(reviewDTOForm, review);
         review.setTouristName(tourist.getFirstName() + " " + tourist.getLastName());
+        review.setGuide(guideToReview);
         tourist.getReviews().add(review);
         userService.updateTourist(tourist);
         return mapper.map(reviewRepository.save(review), ReviewDTO.class);
