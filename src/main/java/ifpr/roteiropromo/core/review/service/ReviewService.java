@@ -16,7 +16,8 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -75,6 +76,11 @@ public class ReviewService {
 
     private Guide getGuideToReview(String email) {
         User userFound = userService.getOneByEmail(email);
+
+        if(userFound == null){
+            throw new ServiceError("Guide not found with email: " + email);
+        }
+
         if(!(userFound instanceof Guide)){
             throw new ServiceError("This email does not belong to a Guide (you can only review Guides): " + email);
         }
@@ -90,11 +96,17 @@ public class ReviewService {
         return mapper.map(userFound, Tourist.class);
     }
 
-
     public void deleteReviewById(Long reviewId) {
         Tourist tourist = getTouristAuthenticated();
         Review review = getReviewFromTourist(tourist, reviewId);
         tourist.getReviews().remove(review);
         userService.updateTourist(tourist);
     }
+
+    public List<ReviewDTO> getAllByGuide(Long id) {
+        return reviewRepository.findByGuideId(id).stream()
+                .map(review -> mapper.map(review, ReviewDTO.class))
+                .collect(Collectors.toList());
+    }
+
 }
