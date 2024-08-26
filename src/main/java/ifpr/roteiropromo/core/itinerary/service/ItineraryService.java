@@ -14,6 +14,7 @@ import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.repository.GuideRepository;
 import ifpr.roteiropromo.core.user.repository.UserRepository;
+import ifpr.roteiropromo.core.user.service.UserService;
 import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -33,6 +34,8 @@ public class ItineraryService {
     private final JwtTokenHandler jwtTokenHandler;
     private final GuideRepository guideRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
+
 
     public ItineraryDTO create(ItineraryDTOForm itineraryDTOForm) {
         Guide guideFound = getGuideAuthenticated();
@@ -139,4 +142,15 @@ public class ItineraryService {
         itineraryRepository.save(itinerary);
     }
 
-}
+
+    public List<ItineraryDTO> getByGuideEmail(String email){
+        Guide guideFound = (Guide) userService.getOneByEmail(email);
+        return guideFound.getItineraries().stream()
+                .map(itinerary -> {
+                    return modelMapper.map(itinerary, ItineraryDTO.class);}).collect(Collectors.toList());
+        }
+
+    }
+
+
+
