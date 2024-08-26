@@ -10,6 +10,7 @@ import ifpr.roteiropromo.core.user.domain.entities.Admin;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import ifpr.roteiropromo.core.user.domain.entities.User;
+import ifpr.roteiropromo.core.user.repository.GuideRepository;
 import ifpr.roteiropromo.core.user.repository.UserRepository;
 import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import lombok.RequiredArgsConstructor;
@@ -35,16 +36,14 @@ public class UserService {
     private final JwtTokenHandler jwtTokenHandler;
     private final ModelMapper mapper;
     private final UserRepository userRepository;
-    private final ReviewRepository reviewRepository;
-    private final ModelMapper modelMapper;
+    private final GuideRepository guideRepository;
 
 
     public UserDTO createNewUser(UserDTOForm userDTOForm) {
-        //Primeiro: Cria - ou lança exceção - o usuario no servidor de autenticação
+
+        validateCadasturCodeIfGuide(userDTOForm);
         createUserOnResourceServer(userDTOForm);
 
-        // Verificando de que tipo é o User que será cadastrado:
-        //MOVER O CRIAR ADMIN PARA UM METODO PRÓPRIO - Ñ DEIXAR NO MESMO METODO DE USUARIOS NORMAIS
         User user;
         if (userDTOForm.isActiveAdmin()) {
             Admin admin = mapper.map(userDTOForm, Admin.class);
@@ -74,6 +73,19 @@ public class UserService {
         // Salvando no banco
         User savedUser = userRepository.save(user);
         return mapper.map(savedUser, UserDTO.class);
+    }
+
+    private void validateCadasturCodeIfGuide(UserDTOForm userDTOForm) {
+        if(userDTOForm.getCadasturCode() != null){
+            Boolean cadasturExists = guideRepository.existsByCadasturCode(userDTOForm.getCadasturCode());
+            log.info(cadasturExists);
+            if(cadasturExists) {
+                throw new AuthenticationServerError(
+                        "CadasturCode already registered: " + userDTOForm.getCadasturCode(),
+                        HttpStatus.CONFLICT
+                );
+            }
+        }
     }
 
     private void createUserOnResourceServer(UserDTOForm userDTOForm){
