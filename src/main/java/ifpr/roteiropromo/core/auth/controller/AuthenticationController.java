@@ -35,10 +35,13 @@ public class AuthenticationController {
     @Operation(summary = "Return user data and authentication token",
             description = "Allow user to authenticate and receive a token to access the system")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "400", description = "User not found or invalid authentication data",
+            @ApiResponse(responseCode = "400", description = "User not found or invalid authentication data.",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = StandartError.class)) }),
-            @ApiResponse(responseCode = "200", description = "User authenticated successfully",
+            @ApiResponse(responseCode = "401", description = "Guide account not aproved yet.",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandartError.class)) }),
+            @ApiResponse(responseCode = "200", description = "User authenticated successfully.",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = AuthenticatedUserDTO.class)) })
     })
