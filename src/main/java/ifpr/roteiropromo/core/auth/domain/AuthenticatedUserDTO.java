@@ -14,5 +14,7 @@ public class AuthenticatedUserDTO {
     private String authTokenExpiresIn;
     private String refreshToken;
     private String refreshTokenExpiresIn;
+    private String cadasturCode;
+    private String profileImageUrl;
 
 }

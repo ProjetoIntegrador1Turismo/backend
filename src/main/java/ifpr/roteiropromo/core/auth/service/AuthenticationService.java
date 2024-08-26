@@ -45,10 +45,8 @@ public class AuthenticationService {
 
         AuthenticatedUserDTO authenticatedUserDTO = new AuthenticatedUserDTO();
         User userEntity = userService.getOneByEmail(user.getUsername());
+        mapper.map(userEntity, authenticatedUserDTO);
         authenticatedUserDTO.setAuthToken(userTokenData.get("authToken"));
-        authenticatedUserDTO.setFirstName(userEntity.getFirstName());
-        authenticatedUserDTO.setEmail(userEntity.getEmail());
-        authenticatedUserDTO.setLastName(userEntity.getLastName());
         authenticatedUserDTO.setUserType(getUserType(userEntity));
         authenticatedUserDTO.setRefreshToken(userTokenData.get("refreshToken"));
         authenticatedUserDTO.setAuthTokenExpiresIn(userTokenData.get("authTokenExpiresIn"));
