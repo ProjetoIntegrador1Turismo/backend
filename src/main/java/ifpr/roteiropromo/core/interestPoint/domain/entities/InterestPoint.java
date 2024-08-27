@@ -30,6 +30,8 @@ public abstract class InterestPoint {
     private Integer averageValue;
     private String shortDescription;
     private String imageCoverUrl;
+    private Integer averageRating = 4;
+
     @ElementCollection
     private List<String> images;
 
