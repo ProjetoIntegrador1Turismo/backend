@@ -1,5 +1,6 @@
 package ifpr.roteiropromo.core.admin.controller;
 
+import ifpr.roteiropromo.core.admin.domain.FeaturedTouristPoint;
 import ifpr.roteiropromo.core.admin.service.AdminService;
 import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
@@ -23,7 +24,6 @@ public class AdminController {
     @GetMapping("/unapproved-guides")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<GuideDTO>> getAllUnapprovedGuides(){
-        //return ResponseEntity.ok(userService.getAllUnapprovedGuides());
         return ResponseEntity.ok(adminService.getAllUnapprovedGuides());
     }
 
@@ -32,7 +32,6 @@ public class AdminController {
     @PutMapping("/approve-guide/{guideId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Guide> approveGuide(@PathVariable Long guideId) {
-        //Guide guide = userService.approveGuide(guideId);
         Guide guide = adminService.approveGuide(guideId);
         return ResponseEntity.ok(guide);
     }
@@ -41,9 +40,20 @@ public class AdminController {
     @PutMapping("/disapprove-guide/{guideId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Guide> disapproveGuide(@PathVariable Long guideId) {
-//        Guide guide = userService.disapproveGuide(guideId);
         Guide guide = adminService.disapproveGuide(guideId);
         return ResponseEntity.ok(guide);
     }
+
+    @PostMapping("/principal-cards")
+    public ResponseEntity<String> definePrincipalInterestPoints(@RequestBody List<Long> ids){
+        return ResponseEntity.ok(adminService.setPrincipalInterestPoints(ids));
+    }
+
+    @GetMapping("/principal-cards")
+    public ResponseEntity<List<FeaturedTouristPoint>> getFeaturedInterestpointsSelected(){
+        return ResponseEntity.ok(adminService.getAllFeaturedPoints());
+    }
+
+
 
 }
