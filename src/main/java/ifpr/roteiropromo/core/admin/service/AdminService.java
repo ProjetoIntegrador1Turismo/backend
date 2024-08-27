@@ -7,6 +7,7 @@ import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
 import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
+import ifpr.roteiropromo.core.user.domain.dtos.SimpleGuideDTO;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.repository.UserRepository;
 import ifpr.roteiropromo.core.user.service.UserService;
@@ -37,10 +38,10 @@ public class AdminService {
     private final FeaturedTouristPointRepository featuredTouristPointRepository;
     private final InterestPointService interestPointService;
 
-    public List<GuideDTO> getAllUnapprovedGuides() {
+    public List<SimpleGuideDTO> getAllUnapprovedGuides() {
         List<Guide> guides = userRepository.findAllUnapprovedGuides();
         return guides.stream()
-                .map(guide -> modelMapper.map(guide, GuideDTO.class))
+                .map(guide -> modelMapper.map(guide, SimpleGuideDTO.class))
                 .collect(Collectors.toList());
     }
 
