@@ -9,6 +9,7 @@ import ifpr.roteiropromo.core.review.repository.ReviewRepository;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import ifpr.roteiropromo.core.user.domain.entities.User;
+import ifpr.roteiropromo.core.user.repository.UserRepository;
 import ifpr.roteiropromo.core.user.service.UserService;
 import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-
+import java.util.List;
 
 
 @Service
@@ -28,6 +29,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserService userService;
     private final JwtTokenHandler jwtTokenHandler;
+    private final UserRepository userRepository;
 
     public ReviewDTO reviewOneGuide(ReviewDTOForm reviewDTOForm) {
         Tourist tourist = getTouristAuthenticated();
@@ -39,7 +41,24 @@ public class ReviewService {
         review.setGuide(guideToReview);
         tourist.getReviews().add(review);
         userService.updateTourist(tourist);
-        return mapper.map(reviewRepository.save(review), ReviewDTO.class);
+        ReviewDTO reviewSaved = mapper.map(reviewRepository.save(review), ReviewDTO.class);
+        updateGuideAverageRating(guideToReview);
+        return reviewSaved;
+    }
+
+    private void updateGuideAverageRating(Guide guide) {
+        List<Review> reviews = reviewRepository.findByGuideId(guide.getId());
+        log.info(reviews.size());
+        guide.setAverageRating(calculateAverageRating(reviews));
+        userRepository.save(guide);
+    }
+
+    private Integer calculateAverageRating(List<Review> reviews) {
+        Integer ratings = 0;
+        for (Review review : reviews){
+            ratings += review.getRating();
+        }
+        return ratings / reviews.size();
     }
 
     public ReviewDTO updateReview(ReviewDTO reviewDTO) {
