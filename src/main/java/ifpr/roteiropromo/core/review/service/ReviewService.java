@@ -16,7 +16,8 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -97,4 +98,12 @@ public class ReviewService {
         tourist.getReviews().remove(review);
         userService.updateTourist(tourist);
     }
+
+
+    public List<ReviewDTO> getAllByGuide(Long id) {
+        return reviewRepository.findByGuideId(id).stream()
+                .map(review -> mapper.map(review, ReviewDTO.class))
+                .collect(Collectors.toList());
+    }
+
 }

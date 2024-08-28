@@ -1,7 +1,9 @@
 package ifpr.roteiropromo.core.pagesource.controller;
 
 import ifpr.roteiropromo.core.pagesource.domain.HomePageDTO;
+import ifpr.roteiropromo.core.pagesource.domain.ItineraryPageDTO;
 import ifpr.roteiropromo.core.pagesource.domain.TourPageDTO;
+import ifpr.roteiropromo.core.pagesource.service.ItineraryPageSourceService;
 import ifpr.roteiropromo.core.pagesource.service.PageSourceService;
 import ifpr.roteiropromo.core.pagesource.service.TourPageSourceService;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +18,12 @@ public class PageSourceController {
 
     private final PageSourceService pageSourceService;
     private final TourPageSourceService tourPageSourceService;
+    private final ItineraryPageSourceService itineraryPageSourceService;
 
-
-    public PageSourceController(PageSourceService pageSourceService, TourPageSourceService tourPageSourceService) {
+    public PageSourceController(PageSourceService pageSourceService, TourPageSourceService tourPageSourceService, ItineraryPageSourceService itineraryPageSourceService) {
         this.pageSourceService = pageSourceService;
         this.tourPageSourceService = tourPageSourceService;
+        this.itineraryPageSourceService = itineraryPageSourceService;
     }
 
 
@@ -34,4 +37,10 @@ public class PageSourceController {
     public ResponseEntity<TourPageDTO> getTourPage(@PathVariable Long id){
         return ResponseEntity.ok(tourPageSourceService.getTourPageData(id));
     }
+
+    @GetMapping("/itinerary/{id}")
+    public ResponseEntity<ItineraryPageDTO> getItineraryPage(@PathVariable Long id){
+        return ResponseEntity.ok(itineraryPageSourceService.getItineraryPageData(id));
+    }
+
 }
