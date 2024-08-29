@@ -1,13 +1,13 @@
-package ifpr.roteiropromo.core.review.domain.DTO;
+package ifpr.roteiropromo.core.pagesource.domain;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-
-@Data
-public class ReviewDTO {
+@Getter
+@Setter
+public class GuideReviewDTO {
     private String touristName;
+    private String avatarUrl;
     private Long id;
     private String text;
     private String date;
