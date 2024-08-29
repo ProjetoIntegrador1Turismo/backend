@@ -3,6 +3,7 @@ package ifpr.roteiropromo.core.pagesource.service;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTO;
 import ifpr.roteiropromo.core.itinerary.service.ItineraryService;
 import ifpr.roteiropromo.core.pagesource.domain.BasicGuideDTO;
+import ifpr.roteiropromo.core.pagesource.domain.GuideReviewDTO;
 import ifpr.roteiropromo.core.pagesource.domain.ItineraryPageDTO;
 import ifpr.roteiropromo.core.review.domain.DTO.ReviewDTO;
 import ifpr.roteiropromo.core.review.service.ReviewService;
@@ -35,9 +36,10 @@ public class ItineraryPageSourceService {
     }
 
 
-    private List<ReviewDTO> getReviews(Long id){
-        GuideDTO guideDTO = itineraryService.getGuideByItinerary(id).getGuide();
-        return reviewService.getAllByGuide(guideDTO.getId());
+    private List<GuideReviewDTO> getReviews(Long id){
+        Long guideId = itineraryService.getGuideByItinerary(id).getGuide().getId();
+
+        return reviewService.getAllByGuide(guideId);
     }
 
 
