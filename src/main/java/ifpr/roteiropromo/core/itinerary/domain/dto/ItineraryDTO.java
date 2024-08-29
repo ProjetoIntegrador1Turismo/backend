@@ -19,5 +19,6 @@ public class ItineraryDTO {
     private String description;
     private Float mediumCost;
     private Integer days;
+    private String imageCoverUrl;
     private List<BasicGenericDTO> interestPoints;
 }

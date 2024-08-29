@@ -9,7 +9,6 @@ import ifpr.roteiropromo.core.review.repository.ReviewRepository;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import ifpr.roteiropromo.core.user.domain.entities.User;
-import ifpr.roteiropromo.core.user.repository.UserRepository;
 import ifpr.roteiropromo.core.user.service.UserService;
 import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -29,7 +29,6 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserService userService;
     private final JwtTokenHandler jwtTokenHandler;
-    private final UserRepository userRepository;
 
     public ReviewDTO reviewOneGuide(ReviewDTOForm reviewDTOForm) {
         Tourist tourist = getTouristAuthenticated();
@@ -41,24 +40,7 @@ public class ReviewService {
         review.setGuide(guideToReview);
         tourist.getReviews().add(review);
         userService.updateTourist(tourist);
-        ReviewDTO reviewSaved = mapper.map(reviewRepository.save(review), ReviewDTO.class);
-        updateGuideAverageRating(guideToReview);
-        return reviewSaved;
-    }
-
-    private void updateGuideAverageRating(Guide guide) {
-        List<Review> reviews = reviewRepository.findByGuideId(guide.getId());
-        log.info(reviews.size());
-        guide.setAverageRating(calculateAverageRating(reviews));
-        userRepository.save(guide);
-    }
-
-    private Integer calculateAverageRating(List<Review> reviews) {
-        Integer ratings = 0;
-        for (Review review : reviews){
-            ratings += review.getRating();
-        }
-        return ratings / reviews.size();
+        return mapper.map(reviewRepository.save(review), ReviewDTO.class);
     }
 
     public ReviewDTO updateReview(ReviewDTO reviewDTO) {
@@ -116,4 +98,12 @@ public class ReviewService {
         tourist.getReviews().remove(review);
         userService.updateTourist(tourist);
     }
+
+
+    public List<ReviewDTO> getAllByGuide(Long id) {
+        return reviewRepository.findByGuideId(id).stream()
+                .map(review -> mapper.map(review, ReviewDTO.class))
+                .collect(Collectors.toList());
+    }
+
 }
