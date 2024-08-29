@@ -15,6 +15,7 @@ public class GuideDTO {
     private String firstName;
     private String cadasturCode;
     private Boolean isApproved;
+    private String lastName;
     private List<ItineraryDTO> itineraries;
     private List<ReviewDTO> reviews;
     private Double averageRating;
