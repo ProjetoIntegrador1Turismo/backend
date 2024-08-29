@@ -44,7 +44,11 @@ public class UserService {
         validateCadasturCodeIfGuide(userDTOForm);
         createUserOnResourceServer(userDTOForm);
 
+        // DEFAULT IMAGE URL
+        final String DEFAULT_IMAGE_URL = "http://localhost:8081/uploads/userplaceholder.png";
+
         User user;
+
         if (userDTOForm.isActiveAdmin()) {
             Admin admin = mapper.map(userDTOForm, Admin.class);
             admin.setUserName(userDTOForm.getFirstName());
@@ -69,6 +73,8 @@ public class UserService {
             guide.setIsApproved(false);
             user = guide;
         }
+
+        user.setProfileImageUrl(DEFAULT_IMAGE_URL);
 
         // Salvando no banco
         User savedUser = userRepository.save(user);
