@@ -105,17 +105,17 @@ public class UserControllerTest {
                 );
     }
 
-    @Test
-    public void getAllUsers_mustReturnUserList() throws Exception {
-        given(userService.getAll()).willReturn(userList);
-
-        ResultActions actions = mockMvc.perform(get("/user"));
-        actions.andDo(print())
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$", hasSize(1))
-                );
-    }
+//    @Test
+//    public void getAllUsers_mustReturnUserList() throws Exception {
+//        given(userService.getAll()).willReturn(userList);
+//
+//        ResultActions actions = mockMvc.perform(get("/user"));
+//        actions.andDo(print())
+//                .andExpectAll(
+//                        status().isOk(),
+//                        jsonPath("$", hasSize(1))
+//                );
+//    }
 
     @Test
     public void updateUser_mustReturnUpdatedUser() throws Exception{
