@@ -1,12 +1,10 @@
 package ifpr.roteiropromo.core.admin.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ifpr.roteiropromo.core.admin.domain.FeaturedTouristPoint;
 import ifpr.roteiropromo.core.admin.repository.FeaturedTouristPointRepository;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
-import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
 import ifpr.roteiropromo.core.user.domain.dtos.SimpleGuideDTO;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.repository.UserRepository;
@@ -15,15 +13,11 @@ import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
