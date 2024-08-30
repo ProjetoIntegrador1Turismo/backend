@@ -87,4 +87,8 @@ public class GuideService {
         Guide guide = guideRepository.getOnByEmail(guideAuthenticated.getEmail());
         return guide.getItineraries();
     }
+
+    public void updateGuide(Guide guide) {
+        guideRepository.save(guide);
+    }
 }
