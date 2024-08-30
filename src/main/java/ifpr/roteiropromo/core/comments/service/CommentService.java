@@ -71,7 +71,7 @@ public class CommentService {
         }
 
         if(tourist.getComments().stream().anyMatch(r -> r.getInterestPoint().getId().equals(interestPointId))){
-            throw new ServiceError("Authenticated tourist has already created a review for Interest Point.");
+            throw new ServiceError("Authenticated tourist has already created a review for this Interest Point.");
         }
     }
 
