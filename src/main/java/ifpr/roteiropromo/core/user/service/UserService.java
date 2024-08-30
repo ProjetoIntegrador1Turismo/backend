@@ -108,8 +108,10 @@ public class UserService {
         }
     }
 
-    public List<User> getAll() {
-        return userRepository.findAll();
+    public List<UserDTO> getAll() {
+        return userRepository.findAll().stream()
+                .map(user -> mapper.map(user, UserDTO.class))
+                .collect(Collectors.toList());
     }
 
 
@@ -148,6 +150,18 @@ public class UserService {
             throw new ServiceError("Could not find a user with that email: " + email);
         }
         return userFound;
+    }
+
+    public Tourist getTouristByEmail(String email) {
+        User userFound = userRepository.getOneByEmail(email);
+        if(userFound == null){
+            throw new ServiceError("Could not find a user with that email: " + email);
+        }
+        if (userFound instanceof Tourist){
+            return mapper.map(userFound, Tourist.class);
+        }else{
+            throw new ServiceError("User found with email: " + email + " is not a tourist!");
+        }
     }
 
 
