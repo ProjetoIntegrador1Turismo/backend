@@ -10,12 +10,7 @@ import ifpr.roteiropromo.core.pagesource.domain.BasicPointDTO;
 import ifpr.roteiropromo.core.pagesource.domain.HomePageDTO;
 import ifpr.roteiropromo.core.pagesource.domain.InterestPointCardDTO;
 import ifpr.roteiropromo.core.pagesource.domain.TopGuideDTO;
-import ifpr.roteiropromo.core.review.domain.DTO.ReviewDTO;
-import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
-import ifpr.roteiropromo.core.user.domain.entities.Guide;
-import ifpr.roteiropromo.core.user.repository.GuideRepository;
 import ifpr.roteiropromo.core.user.service.GuideService;
-import ifpr.roteiropromo.core.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -25,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PageSourceService {
+public class HomePageSourceService {
 
     private final InterestPointService interestPointService;
     private final TouristPointRepository touristPointRepository;
