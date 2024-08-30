@@ -66,7 +66,7 @@ public class UserController {
                             schema = @Schema(implementation = StandartError.class)) })
     })
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<User>> getAllUsers(){
+    public ResponseEntity<List<UserDTO>> getAllUsers(){
         return ResponseEntity.ok(userService.getAll());
     }
 
