@@ -12,4 +12,5 @@ public class BasicGuideDTO {
     private String lastName;
     private String cadasturCode;
     private Double averageRating;
+    private String profileImageUrl;
 }
