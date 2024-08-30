@@ -54,6 +54,7 @@ public class ItineraryController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('GUIA')")
     public ResponseEntity<Void> delete(@PathVariable Long id){
         itineraryService.delete(id);
         return ResponseEntity.noContent().build();
