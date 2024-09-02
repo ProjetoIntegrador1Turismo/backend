@@ -80,13 +80,7 @@ public class AuthenticationService {
         try {
             HttpEntity<MultiValueMap<String, String>> entityToRequestKeycloak = new HttpEntity<>(buildFormRequestWithUserData(user), buildHeaderRequest());
             ResponseEntity<Map> response = makeRequestToAuthenticationServer(entityToRequestKeycloak);
-            Map<String, String> tokenData = new HashMap<>();
-            tokenData.put("authToken", response.getBody().get("access_token").toString());
-            tokenData.put("authTokenExpiresIn", response.getBody().get("expires_in").toString());
-            tokenData.put("refreshToken", response.getBody().get("refresh_token").toString());
-            tokenData.put("refreshTokenExpiresIn", response.getBody().get("refresh_expires_in").toString());
-            log.info(tokenData);
-            return tokenData;
+            return getTokenDataFromResponse(response);
         } catch (Exception e) {
             throw new ServiceError("Invalid username or password.");
         }
@@ -115,11 +109,7 @@ public class AuthenticationService {
     public AuthenticatedUserDTO getAuthRefreshToken(String refreshToken) {
         HttpEntity<MultiValueMap<String, String>> entityToRequestKeycloak = new HttpEntity<>(buildFormRequestWithRefreshToken(refreshToken), buildHeaderRequest());
         ResponseEntity<Map> response = makeRequestToAuthenticationServer(entityToRequestKeycloak);
-        Map<String, String> tokenData = new HashMap<>();
-        tokenData.put("authToken", response.getBody().get("access_token").toString());
-        tokenData.put("authTokenExpiresIn", response.getBody().get("expires_in").toString());
-        tokenData.put("refreshToken", response.getBody().get("refresh_token").toString());
-        tokenData.put("refreshTokenExpiresIn", response.getBody().get("refresh_expires_in").toString());
+        Map<String, String> tokenData = getTokenDataFromResponse(response);
         AuthenticatedUserDTO authenticatedUserDTO = new AuthenticatedUserDTO();
         authenticatedUserDTO.setAuthToken(tokenData.get("authToken"));
         authenticatedUserDTO.setAuthTokenExpiresIn(tokenData.get("authTokenExpiresIn"));
@@ -143,4 +133,14 @@ public class AuthenticationService {
         userDataForm.add("grant_type", "refresh_token");
         return userDataForm;
     }
+
+    private Map<String, String> getTokenDataFromResponse(ResponseEntity<Map> response){
+        Map<String, String> tokenData = new HashMap<>();
+        tokenData.put("authToken", response.getBody().get("access_token").toString());
+        tokenData.put("authTokenExpiresIn", response.getBody().get("expires_in").toString());
+        tokenData.put("refreshToken", response.getBody().get("refresh_token").toString());
+        tokenData.put("refreshTokenExpiresIn", response.getBody().get("refresh_expires_in").toString());
+        return tokenData;
+    }
+
 }
