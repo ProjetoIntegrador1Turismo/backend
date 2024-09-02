@@ -78,11 +78,8 @@ public class AuthenticationService {
 
     private Map<String, String> validateUserLoginDataAndGetToken(UserAuthenticationDTO user){
         try {
-            RestTemplate restTemplate = new RestTemplate();
             HttpEntity<MultiValueMap<String, String>> entityToRequestKeycloak = new HttpEntity<>(buildFormRequestWithUserData(user), buildHeaderRequest());
-            ResponseEntity<Map> response = restTemplate.postForEntity(
-                    "http://localhost:8080/realms/SpringBootKeycloak/protocol/openid-connect/token",
-                    entityToRequestKeycloak, Map.class);
+            ResponseEntity<Map> response = makeRequestToAuthenticationServer(entityToRequestKeycloak);
             Map<String, String> tokenData = new HashMap<>();
             tokenData.put("authToken", response.getBody().get("access_token").toString());
             tokenData.put("authTokenExpiresIn", response.getBody().get("expires_in").toString());
@@ -115,4 +112,35 @@ public class AuthenticationService {
     }
 
 
+    public AuthenticatedUserDTO getAuthRefreshToken(String refreshToken) {
+        HttpEntity<MultiValueMap<String, String>> entityToRequestKeycloak = new HttpEntity<>(buildFormRequestWithRefreshToken(refreshToken), buildHeaderRequest());
+        ResponseEntity<Map> response = makeRequestToAuthenticationServer(entityToRequestKeycloak);
+        Map<String, String> tokenData = new HashMap<>();
+        tokenData.put("authToken", response.getBody().get("access_token").toString());
+        tokenData.put("authTokenExpiresIn", response.getBody().get("expires_in").toString());
+        tokenData.put("refreshToken", response.getBody().get("refresh_token").toString());
+        tokenData.put("refreshTokenExpiresIn", response.getBody().get("refresh_expires_in").toString());
+        AuthenticatedUserDTO authenticatedUserDTO = new AuthenticatedUserDTO();
+        authenticatedUserDTO.setAuthToken(tokenData.get("authToken"));
+        authenticatedUserDTO.setAuthTokenExpiresIn(tokenData.get("authTokenExpiresIn"));
+        authenticatedUserDTO.setRefreshToken(tokenData.get("refreshToken"));
+        authenticatedUserDTO.setRefreshTokenExpiresIn(tokenData.get("refreshTokenExpiresIn"));
+        return authenticatedUserDTO;
+    }
+
+    private ResponseEntity<Map> makeRequestToAuthenticationServer(HttpEntity<MultiValueMap<String, String>> payLoad){
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.postForEntity(
+                "http://localhost:8080/realms/SpringBootKeycloak/protocol/openid-connect/token",
+                payLoad, Map.class
+        );
+    }
+
+    private MultiValueMap<String, String> buildFormRequestWithRefreshToken(String refreshToken) {
+        MultiValueMap<String, String> userDataForm = new LinkedMultiValueMap<>();
+        userDataForm.add("client_id", "login-app");
+        userDataForm.add("refresh_token", refreshToken);
+        userDataForm.add("grant_type", "refresh_token");
+        return userDataForm;
+    }
 }
