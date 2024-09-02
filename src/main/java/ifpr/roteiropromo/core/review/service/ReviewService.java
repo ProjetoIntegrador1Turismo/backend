@@ -1,6 +1,7 @@
 package ifpr.roteiropromo.core.review.service;
 
 import ifpr.roteiropromo.core.auth.domain.AuthenticatedUserDTO;
+import ifpr.roteiropromo.core.comments.domain.entities.Comment;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.pagesource.domain.GuideReviewDTO;
 import ifpr.roteiropromo.core.review.domain.DTO.ReviewDTO;
@@ -11,6 +12,7 @@ import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.repository.TouristRepository;
+import ifpr.roteiropromo.core.user.service.GuideService;
 import ifpr.roteiropromo.core.user.service.UserService;
 import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,7 @@ public class ReviewService {
     private final UserService userService;
     private final JwtTokenHandler jwtTokenHandler;
     private final TouristRepository touristRepository;
+    private final GuideService guideService;
 
     public ReviewDTO reviewOneGuide(ReviewDTOForm reviewDTOForm) {
         Tourist tourist = getTouristAuthenticated();
@@ -43,7 +46,22 @@ public class ReviewService {
         review.setGuide(guideToReview);
         tourist.getReviews().add(review);
         userService.updateTourist(tourist);
+        updateGuideAverageRating(guideToReview);
         return mapper.map(reviewRepository.save(review), ReviewDTO.class);
+    }
+
+    private void updateGuideAverageRating(Guide guideToReview) {
+        List<Review> reviews = reviewRepository.findByGuideId(guideToReview.getId());
+        guideToReview.setAverageRating(calculateAverageRating(reviews));
+        guideService.updateGuide(guideToReview);
+    }
+
+    private Integer calculateAverageRating(List<Review> reviews) {
+        Integer ratings = 0;
+        for (Review review : reviews){
+            ratings += review.getRating();
+        }
+        return ratings / reviews.size();
     }
 
     public ReviewDTO updateReview(ReviewDTO reviewDTO) {

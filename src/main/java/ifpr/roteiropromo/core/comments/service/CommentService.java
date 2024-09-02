@@ -10,6 +10,7 @@ import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import ifpr.roteiropromo.core.interestPoint.repository.InterestPointRepository;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
 import ifpr.roteiropromo.core.review.domain.DTO.ReviewDTOForm;
+import ifpr.roteiropromo.core.review.domain.entities.Review;
 import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.repository.TouristRepository;
@@ -34,6 +35,7 @@ public class CommentService {
     private final UserService userService;
     private final JwtTokenHandler jwtTokenHandler;
     private final TouristRepository touristRepository;
+    private final InterestPointRepository interestPointRepository;
 
     public CommentDTO createComment(Long interestPointId, CommentDTOForm commentDTOForm) {
         Tourist tourist = getTouristAuthenticated();
@@ -45,7 +47,22 @@ public class CommentService {
         Comment commentSave = commentRepository.save(newComment);
         tourist.getComments().add(commentSave);
         userService.updateTourist(tourist);
+        updateInterestPointAverageRating(interestPointFound);
         return mapper.map(commentSave, CommentDTO.class);
+    }
+
+    private void updateInterestPointAverageRating(InterestPoint interestPointFound) {
+        List<Comment> comments = commentRepository.findAllByInterestPoint(interestPointFound);
+        interestPointFound.setAverageRating(calculateAverageRating(comments));
+        interestPointRepository.save(interestPointFound);
+    }
+
+    private Integer calculateAverageRating(List<Comment> comments) {
+        Integer ratings = 0;
+        for (Comment comment : comments){
+            ratings += comment.getRating();
+        }
+        return ratings / comments.size();
     }
 
     private void validateComment(CommentDTOForm commentDTOForm, Tourist tourist, Long interestPointId) {
@@ -54,7 +71,7 @@ public class CommentService {
         }
 
         if(tourist.getComments().stream().anyMatch(r -> r.getInterestPoint().getId().equals(interestPointId))){
-            throw new ServiceError("Authenticated tourist has already created a review for Interest Point.");
+            throw new ServiceError("Authenticated tourist has already created a review for this Interest Point.");
         }
     }
 

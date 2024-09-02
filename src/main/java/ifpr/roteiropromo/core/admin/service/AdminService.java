@@ -1,40 +1,41 @@
 package ifpr.roteiropromo.core.admin.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import ifpr.roteiropromo.core.admin.domain.FeaturedTouristPoint;
+import ifpr.roteiropromo.core.admin.repository.FeaturedTouristPointRepository;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
-import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
+import ifpr.roteiropromo.core.user.domain.dtos.SimpleGuideDTO;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.repository.UserRepository;
 import ifpr.roteiropromo.core.user.service.UserService;
 import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class AdminService {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final UserService userService;
     private final JwtTokenHandler jwtTokenHandler;
+    private final FeaturedTouristPointRepository featuredTouristPointRepository;
+    private final InterestPointService interestPointService;
 
-    public List<GuideDTO> getAllUnapprovedGuides() {
+    public List<SimpleGuideDTO> getAllUnapprovedGuides() {
         List<Guide> guides = userRepository.findAllUnapprovedGuides();
         return guides.stream()
-                .map(guide -> modelMapper.map(guide, GuideDTO.class))
+                .map(guide -> modelMapper.map(guide, SimpleGuideDTO.class))
                 .collect(Collectors.toList());
     }
 
@@ -69,5 +70,36 @@ public class AdminService {
     }
 
 
+    public String setPrincipalInterestPoints(List<Long> ids) {
+        validateMaxSize(ids);
+        List<InterestPoint> interestPoints = interestPointService.findAllByIds(ids);
+        removeAllFeaturedInterestPointsDefined();
+        List<FeaturedTouristPoint> createdFeaturedPoints = createNewFeaturedTouristPoints(interestPoints);
+        featuredTouristPointRepository.saveAll(createdFeaturedPoints);
+        return "Principal InterestPoint List updated!";
+    }
 
+    private void validateMaxSize(List<Long> ids) {
+        if (ids.size() != 3){
+            throw new ServiceError("It is mandatory that the list contains 3 ids and not " + ids.size());
+        }
+    }
+
+    private List<FeaturedTouristPoint> createNewFeaturedTouristPoints(List<InterestPoint> interestPoints) {
+        List<FeaturedTouristPoint> featuredTouristPoints = new ArrayList<>();
+        for (InterestPoint interestPoint : interestPoints){
+            FeaturedTouristPoint featuredTouristPoint = new FeaturedTouristPoint();
+            featuredTouristPoint.setInterestPoint(interestPoint);
+            featuredTouristPoints.add(featuredTouristPoint);
+        }
+        return featuredTouristPoints;
+    }
+
+    private void removeAllFeaturedInterestPointsDefined() {
+        featuredTouristPointRepository.deleteAll();
+    }
+
+    public List<FeaturedTouristPoint> getAllFeaturedPoints() {
+        return featuredTouristPointRepository.findAll();
+    }
 }

@@ -23,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -116,17 +117,10 @@ public class InterestPointService {
 
     }
 
-    //Duplicated Method -> USE getOne()
-//    public InterestPoint findById(Long interestPointId) {
-//        return interestPointRepository.findById(interestPointId).orElseThrow(
-//                () -> new ServiceError("Não foi possível encontrar o ponto de interesse com o ID: " + interestPointId)
-//        );
-//    }
-
     public List<InterestPoint> findAllByIds(List<Long> ids) {
-        List<InterestPoint> interestPoints = interestPointRepository.findAllById(ids);
-        if (interestPoints.isEmpty()) {
-            throw new ServiceError("Não foi possível encontrar pontos de interesse com os IDs fornecidos");
+        List<InterestPoint> interestPoints = new ArrayList<>();
+        for (Long id : ids){
+            interestPoints.add(getOne(id));
         }
         return interestPoints;
     }
@@ -154,8 +148,6 @@ public class InterestPointService {
     }
 
     public void delete(Long id) {
-        //O ponto de interesse tem relações com o itinerario e com os comentarios
-        //Antes de deletar um ponto, necessário antes remover as referencias a ele no itinerario e nos comentarios
         InterestPoint interestPoint = getOne(id);
         List<Itinerary> itineraries = itineraryRepository.findAll();
         List<Tourist> tourists = touristRepository.findAllByCommentsInterestPointId(interestPoint.getId());

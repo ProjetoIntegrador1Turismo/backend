@@ -12,7 +12,9 @@ import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
 import ifpr.roteiropromo.core.itinerary.repository.ItineraryRepository;
 import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
+import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import ifpr.roteiropromo.core.user.repository.GuideRepository;
+import ifpr.roteiropromo.core.user.repository.TouristRepository;
 import ifpr.roteiropromo.core.user.repository.UserRepository;
 import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ public class ItineraryService {
     private final JwtTokenHandler jwtTokenHandler;
     private final GuideRepository guideRepository;
     private final UserRepository userRepository;
+    private final TouristRepository touristRepository;
 
     public ItineraryDTO create(ItineraryDTOForm itineraryDTOForm) {
         Guide guideFound = getGuideAuthenticated();
@@ -60,9 +63,7 @@ public class ItineraryService {
 
     public ItineraryDTO update(Long id, ItineraryUpdateDTO itineraryDTO) {
         Guide guide = getGuideAuthenticated();
-        Itinerary itinerary = guide.getItineraries().stream().filter(t->t.getId().equals(id)).findFirst().orElseThrow(
-                () -> new ServiceError("O guia autenticado não possui um roteiro com o ID: " + id)
-        );
+        Itinerary itinerary = getOneItineraryFromGuide(guide, id);
         modelMapper.map(itineraryDTO, itinerary);
         return modelMapper.map(itineraryRepository.save(itinerary), ItineraryDTO.class);
     }
@@ -70,8 +71,6 @@ public class ItineraryService {
     public ItineraryDTO addInterestPoint(Long itineraryId, Long interestPointId) {
         Guide guide = getGuideAuthenticated();
         Itinerary itineraryFound = getOneItineraryFromGuide(guide, itineraryId);
-        //Duplicated method!
-        //InterestPoint interestPointFound = interestPointService.findById(interestPointIds);
         InterestPoint interestPointFound = interestPointService.getOne(interestPointId);
         itineraryFound.getInterestPoints().add(interestPointFound);
         return modelMapper.map(itineraryRepository.save(itineraryFound), ItineraryDTO.class);
@@ -127,10 +126,23 @@ public class ItineraryService {
     public void delete(Long id) {
         Guide guide = getGuideAuthenticated();
         Itinerary itinerary = getOneItineraryFromGuide(guide, id);
+        removeItineraryFromTouristHaveSetSignal(itinerary);
         guide.getItineraries().remove(itinerary);
         guideRepository.save(guide);
         itineraryRepository.delete(itinerary);
     }
+
+    private void removeItineraryFromTouristHaveSetSignal(Itinerary itinerary) {
+        List<Tourist> tourists = touristRepository.findAll();
+        for (Tourist tourist : tourists){
+            if(tourist.getInterestedItineraries().contains(itinerary)){
+                tourist.getInterestedItineraries().remove(itinerary);
+                touristRepository.save(tourist);
+            }
+        }
+    }
+
+    //Method to delete the itinerary from the tourists who have it in their favorites
 
 
     public void updateCoverImageUrl(Long id, String imageUrl) {

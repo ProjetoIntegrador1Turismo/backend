@@ -5,15 +5,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserDTO {
+public class SimpleGuideDTO {
 
     private Long id;
-    private String userName;
     private String firstName;
-    private String lastName;
-    private String email;
+    private String userName;
     private String cadasturCode;
-    private String profileImageUrl;
     private Boolean isApproved;
-    private boolean activeAdmin;
+    private String lastName;
+    private String profileImageUrl;
+    private String email;
+
 }
