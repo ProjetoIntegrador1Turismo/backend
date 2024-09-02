@@ -9,6 +9,7 @@ import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.service.UserService;
+import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -28,6 +29,7 @@ public class AuthenticationService {
 
     private final UserService userService;
     private final ModelMapper mapper;
+    private final JwtTokenHandler jwtTokenHandler;
 
 
     //Retorna os dados do usuario e o token de autenticação caso exista
@@ -110,7 +112,11 @@ public class AuthenticationService {
         HttpEntity<MultiValueMap<String, String>> entityToRequestKeycloak = new HttpEntity<>(buildFormRequestWithRefreshToken(refreshToken), buildHeaderRequest());
         ResponseEntity<Map> response = makeRequestToAuthenticationServer(entityToRequestKeycloak);
         Map<String, String> tokenData = getTokenDataFromResponse(response);
+        String emailUser = jwtTokenHandler.getUserEmailFromToken(tokenData.get("authToken"));
+        User user = userService.getOneByEmail(emailUser);
         AuthenticatedUserDTO authenticatedUserDTO = new AuthenticatedUserDTO();
+        mapper.map(user, authenticatedUserDTO);
+        authenticatedUserDTO.setUserType(getUserType(user));
         authenticatedUserDTO.setAuthToken(tokenData.get("authToken"));
         authenticatedUserDTO.setAuthTokenExpiresIn(tokenData.get("authTokenExpiresIn"));
         authenticatedUserDTO.setRefreshToken(tokenData.get("refreshToken"));
