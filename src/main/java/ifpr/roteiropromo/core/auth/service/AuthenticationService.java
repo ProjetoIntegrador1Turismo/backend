@@ -45,15 +45,8 @@ public class AuthenticationService {
             throw new AuthenticationServerError("Guide not approved yet", HttpStatus.UNAUTHORIZED);
         }
 
-        AuthenticatedUserDTO authenticatedUserDTO = new AuthenticatedUserDTO();
         User userEntity = userService.getOneByEmail(user.getUsername());
-        mapper.map(userEntity, authenticatedUserDTO);
-        authenticatedUserDTO.setAuthToken(userTokenData.get("authToken"));
-        authenticatedUserDTO.setUserType(getUserType(userEntity));
-        authenticatedUserDTO.setRefreshToken(userTokenData.get("refreshToken"));
-        authenticatedUserDTO.setAuthTokenExpiresIn(userTokenData.get("authTokenExpiresIn"));
-        authenticatedUserDTO.setRefreshTokenExpiresIn(userTokenData.get("refreshTokenExpiresIn"));
-        return authenticatedUserDTO;
+        return getAuthenticatedUserDTO(userEntity, userTokenData);
     }
 
     private boolean guideIsNotApproved(String username) {
@@ -114,6 +107,10 @@ public class AuthenticationService {
         Map<String, String> tokenData = getTokenDataFromResponse(response);
         String emailUser = jwtTokenHandler.getUserEmailFromToken(tokenData.get("authToken"));
         User user = userService.getOneByEmail(emailUser);
+        return getAuthenticatedUserDTO(user, tokenData);
+    }
+
+    private AuthenticatedUserDTO getAuthenticatedUserDTO(User user, Map<String, String> tokenData){
         AuthenticatedUserDTO authenticatedUserDTO = new AuthenticatedUserDTO();
         mapper.map(user, authenticatedUserDTO);
         authenticatedUserDTO.setUserType(getUserType(user));
