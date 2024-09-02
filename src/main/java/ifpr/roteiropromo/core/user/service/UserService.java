@@ -203,9 +203,9 @@ public class UserService {
 
 
     public UserDTO updateUser(UserDTOUpdate userDTOUpdate) {
-        User user = userRepository.getOneByEmail(userDTOUpdate.getEmail());
+        User user = userRepository.getOneByEmail(jwtTokenHandler.getUserDataFromToken().getEmail());
         if (user == null) {
-            throw new ServiceError("User not found with id: " + userDTOUpdate.getId());
+            throw new ServiceError("User not found with email: " + jwtTokenHandler.getUserDataFromToken().getEmail());
         }
 
         // Atualizar nome no backend
