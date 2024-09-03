@@ -1,7 +1,6 @@
 package ifpr.roteiropromo.core.review.service;
 
 import ifpr.roteiropromo.core.auth.domain.AuthenticatedUserDTO;
-import ifpr.roteiropromo.core.comments.domain.entities.Comment;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.pagesource.domain.GuideReviewDTO;
 import ifpr.roteiropromo.core.review.domain.DTO.ReviewDTO;
@@ -50,10 +49,10 @@ public class ReviewService {
         return mapper.map(reviewRepository.save(review), ReviewDTO.class);
     }
 
-    private void updateGuideAverageRating(Guide guideToReview) {
-        List<Review> reviews = reviewRepository.findByGuideId(guideToReview.getId());
-        guideToReview.setAverageRating(calculateAverageRating(reviews));
-        guideService.updateGuide(guideToReview);
+    private void updateGuideAverageRating(Guide guide) {
+        List<Review> reviews = reviewRepository.findByGuideId(guide.getId());
+        guide.setAverageRating(calculateAverageRating(reviews));
+        guideService.updateGuide(guide);
     }
 
     private Integer calculateAverageRating(List<Review> reviews) {
@@ -119,13 +118,6 @@ public class ReviewService {
         tourist.getReviews().remove(review);
         userService.updateTourist(tourist);
     }
-
-// antiga sem image...
-//    public List<GuideReviewDTO> getAllByGuide(Long id) {
-//        return reviewRepository.findByGuideId(id).stream()
-//                .map(review -> mapper.map(review, GuideReviewDTO.class))
-//                .collect(Collectors.toList());
-//    }
 
     public List<GuideReviewDTO> getAllByGuide(Long guideId) {
         List<Review> reviews = reviewRepository.findByGuideId(guideId);
