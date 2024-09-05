@@ -24,6 +24,7 @@ public class Itinerary implements Serializable {
     private Long id;
 
     private String title;
+    @Column(length = 1600)
     private String description;
     private float mediumCost;
     private Integer days;
