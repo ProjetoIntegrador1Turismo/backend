@@ -48,6 +48,16 @@ public class AuthenticationController {
 
 
     @PostMapping("/refresh")
+    @Operation(summary = "Return user data and authentication token",
+            description = "Allow user to refresh authentication token using refresh token")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "401", description = "Expired or Invalid Token.",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandartError.class)) }),
+            @ApiResponse(responseCode = "200", description = "Authentication token refreshed successfully.",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AuthenticatedUserDTO.class)) })
+    })
     public ResponseEntity<AuthenticatedUserDTO> getAuthRefreshToken(@RequestParam String refreshToken){
         return ResponseEntity.ok(authenticationService.getAuthRefreshToken(refreshToken));
     }
