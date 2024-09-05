@@ -11,4 +11,5 @@ public class BasicPointDTO {
     private Long id;
     private String name;
     private String imageCoverUrl;
+    private String interestPointType;
 }
