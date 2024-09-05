@@ -2,6 +2,7 @@ package ifpr.roteiropromo.core.pagesource.service;
 
 import ifpr.roteiropromo.core.admin.domain.FeaturedTouristPoint;
 import ifpr.roteiropromo.core.admin.service.AdminService;
+import ifpr.roteiropromo.core.enums.EntityTypeName;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.*;
 import ifpr.roteiropromo.core.interestPoint.repository.*;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
@@ -121,7 +122,7 @@ public class HomePageSourceService {
         random3itineraries.forEach(itinerary -> {
             BasicPointDTO pointDTO = modelMapper.map(itinerary, BasicPointDTO.class);
             pointDTO.setName(itinerary.getTitle());
-            pointDTO.setInterestPointType("itinerary");
+            pointDTO.setInterestPointType(EntityTypeName.ITINERARY.toString());
             basicPointDTO.add(pointDTO);
         });
         return basicPointDTO;
