@@ -65,7 +65,15 @@ public class ItineraryService {
         Guide guide = getGuideAuthenticated();
         Itinerary itinerary = getOneItineraryFromGuide(guide, id);
         modelMapper.map(itineraryDTO, itinerary);
-        return modelMapper.map(itineraryRepository.save(itinerary), ItineraryDTO.class);
+        Itinerary itineraryUpdated = updateItineraryInterestPoints(itinerary, itineraryDTO.getInterestPointsId());
+        return modelMapper.map(itineraryRepository.save(itineraryUpdated), ItineraryDTO.class);
+    }
+
+    private Itinerary updateItineraryInterestPoints(Itinerary itinerary, List<Long> interestPointsId) {
+        itinerary.getInterestPoints().forEach(interest -> itinerary.getInterestPoints().remove(interest));
+        Itinerary itineraryUpdate = itineraryRepository.save(itinerary);
+        itineraryUpdate.setInterestPoints(getInterestPoints(interestPointsId));
+        return itineraryUpdate;
     }
 
     public ItineraryDTO addInterestPoint(Long itineraryId, Long interestPointId) {
