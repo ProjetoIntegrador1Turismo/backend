@@ -121,6 +121,7 @@ public class HomePageSourceService {
         random3itineraries.forEach(itinerary -> {
             BasicPointDTO pointDTO = modelMapper.map(itinerary, BasicPointDTO.class);
             pointDTO.setName(itinerary.getTitle());
+            pointDTO.setInterestPointType("itinerary");
             basicPointDTO.add(pointDTO);
         });
         return basicPointDTO;
