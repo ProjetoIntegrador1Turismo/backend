@@ -9,8 +9,6 @@ import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import ifpr.roteiropromo.core.interestPoint.repository.InterestPointRepository;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
-import ifpr.roteiropromo.core.review.domain.DTO.ReviewDTOForm;
-import ifpr.roteiropromo.core.review.domain.entities.Review;
 import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.repository.TouristRepository;
@@ -19,7 +17,6 @@ import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -81,7 +78,7 @@ public class CommentService {
         AuthenticatedUserDTO authenticatedUserDTO = jwtTokenHandler.getUserDataFromToken();
         User user = userService.getOneByEmail(authenticatedUserDTO.getEmail());
         if (!(user instanceof Tourist)){
-            throw new ServiceError("Authenticated user cannot create reviews (not Tourist type)");
+            throw new ServiceError("Authenticated user cannot create reviews/comments (not Tourist type)");
         }
         return mapper.map(user, Tourist.class);
     }
