@@ -35,7 +35,6 @@ public class ImageController {
     @PostMapping("/upload/interest-point")
     public ResponseEntity<String> uploadInterestPointImage(@RequestParam MultipartFile file, @RequestParam Long id) {
         try {
-            //Tratar erro quando uma imagem nao é enviada!
             String imageUrl = imageService.saveImage(file);
             interestPointService.updateCoverImageUrl(id, imageUrl);
             return ResponseEntity.ok(imageUrl);
@@ -70,10 +69,10 @@ public class ImageController {
     }
 
     @PostMapping("/upload/user")
-    public ResponseEntity<String> uploadUserImage(@RequestParam MultipartFile file, @RequestParam Long id) {
+    public ResponseEntity<String> uploadUserImage(@RequestParam MultipartFile file) {
         try {
             String imageUrl = imageService.saveImage(file);
-            userService.updateProfileImageUrl(id, imageUrl);
+            userService.updateProfileImageUrl(imageUrl);
             return ResponseEntity.ok(imageUrl);
         } catch (Exception e) {
             throw new ServiceError("Could not upload image");

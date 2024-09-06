@@ -3,6 +3,8 @@ package ifpr.roteiropromo.core.interestPoint.service;
 
 import ifpr.roteiropromo.core.address.model.dtos.AddressDTO;
 import ifpr.roteiropromo.core.address.model.entities.Address;
+import ifpr.roteiropromo.core.comments.domain.entities.Comment;
+import ifpr.roteiropromo.core.comments.repository.CommentRepository;
 import ifpr.roteiropromo.core.enums.InterestPointType;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTO;
@@ -10,6 +12,10 @@ import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTOForm;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointUpdateDTO;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.*;
 import ifpr.roteiropromo.core.interestPoint.repository.InterestPointRepository;
+import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
+import ifpr.roteiropromo.core.itinerary.repository.ItineraryRepository;
+import ifpr.roteiropromo.core.user.domain.entities.Tourist;
+import ifpr.roteiropromo.core.user.repository.TouristRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -17,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +34,8 @@ public class InterestPointService {
 
     private final ModelMapper modelMapper;
     private final InterestPointRepository interestPointRepository;
+    private final ItineraryRepository itineraryRepository;
+    private final TouristRepository touristRepository;
 
 
     public InterestPoint create(InterestPointDTOForm interestPointDTOForm) {
@@ -108,17 +117,10 @@ public class InterestPointService {
 
     }
 
-    //Duplicated Method -> USE getOne()
-//    public InterestPoint findById(Long interestPointId) {
-//        return interestPointRepository.findById(interestPointId).orElseThrow(
-//                () -> new ServiceError("Não foi possível encontrar o ponto de interesse com o ID: " + interestPointId)
-//        );
-//    }
-
     public List<InterestPoint> findAllByIds(List<Long> ids) {
-        List<InterestPoint> interestPoints = interestPointRepository.findAllById(ids);
-        if (interestPoints.isEmpty()) {
-            throw new ServiceError("Não foi possível encontrar pontos de interesse com os IDs fornecidos");
+        List<InterestPoint> interestPoints = new ArrayList<>();
+        for (Long id : ids){
+            interestPoints.add(getOne(id));
         }
         return interestPoints;
     }
@@ -144,4 +146,20 @@ public class InterestPointService {
         interestPoint.getImages().addAll(imagesUrl);
         interestPointRepository.save(interestPoint);
     }
+
+    public void delete(Long id) {
+        InterestPoint interestPoint = getOne(id);
+        List<Itinerary> itineraries = itineraryRepository.findAll();
+        List<Tourist> tourists = touristRepository.findAllByCommentsInterestPointId(interestPoint.getId());
+        for (Itinerary itinerary : itineraries){
+            itinerary.getInterestPoints().remove(interestPoint);
+            itineraryRepository.save(itinerary);
+        }
+        for (Tourist tourist : tourists){
+            tourist.getComments().removeIf(comment -> comment.getInterestPoint().getId().equals(interestPoint.getId()));
+            touristRepository.save(tourist);
+        }
+        interestPointRepository.delete(interestPoint);
+    }
+
 }

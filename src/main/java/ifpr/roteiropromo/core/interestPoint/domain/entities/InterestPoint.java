@@ -10,8 +10,8 @@ import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-//@Inheritance(strategy = InheritanceType.JOINED)
+//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 @Entity
 @Data
 public abstract class InterestPoint {
@@ -30,6 +30,8 @@ public abstract class InterestPoint {
     private Integer averageValue;
     private String shortDescription;
     private String imageCoverUrl;
+    private Integer averageRating = 4;
+
     @ElementCollection
     private List<String> images;
 

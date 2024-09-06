@@ -15,7 +15,11 @@ public interface GuideRepository extends JpaRepository<Guide, Long> {
 
     Guide getOneById(Long id);
 
+    Boolean existsByCadasturCode(String cadasturCode);
+
     @Query("SELECT g FROM Guide g JOIN g.itineraries i JOIN i.interestPoints ip WHERE ip.id = :interestPointId")
     List<Guide> findGuidesByInterestPoint(Long interestPointId);
 
+    @Query("SELECT g FROM Guide g ORDER BY g.averageRating DESC")
+    List<Guide> getGuidesOrderedByRating();
 }

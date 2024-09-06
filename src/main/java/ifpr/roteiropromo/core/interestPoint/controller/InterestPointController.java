@@ -115,6 +115,16 @@ public class InterestPointController {
         return ResponseEntity.ok(interestPointService.getAllByType(interestPointType));
     }
 
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Delete a Interest Point",
+            description = "Allow ADMIN user to delete Interest Point by id.",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Void> deleteOneById(@PathVariable Long id){
+        interestPointService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
 
 

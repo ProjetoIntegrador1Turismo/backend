@@ -24,59 +24,23 @@ import java.util.stream.Collectors;
 public class GuideService {
 
     private final GuideRepository guideRepository;
-    private final ReviewRepository reviewRepository;
     private final JwtTokenHandler jwtTokenHandler;
+    private final ModelMapper mapper;
 
     public List<TopGuideDTO> getTopGuidesDTO(){
-        Map<Long, Double> topGuides = getTopFiveGuidesId();
-        List<TopGuideDTO> topGuidesList = new ArrayList<>();
-        topGuides.forEach((guideId, rateValue) -> {
-            buildTopGuideDTO(topGuidesList, guideId, rateValue);
-        });
-        return topGuidesList;
-    }
-
-    private void buildTopGuideDTO(List<TopGuideDTO> topGuidesList, Long guideId, Double rateValue) {
-        Guide guide = guideRepository.getOneById(guideId);
-        if (guide != null){
-            TopGuideDTO topGuideDTO = new TopGuideDTO();
-            topGuideDTO.setFirstName(guide.getFirstName());
-            topGuideDTO.setId(guide.getId());
-            topGuideDTO.setAverageRating(rateValue);
-            topGuidesList.add(topGuideDTO);
+        List<Guide> guides = guideRepository.getGuidesOrderedByRating();
+        List<TopGuideDTO> topGuideDTOS = new ArrayList<>();
+        for (int i = 0; i < Math.min(3, guides.size()); i++) {
+            topGuideDTOS.add(mapper.map(guides.get(i), TopGuideDTO.class));
         }
+        return topGuideDTOS;
     }
 
-
-    public Map<Long, Double> getTopFiveGuidesId(){
-        List<Review> reviews = reviewRepository.findAll();
-        return orderRatingsAndGetTopFive(calculateAverageRatingForEachGuide(reviews));
-    }
-
-    private Map<Long, Double> orderRatingsAndGetTopFive(Map<Long, Double> averageRatings) {
-        return averageRatings.entrySet()
-                .stream()
-                .sorted(Map.Entry.<Long, Double>comparingByValue().reversed())
-                .limit(5)
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (e1, e2) -> e1,
-                        LinkedHashMap::new
-                ));
-    }
 
     public List<Guide> getGuidesWhoOfferTour(Long id){
          return guideRepository.findGuidesByInterestPoint(id);
     }
 
-    private Map<Long, Double> calculateAverageRatingForEachGuide(List<Review> reviews) {
-        return reviews.stream()
-                .collect(Collectors.groupingBy(
-                        Review::getGuideId,
-                        Collectors.averagingInt(Review::getRating)
-                ));
-    }
 
     public List<Guide> getAllGuides() {
         return new ArrayList<>(guideRepository.findAll());
@@ -86,5 +50,9 @@ public class GuideService {
         AuthenticatedUserDTO guideAuthenticated = jwtTokenHandler.getUserDataFromToken();
         Guide guide = guideRepository.getOnByEmail(guideAuthenticated.getEmail());
         return guide.getItineraries();
+    }
+
+    public void updateGuide(Guide guide) {
+        guideRepository.save(guide);
     }
 }

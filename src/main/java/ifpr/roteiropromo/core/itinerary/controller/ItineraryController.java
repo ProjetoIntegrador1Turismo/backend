@@ -44,7 +44,6 @@ public class ItineraryController {
     }
 
     @GetMapping()
-    //@PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<ItineraryDTO>> getAll(){
         return ResponseEntity.ok(itineraryService.findAll());
     }
@@ -60,6 +59,7 @@ public class ItineraryController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('GUIA')")
     public ResponseEntity<Void> delete(@PathVariable Long id){
         itineraryService.delete(id);
         return ResponseEntity.noContent().build();

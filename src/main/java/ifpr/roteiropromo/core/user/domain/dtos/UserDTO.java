@@ -8,18 +8,12 @@ import lombok.Setter;
 public class UserDTO {
 
     private Long id;
-
     private String userName;
-
     private String firstName;
-
     private String lastName;
-
     private String email;
-
     private String cadasturCode;
-
+    private String profileImageUrl;
     private Boolean isApproved;
-
     private boolean activeAdmin;
 }

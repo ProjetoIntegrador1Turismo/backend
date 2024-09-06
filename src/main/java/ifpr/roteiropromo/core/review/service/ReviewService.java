@@ -2,6 +2,7 @@ package ifpr.roteiropromo.core.review.service;
 
 import ifpr.roteiropromo.core.auth.domain.AuthenticatedUserDTO;
 import ifpr.roteiropromo.core.errors.ServiceError;
+import ifpr.roteiropromo.core.pagesource.domain.GuideReviewDTO;
 import ifpr.roteiropromo.core.review.domain.DTO.ReviewDTO;
 import ifpr.roteiropromo.core.review.domain.DTO.ReviewDTOForm;
 import ifpr.roteiropromo.core.review.domain.entities.Review;
@@ -9,6 +10,8 @@ import ifpr.roteiropromo.core.review.repository.ReviewRepository;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import ifpr.roteiropromo.core.user.domain.entities.User;
+import ifpr.roteiropromo.core.user.repository.TouristRepository;
+import ifpr.roteiropromo.core.user.service.GuideService;
 import ifpr.roteiropromo.core.user.service.UserService;
 import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +32,8 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserService userService;
     private final JwtTokenHandler jwtTokenHandler;
+    private final TouristRepository touristRepository;
+    private final GuideService guideService;
 
     public ReviewDTO reviewOneGuide(ReviewDTOForm reviewDTOForm) {
         Tourist tourist = getTouristAuthenticated();
@@ -36,11 +41,26 @@ public class ReviewService {
         validateReview(reviewDTOForm, tourist, guideToReview.getId());
         Review review = new Review();
         mapper.map(reviewDTOForm, review);
-        review.setGuideId(guideToReview.getId());
         review.setTouristName(tourist.getFirstName() + " " + tourist.getLastName());
+        review.setGuide(guideToReview);
         tourist.getReviews().add(review);
         userService.updateTourist(tourist);
+        updateGuideAverageRating(guideToReview);
         return mapper.map(reviewRepository.save(review), ReviewDTO.class);
+    }
+
+    private void updateGuideAverageRating(Guide guide) {
+        List<Review> reviews = reviewRepository.findByGuideId(guide.getId());
+        guide.setAverageRating(calculateAverageRating(reviews));
+        guideService.updateGuide(guide);
+    }
+
+    private Integer calculateAverageRating(List<Review> reviews) {
+        Integer ratings = 0;
+        for (Review review : reviews){
+            ratings += review.getRating();
+        }
+        return ratings / reviews.size();
     }
 
     public ReviewDTO updateReview(ReviewDTO reviewDTO) {
@@ -69,18 +89,13 @@ public class ReviewService {
             throw new ServiceError("Rating must be between 1 and 5.");
         }
 
-        if(tourist.getReviews().stream().anyMatch(r -> r.getGuideId().equals(guideId))){
+        if(tourist.getReviews().stream().anyMatch(r -> r.getGuide().getId().equals(guideId))){
             throw new ServiceError("Authenticated tourist has already created a review for this guide.");
         }
     }
 
     private Guide getGuideToReview(String email) {
         User userFound = userService.getOneByEmail(email);
-
-        if(userFound == null){
-            throw new ServiceError("Guide not found with email: " + email);
-        }
-
         if(!(userFound instanceof Guide)){
             throw new ServiceError("This email does not belong to a Guide (you can only review Guides): " + email);
         }
@@ -96,6 +111,7 @@ public class ReviewService {
         return mapper.map(userFound, Tourist.class);
     }
 
+
     public void deleteReviewById(Long reviewId) {
         Tourist tourist = getTouristAuthenticated();
         Review review = getReviewFromTourist(tourist, reviewId);
@@ -103,10 +119,22 @@ public class ReviewService {
         userService.updateTourist(tourist);
     }
 
-    public List<ReviewDTO> getAllByGuide(Long id) {
-        return reviewRepository.findByGuideId(id).stream()
-                .map(review -> mapper.map(review, ReviewDTO.class))
-                .collect(Collectors.toList());
+    public List<GuideReviewDTO> getAllByGuide(Long guideId) {
+        List<Review> reviews = reviewRepository.findByGuideId(guideId);
+
+        return reviews.stream().map(review -> {
+            Tourist tourist = touristRepository.findByReviewsContains(review);
+
+            GuideReviewDTO dto = new GuideReviewDTO();
+            dto.setTouristName(tourist.getFirstName() + " " + tourist.getLastName());
+            dto.setAvatarUrl(tourist.getProfileImageUrl());
+            dto.setId(review.getId());
+            dto.setText(review.getText());
+            dto.setDate(review.getDate());
+            dto.setRating(review.getRating());
+
+            return dto;
+        }).collect(Collectors.toList());
     }
 
 }

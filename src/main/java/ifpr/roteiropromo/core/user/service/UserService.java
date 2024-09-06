@@ -1,6 +1,7 @@
 package ifpr.roteiropromo.core.user.service;
 
 
+import ifpr.roteiropromo.core.auth.domain.AuthenticatedUserDTO;
 import ifpr.roteiropromo.core.errors.AuthenticationServerError;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.review.repository.ReviewRepository;
@@ -9,6 +10,7 @@ import ifpr.roteiropromo.core.user.domain.entities.Admin;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import ifpr.roteiropromo.core.user.domain.entities.User;
+import ifpr.roteiropromo.core.user.repository.GuideRepository;
 import ifpr.roteiropromo.core.user.repository.UserRepository;
 import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import lombok.RequiredArgsConstructor;
@@ -34,17 +36,19 @@ public class UserService {
     private final JwtTokenHandler jwtTokenHandler;
     private final ModelMapper mapper;
     private final UserRepository userRepository;
-    private final ReviewRepository reviewRepository;
-    private final ModelMapper modelMapper;
+    private final GuideRepository guideRepository;
 
 
     public UserDTO createNewUser(UserDTOForm userDTOForm) {
-        //Primeiro: Cria - ou lança exceção - o usuario no servidor de autenticação
+
+        validateCadasturCodeIfGuide(userDTOForm);
         createUserOnResourceServer(userDTOForm);
 
-        // Verificando de que tipo é o User que será cadastrado:
-        //MOVER O CRIAR ADMIN PARA UM METODO PRÓPRIO - Ñ DEIXAR NO MESMO METODO DE USUARIOS NORMAIS
+        // DEFAULT IMAGE URL
+        final String DEFAULT_IMAGE_URL = "http://localhost:8081/uploads/userplaceholder.png";
+
         User user;
+
         if (userDTOForm.isActiveAdmin()) {
             Admin admin = mapper.map(userDTOForm, Admin.class);
             admin.setUserName(userDTOForm.getFirstName());
@@ -70,9 +74,24 @@ public class UserService {
             user = guide;
         }
 
+        user.setProfileImageUrl(DEFAULT_IMAGE_URL);
+
         // Salvando no banco
         User savedUser = userRepository.save(user);
         return mapper.map(savedUser, UserDTO.class);
+    }
+
+    private void validateCadasturCodeIfGuide(UserDTOForm userDTOForm) {
+        if(userDTOForm.getCadasturCode() != null){
+            Boolean cadasturExists = guideRepository.existsByCadasturCode(userDTOForm.getCadasturCode());
+            log.info(cadasturExists);
+            if(cadasturExists) {
+                throw new AuthenticationServerError(
+                        "CadasturCode already registered: " + userDTOForm.getCadasturCode(),
+                        HttpStatus.CONFLICT
+                );
+            }
+        }
     }
 
     private void createUserOnResourceServer(UserDTOForm userDTOForm){
@@ -82,20 +101,24 @@ public class UserService {
                     createRequestToKeycloakToNewUser(userDTOForm), Map.class);
         } catch (HttpClientErrorException.Conflict e) {
             throw new AuthenticationServerError("User e-mail already registered!", HttpStatus.CONFLICT);
+        } catch (HttpClientErrorException.BadRequest e){
+            throw new AuthenticationServerError("Invalid user data.", HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             throw new AuthenticationServerError("Error when try to access resource server.", HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
-    public List<User> getAll() {
-        return userRepository.findAll();
+    public List<UserDTO> getAll() {
+        return userRepository.findAll().stream()
+                .map(user -> mapper.map(user, UserDTO.class))
+                .collect(Collectors.toList());
     }
 
 
     // OBS: PARA UTILIZAR ESSE MÉTODO É PRECISO JÁ ESTAR COM O CONTEINER NOVO ATUALIZADO... (O COM TEMA DO APP)
-    public String resetUserPassword(UserDTORecovery userDTORecovery) {
+    public String resetUserPassword(String email) {
         try {
-            User userFound = userRepository.getOneByEmail(userDTORecovery.getEmail());
+            User userFound = getOneByEmail(email);
             String userIDKeycloak = this.getUserIdFromKeycloak(userFound);
 
             RestTemplate restTemplate = new RestTemplate();
@@ -129,6 +152,18 @@ public class UserService {
         return userFound;
     }
 
+    public Tourist getTouristByEmail(String email) {
+        User userFound = userRepository.getOneByEmail(email);
+        if(userFound == null){
+            throw new ServiceError("Could not find a user with that email: " + email);
+        }
+        if (userFound instanceof Tourist){
+            return mapper.map(userFound, Tourist.class);
+        }else{
+            throw new ServiceError("User found with email: " + email + " is not a tourist!");
+        }
+    }
+
 
     public User findById(Long id){
         return userRepository.findById(id).orElseThrow(
@@ -152,7 +187,7 @@ public class UserService {
         if (userFound instanceof Guide){
             return (Guide) userFound;
         }else{
-            throw new ServiceError("User found with id: " + id + " is not a guide so he can't make comments!");
+            throw new ServiceError("User found with id: " + id + " is not a guide!");
         }
     }
 
@@ -182,9 +217,9 @@ public class UserService {
 
 
     public UserDTO updateUser(UserDTOUpdate userDTOUpdate) {
-        User user = userRepository.getOneByEmail(userDTOUpdate.getEmail());
+        User user = userRepository.getOneByEmail(jwtTokenHandler.getUserDataFromToken().getEmail());
         if (user == null) {
-            throw new ServiceError("User not found with id: " + userDTOUpdate.getId());
+            throw new ServiceError("User not found with email: " + jwtTokenHandler.getUserDataFromToken().getEmail());
         }
 
         // Atualizar nome no backend
@@ -203,8 +238,9 @@ public class UserService {
     }
 
 
-    public void updateProfileImageUrl(Long id, String imageUrl) {
-        User userFound = userRepository.findById(id).orElseThrow(() -> new ServiceError("User not found with id: " + id));
+    public void updateProfileImageUrl(String imageUrl) {
+        AuthenticatedUserDTO authenticatedUser = jwtTokenHandler.getUserDataFromToken();
+        User userFound = getOneByEmail(authenticatedUser.getEmail());
         userFound.setProfileImageUrl(imageUrl);
         userRepository.save(userFound);
     }

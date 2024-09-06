@@ -8,6 +8,8 @@ import lombok.Setter;
 public class TopGuideDTO {
     private Long id;
     private String firstName;
+    private String lastName;
     private double averageRating;
+    private String profileImageUrl;
 
 }

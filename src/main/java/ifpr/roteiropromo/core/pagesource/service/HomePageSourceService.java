@@ -1,6 +1,8 @@
 package ifpr.roteiropromo.core.pagesource.service;
 
+import ifpr.roteiropromo.core.admin.domain.FeaturedTouristPoint;
 import ifpr.roteiropromo.core.admin.service.AdminService;
+import ifpr.roteiropromo.core.enums.EntityTypeName;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.*;
 import ifpr.roteiropromo.core.interestPoint.repository.*;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
@@ -10,12 +12,7 @@ import ifpr.roteiropromo.core.pagesource.domain.BasicPointDTO;
 import ifpr.roteiropromo.core.pagesource.domain.HomePageDTO;
 import ifpr.roteiropromo.core.pagesource.domain.InterestPointCardDTO;
 import ifpr.roteiropromo.core.pagesource.domain.TopGuideDTO;
-import ifpr.roteiropromo.core.review.domain.DTO.ReviewDTO;
-import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
-import ifpr.roteiropromo.core.user.domain.entities.Guide;
-import ifpr.roteiropromo.core.user.repository.GuideRepository;
 import ifpr.roteiropromo.core.user.service.GuideService;
-import ifpr.roteiropromo.core.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -25,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PageSourceService {
+public class HomePageSourceService {
 
     private final InterestPointService interestPointService;
     private final TouristPointRepository touristPointRepository;
@@ -41,8 +38,8 @@ public class PageSourceService {
     public HomePageDTO getHomePageData(){
         HomePageDTO homePageDTO = new HomePageDTO();
         homePageDTO.setTop3InterestPoints(getTop3InterestPoints());
-        homePageDTO.setFirstSlider(getRandomPointsToFirstSlider()); ////pontos, roteiros ou experiencias
-        homePageDTO.setSecondSlider(getRandomPointsToSecondSlider()); //restaurantes, hoteis e eventos
+        homePageDTO.setFirstSlider(getRandomPointsToFirstSlider());
+        homePageDTO.setSecondSlider(getRandomPointsToSecondSlider());
         homePageDTO.setTopGuides(getTop5Guides());
         return homePageDTO;
     }
@@ -121,34 +118,24 @@ public class PageSourceService {
             random3itineraries.add(itineraries.get(i));
         }
 
-
-
         List<BasicPointDTO> basicPointDTO = new ArrayList<>();
-        for (Itinerary itinerary : random3itineraries) {
-            BasicPointDTO basicPoint = new BasicPointDTO();
-            basicPoint.setId(itinerary.getId());
-            basicPoint.setName(itinerary.getTitle());
-            basicPoint.setImageCoverUrl("http://localhost:8081/uploads/roteiro.jpeg");
-            basicPointDTO.add(basicPoint);
-        }
+        random3itineraries.forEach(itinerary -> {
+            BasicPointDTO pointDTO = modelMapper.map(itinerary, BasicPointDTO.class);
+            pointDTO.setName(itinerary.getTitle());
+            pointDTO.setInterestPointType(EntityTypeName.ITINERARY.toString());
+            basicPointDTO.add(pointDTO);
+        });
         return basicPointDTO;
     }
 
 
     private List<InterestPointCardDTO> getTop3InterestPoints() {
-        List<TouristPoint> touristPoints = touristPointRepository.findAll();
-        List<String> names = new ArrayList<>();
-        names.add("Cataratas do Iguaçu");
-        names.add("Parque das Aves");
-        names.add("Itaipu Binacional");
-        List<InterestPointCardDTO> interestPointCardDTOS = new ArrayList<>();
-        for (String name : names){
-            Optional<TouristPoint> touristPoint = touristPoints.stream().filter(point -> point.getName().equals(name)).findAny();
-            if (touristPoint.isPresent()){
-                interestPointCardDTOS.add(modelMapper.map(touristPoint.get(), InterestPointCardDTO.class));
-            }
-        }
-        return interestPointCardDTOS;
+        List<FeaturedTouristPoint> principalPoints = adminService.getAllFeaturedPoints();
+        List<InterestPointCardDTO> cardDTOS = new ArrayList<>();
+        principalPoints.forEach(principalPoint -> {
+            cardDTOS.add(modelMapper.map(principalPoint.getInterestPoint(), InterestPointCardDTO.class));
+        });
+        return cardDTOS;
     }
 
 

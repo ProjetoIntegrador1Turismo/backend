@@ -1,15 +1,17 @@
 package ifpr.roteiropromo.core.pagesource.domain;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class BasicPointDTO {
-
+@AllArgsConstructor
+@NoArgsConstructor
+public class BasicItineraryDTO {
     private Long id;
-    private String name;
+    private String title;
     private String imageCoverUrl;
-    private String interestPointType;
 }

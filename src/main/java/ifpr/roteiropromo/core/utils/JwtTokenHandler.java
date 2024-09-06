@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.json.JSONObject;
 
+import java.util.Base64;
 import java.util.Map;
 
 
@@ -83,6 +85,16 @@ public class JwtTokenHandler {
         userDataForm.add("grant_type", "password");
         HttpEntity<MultiValueMap<String, String>> entityToRequestKeycloak = new HttpEntity<>(userDataForm, httpHeaders);
         return entityToRequestKeycloak;
+    }
+
+    public String getUserEmailFromToken(String authToken) {
+        String[] parts = authToken.split("\\.");
+        if (parts.length != 3) {
+            throw new IllegalArgumentException("Token JWT inválido");
+        }
+        String payload = new String(Base64.getUrlDecoder().decode(parts[1]));
+        JSONObject jsonObject = new JSONObject(payload);
+        return jsonObject.getString("email");
     }
 
 }

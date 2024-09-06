@@ -1,6 +1,7 @@
 package ifpr.roteiropromo.core.itinerary.domain.entities;
 
 import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
+import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class Itinerary implements Serializable {
     private Long id;
 
     private String title;
+    @Column(length = 1600)
     private String description;
     private float mediumCost;
     private Integer days;
@@ -31,6 +33,10 @@ public class Itinerary implements Serializable {
     private List<InterestPoint> interestPoints;
 
     private String imageCoverUrl; // Novo campo para URL da imagem
+
+    @ManyToMany(mappedBy = "interestedItineraries")
+    private List<Tourist> interestedTourists;
+
 }
 
 
