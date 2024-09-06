@@ -7,8 +7,6 @@ import ifpr.roteiropromo.core.pagesource.domain.TourPageDTO;
 import ifpr.roteiropromo.core.pagesource.service.GuideProfileService;
 import ifpr.roteiropromo.core.pagesource.service.ItineraryPageSourceService;
 import ifpr.roteiropromo.core.pagesource.service.HomePageSourceService;
-import ifpr.roteiropromo.core.pagesource.service.ItineraryPageSourceService;
-import ifpr.roteiropromo.core.pagesource.service.PageSourceService;
 import ifpr.roteiropromo.core.pagesource.service.TourPageSourceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,16 +22,12 @@ public class PageSourceController {
     private final TourPageSourceService tourPageSourceService;
     private final ItineraryPageSourceService itineraryPageSourceService;
     private final GuideProfileService guideProfileService;
-    private final ItineraryPageSourceService itineraryPageSourceService;
 
     public PageSourceController(HomePageSourceService homePageSourceService, TourPageSourceService tourPageSourceService, ItineraryPageSourceService itineraryPageSourceService, GuideProfileService guideProfileService) {
         this.homePageSourceService = homePageSourceService;
-    public PageSourceController(PageSourceService pageSourceService, TourPageSourceService tourPageSourceService, ItineraryPageSourceService itineraryPageSourceService) {
-        this.pageSourceService = pageSourceService;
         this.tourPageSourceService = tourPageSourceService;
         this.itineraryPageSourceService = itineraryPageSourceService;
         this.guideProfileService = guideProfileService;
-        this.itineraryPageSourceService = itineraryPageSourceService;
     }
 
 
