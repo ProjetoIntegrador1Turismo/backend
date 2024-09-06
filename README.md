@@ -4,6 +4,11 @@
 Este repositório contém o código fonte da API desenvolvida para atuar como servidor de recursos da aplicação Tourlink.
 
 Referida aplicação foi apresentada como parte do trabalho final de conclusão de curso de análise e desenvolvimento de sistemas, junto ao Campus do IFPR em Foz do Iguaçu/PR.
+
+## Stack utilizada
+
+Spring Boot, Docker, Keyclock, Mysql
+
 ## Rodando localmente
 
 Tenha certeza que o ambiente onde a aplicação será executada conta com [JDK](https://www.oracle.com/br/java/technologies/downloads/), [Maven](https://maven.apache.org/) e [Docker](https://www.docker.com/).
