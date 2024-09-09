@@ -95,10 +95,10 @@ public class ReviewService {
         }
     }
 
-    private Guide getGuideToReview(String email) {
-        User userFound = userService.getOneByEmail(email);
+    private Guide getGuideToReview(Long id) {
+        User userFound = userService.getOneById(id);
         if(!(userFound instanceof Guide)){
-            throw new ServiceError("This email does not belong to a Guide (you can only review Guides): " + email);
+            throw new ServiceError("This ID does not belong to a Guide (you can only review Guides): " + id);
         }
         return mapper.map(userFound, Guide.class);
     }
