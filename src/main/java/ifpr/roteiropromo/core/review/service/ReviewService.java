@@ -35,9 +35,9 @@ public class ReviewService {
     private final TouristRepository touristRepository;
     private final GuideService guideService;
 
-    public ReviewDTO reviewOneGuide(ReviewDTOForm reviewDTOForm) {
+    public ReviewDTO reviewOneGuide(Long id, ReviewDTOForm reviewDTOForm) {
         Tourist tourist = getTouristAuthenticated();
-        Guide guideToReview = getGuideToReview(reviewDTOForm.getGuideEmail());
+        Guide guideToReview = getGuideToReview(id);
         validateReview(reviewDTOForm, tourist, guideToReview.getId());
         Review review = new Review();
         mapper.map(reviewDTOForm, review);
@@ -48,6 +48,7 @@ public class ReviewService {
         updateGuideAverageRating(guideToReview);
         return mapper.map(reviewRepository.save(review), ReviewDTO.class);
     }
+
 
     private void updateGuideAverageRating(Guide guide) {
         List<Review> reviews = reviewRepository.findByGuideId(guide.getId());
