@@ -19,5 +19,5 @@ public class GuideProfileDTO {
     private String profileImageUrl;
     private List<GuideReviewDTO> reviews;
     private List<BasicItineraryDTO> itineraries;
-
+    private List<InterestedTouristDTO> interested;
 }
