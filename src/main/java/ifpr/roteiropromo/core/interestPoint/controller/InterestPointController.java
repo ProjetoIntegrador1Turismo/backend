@@ -1,30 +1,24 @@
 package ifpr.roteiropromo.core.interestPoint.controller;
 
 import ifpr.roteiropromo.core.errors.StandartError;
-import ifpr.roteiropromo.core.images.service.ImageService;
 import ifpr.roteiropromo.core.enums.InterestPointType;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTO;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTOForm;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointUpdateDTO;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
-import ifpr.roteiropromo.core.security.CustomAccessDeniedHandler;
-import ifpr.roteiropromo.core.security.CustomAuthenticationEntryPoint;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -34,15 +28,14 @@ import java.util.List;
 public class InterestPointController {
 
     private final InterestPointService interestPointService;
-    private final ImageService imageService;
 
 
-    public InterestPointController(InterestPointService interestPointService, ImageService imageService){
+
+    public InterestPointController(InterestPointService interestPointService){
         this.interestPointService = interestPointService;
-        this.imageService = imageService;
     }
 
-    //Cria um novo ponto de interesse com todos os dados
+
     @PostMapping()
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Create new Interest Point",
