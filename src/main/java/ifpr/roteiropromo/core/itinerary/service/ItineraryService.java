@@ -19,15 +19,19 @@ import ifpr.roteiropromo.core.user.repository.UserRepository;
 import ifpr.roteiropromo.core.user.service.UserService;
 import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.apache.commons.logging.Log;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class ItineraryService {
 
     private final ModelMapper modelMapper;
@@ -71,15 +75,20 @@ public class ItineraryService {
     }
 
     public ItineraryDTO update(Long id, ItineraryUpdateDTO itineraryDTO) {
+
         Guide guide = getGuideAuthenticated();
         Itinerary itinerary = getOneItineraryFromGuide(guide, id);
+
         modelMapper.map(itineraryDTO, itinerary);
         Itinerary itineraryUpdated = updateItineraryInterestPoints(itinerary, itineraryDTO.getInterestPointsId());
         return modelMapper.map(itineraryRepository.save(itineraryUpdated), ItineraryDTO.class);
     }
 
+
     private Itinerary updateItineraryInterestPoints(Itinerary itinerary, List<Long> interestPointsId) {
-        itinerary.getInterestPoints().forEach(interest -> itinerary.getInterestPoints().remove(interest));
+        itinerary.getInterestPoints().clear();
+
+        itinerary.setInterestPoints(getInterestPoints(interestPointsId));
         Itinerary itineraryUpdate = itineraryRepository.save(itinerary);
         itineraryUpdate.setInterestPoints(getInterestPoints(interestPointsId));
         return itineraryUpdate;

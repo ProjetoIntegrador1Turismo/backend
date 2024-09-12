@@ -1,7 +1,7 @@
 package ifpr.roteiropromo.core.user.domain.dtos;
 
 
-import ifpr.roteiropromo.core.comments.domain.entities.Comment;
+import ifpr.roteiropromo.core.comments.domain.DTO.CommentDTO;
 import ifpr.roteiropromo.core.pagesource.domain.BasicItineraryDTO;
 import ifpr.roteiropromo.core.review.domain.DTO.ReviewDTO;
 import lombok.Getter;
@@ -18,7 +18,7 @@ public class TouristDTO {
     private String lastName;
     private String email;
     private List<BasicItineraryDTO> interestedItineraries;
-    private List<Comment> comments;
+    private List<CommentDTO> comments;
     private List<ReviewDTO> reviews;
 
 }

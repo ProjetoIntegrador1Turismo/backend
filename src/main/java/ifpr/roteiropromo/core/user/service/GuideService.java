@@ -1,6 +1,7 @@
 package ifpr.roteiropromo.core.user.service;
 
 import ifpr.roteiropromo.core.auth.domain.AuthenticatedUserDTO;
+import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTO;
 import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
 import ifpr.roteiropromo.core.pagesource.domain.TopGuideDTO;
 import ifpr.roteiropromo.core.review.domain.entities.Review;
@@ -46,10 +47,10 @@ public class GuideService {
         return new ArrayList<>(guideRepository.findAll().stream().map(guide -> mapper.map(guide, GuideDTO.class)).collect(Collectors.toList()));
     }
 
-    public List<Itinerary> getItinerariesFromAuthenticatedGuide() {
+    public List<ItineraryDTO> getItinerariesFromAuthenticatedGuide() {
         AuthenticatedUserDTO guideAuthenticated = jwtTokenHandler.getUserDataFromToken();
         Guide guide = guideRepository.getOnByEmail(guideAuthenticated.getEmail());
-        return guide.getItineraries();
+        return guide.getItineraries().stream().map(itinerary -> mapper.map(itinerary, ItineraryDTO.class)).collect(Collectors.toList());
     }
 
     public void updateGuide(Guide guide) {
