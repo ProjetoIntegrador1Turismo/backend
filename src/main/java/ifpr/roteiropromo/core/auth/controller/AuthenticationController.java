@@ -27,7 +27,6 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
-    //Retorna os dados do usuario e o token de autenticação
     @PostMapping()
     @Operation(summary = "Return user data and authentication token",
             description = "Allow user to authenticate and receive a token to access the system")
