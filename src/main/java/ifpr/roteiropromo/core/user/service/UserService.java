@@ -182,6 +182,13 @@ public class UserService {
     }
 
 
+    public TouristDTO getMeTourist() {
+        AuthenticatedUserDTO userAuthenticated = jwtTokenHandler.getUserDataFromToken();
+        Tourist touristFound = getTouristByEmail(userAuthenticated.getEmail());
+        return mapper.map(touristFound, TouristDTO.class);
+    }
+
+
     public Guide findGuideById(Long id) {
         User userFound = getOneById(id);
         if (userFound instanceof Guide){
@@ -321,6 +328,7 @@ public class UserService {
         Map<String, Object> updateNamePayload = new HashMap<>();
         updateNamePayload.put("firstName", user.getFirstName());
         updateNamePayload.put("lastName", user.getLastName());
+
 
         HttpEntity<Map<String, Object>> nameEntity = new HttpEntity<>(updateNamePayload, headers);
         try {
