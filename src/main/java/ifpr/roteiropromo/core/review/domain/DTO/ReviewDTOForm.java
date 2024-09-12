@@ -9,5 +9,4 @@ public class ReviewDTOForm {
     private String text;
     private String date;
     private Integer rating;
-    private String guideEmail;
 }

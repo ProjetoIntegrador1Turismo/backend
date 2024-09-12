@@ -21,10 +21,10 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @PostMapping()
+    @PostMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ReviewDTO> reviewOneGuide(@RequestBody ReviewDTOForm reviewDTOForm) {
-        return ResponseEntity.ok(reviewService.reviewOneGuide(reviewDTOForm));
+    public ResponseEntity<ReviewDTO> reviewOneGuide(@PathVariable Long id, @RequestBody ReviewDTOForm reviewDTOForm) {
+        return ResponseEntity.ok(reviewService.reviewOneGuide(id, reviewDTOForm));
     }
 
     @PutMapping()

@@ -42,8 +42,8 @@ public class GuideService {
     }
 
 
-    public List<Guide> getAllGuides() {
-        return new ArrayList<>(guideRepository.findAll());
+    public List<GuideDTO> getAllGuides() {
+        return new ArrayList<>(guideRepository.findAll().stream().map(guide -> mapper.map(guide, GuideDTO.class)).collect(Collectors.toList()));
     }
 
     public List<Itinerary> getItinerariesFromAuthenticatedGuide() {

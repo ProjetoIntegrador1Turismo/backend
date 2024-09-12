@@ -71,6 +71,13 @@ public class UserController {
     }
 
 
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<TouristDTO> getMeTourist(){
+        return ResponseEntity.ok(userService.getMeTourist());
+    }
+
+
     @GetMapping("/email")
     @Operation(summary = "Find user by email",
             description = "Allow ADMIN to get a users by email.")
@@ -135,6 +142,5 @@ public class UserController {
     public ResponseEntity<String> resetPassword(@RequestParam String email) {
         return ResponseEntity.ok(userService.resetUserPassword(email));
     }
-
 
 }

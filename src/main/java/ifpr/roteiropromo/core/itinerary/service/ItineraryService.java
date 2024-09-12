@@ -41,8 +41,14 @@ public class ItineraryService {
 
 
     public ItineraryDTO create(ItineraryDTOForm itineraryDTOForm) {
+
+        final String DEFAULT_IMAGE_URL = "http://localhost:8081/uploads/interestpointplaceholder.webp";
+
         Guide guideFound = getGuideAuthenticated();
         Itinerary newItinerary = fillItineraryDataAndPoints(itineraryDTOForm);
+
+        newItinerary.setImageCoverUrl(DEFAULT_IMAGE_URL);
+
         Itinerary itinerarySaved = itineraryRepository.save(newItinerary);
         guideFound.getItineraries().add(itinerarySaved);
         userRepository.save(guideFound);

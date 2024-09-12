@@ -35,9 +35,9 @@ public class ReviewService {
     private final TouristRepository touristRepository;
     private final GuideService guideService;
 
-    public ReviewDTO reviewOneGuide(ReviewDTOForm reviewDTOForm) {
+    public ReviewDTO reviewOneGuide(Long id, ReviewDTOForm reviewDTOForm) {
         Tourist tourist = getTouristAuthenticated();
-        Guide guideToReview = getGuideToReview(reviewDTOForm.getGuideEmail());
+        Guide guideToReview = getGuideToReview(id);
         validateReview(reviewDTOForm, tourist, guideToReview.getId());
         Review review = new Review();
         mapper.map(reviewDTOForm, review);
@@ -48,6 +48,7 @@ public class ReviewService {
         updateGuideAverageRating(guideToReview);
         return mapper.map(reviewRepository.save(review), ReviewDTO.class);
     }
+
 
     private void updateGuideAverageRating(Guide guide) {
         List<Review> reviews = reviewRepository.findByGuideId(guide.getId());
@@ -94,10 +95,10 @@ public class ReviewService {
         }
     }
 
-    private Guide getGuideToReview(String email) {
-        User userFound = userService.getOneByEmail(email);
+    private Guide getGuideToReview(Long id) {
+        User userFound = userService.getOneById(id);
         if(!(userFound instanceof Guide)){
-            throw new ServiceError("This email does not belong to a Guide (you can only review Guides): " + email);
+            throw new ServiceError("This ID does not belong to a Guide (you can only review Guides): " + id);
         }
         return mapper.map(userFound, Guide.class);
     }
