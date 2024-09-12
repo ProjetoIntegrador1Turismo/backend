@@ -48,12 +48,40 @@ public class InterestPointController {
     @Operation(summary = "Create new Interest Point",
             description = "Allow ADMIN user to create new point of interest, according to the available types: HOTEL, EXPERIENCE, EVENT, RESTAURANT and TOURIST_POINT",
             security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Interest Point created successfully",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = InterestPoint.class)) }),
+            @ApiResponse(responseCode = "400", description = "Interest Point already exist by name provided",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandartError.class)) }),
+            @ApiResponse(responseCode = "400", description = "Interest Point type not found",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandartError.class)) }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandartError.class))}),
+            @ApiResponse(responseCode = "403", description = "Forbidden",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandartError.class))})
+    })
     public ResponseEntity<InterestPoint> createNewInterestPoint(@RequestBody InterestPointDTOForm interestPointDTOForm){
         return ResponseEntity.ok(interestPointService.create(interestPointDTOForm));
     }
 
     @GetMapping()
     @Operation(summary = "Get all Interest Points", description = "Retrieve all available points of interest, even if they are of different types.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List Interest Points successfully retrieved",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = InterestPoint.class)) }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandartError.class))}),
+            @ApiResponse(responseCode = "403", description = "Forbidden",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandartError.class))})
+    })
     public ResponseEntity<List<InterestPoint>> getAllInterestPoints(){
         return ResponseEntity.ok(interestPointService.getAll());
     }
@@ -62,6 +90,17 @@ public class InterestPointController {
     @Operation(summary = "Get a Interest Point by name",
             description = "Allow ADMIN user to retrieve one Interest Point by name.",
             security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Interest Point found by name",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = InterestPoint.class)) }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandartError.class))}),
+            @ApiResponse(responseCode = "403", description = "Forbidden",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandartError.class))})
+    })
     public ResponseEntity<InterestPoint> getOneByName(@RequestParam String name){
         return ResponseEntity.ok(interestPointService.getOneByName(name));
     }
@@ -94,6 +133,20 @@ public class InterestPointController {
     @Operation(summary = "Update a Interest Point",
             description = "Allow ADMIN user to update Interest Point data by id.",
             security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Interest Point updated successfully",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = InterestPoint.class)) }),
+            @ApiResponse(responseCode = "400", description = "Not exist by id provided",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandartError.class)) }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandartError.class))}),
+            @ApiResponse(responseCode = "403", description = "Forbidden",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandartError.class))})
+    })
     public ResponseEntity<InterestPoint> updateOneById(
             @PathVariable Long id,
             @RequestBody InterestPointUpdateDTO interestPointDTO
@@ -104,6 +157,14 @@ public class InterestPointController {
     @GetMapping("/type")
     @Operation(summary = "Get all interest point by type",
             description = "Return all interest points filtered by type : HOTEL, EXPERIENCE, EVENT, RESTAURANT or TOURIST_POINT")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List Interest Points found by type",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = InterestPointDTO.class)) }),
+            @ApiResponse(responseCode = "400", description = "Not exist by type provided",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandartError.class)) })
+    })
     public ResponseEntity<List<InterestPointDTO>> getAllByType(@RequestParam String type) {
         InterestPointType interestPointType;
         try {
@@ -120,6 +181,19 @@ public class InterestPointController {
     @Operation(summary = "Delete a Interest Point",
             description = "Allow ADMIN user to delete Interest Point by id.",
             security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Interest Point deleted successfully",
+                    content = { @Content(mediaType = "application/json") }),
+            @ApiResponse(responseCode = "400", description = "Not exist by id provided",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandartError.class)) }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandartError.class))}),
+            @ApiResponse(responseCode = "403", description = "Forbidden",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandartError.class))})
+    })
     public ResponseEntity<Void> deleteOneById(@PathVariable Long id){
         interestPointService.delete(id);
         return ResponseEntity.noContent().build();
