@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -73,6 +72,16 @@ public class UserController {
 
     @GetMapping("/me")
     @PreAuthorize("hasRole('USER')")
+    @Operation(summary = "Get Tourist authenticated data",
+            description = "Allow Tourist to get your own data.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Tourist found successfully",
+                    content = @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = User.class)))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandartError.class)) })
+    })
     public ResponseEntity<TouristDTO> getMeTourist(){
         return ResponseEntity.ok(userService.getMeTourist());
     }
