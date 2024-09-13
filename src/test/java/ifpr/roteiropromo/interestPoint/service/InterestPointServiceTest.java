@@ -38,6 +38,17 @@ public class InterestPointServiceTest {
 
 
 
+    @Test
+    public void create_shouldThrowExceptionWhenInterestPointAlreadyExist() {
+        InterestPointDTOForm interestPointDTOForm = new InterestPointDTOForm();
+        interestPointDTOForm.setName("Cataratas do Iguaçu");
+        interestPointDTOForm.setInterestPointType("TOURIST_POINT");
+        TouristPoint touristPointFound = new TouristPoint();
+        touristPointFound.setName("Cataratas do Iguaçu");
+        when(interestPointRepository.getOnByName(any())).thenReturn(touristPointFound);
+        Throwable exception = Assertions.assertThrows(ServiceError.class, () -> interestPointService.create(interestPointDTOForm));
+        Assertions.assertEquals("There is already a point of interest with that name: Cataratas do Iguaçu", exception.getMessage());
+    }
 
     @Test
     public void interestPointAlreadyExist_shouldReturnFalse() {
