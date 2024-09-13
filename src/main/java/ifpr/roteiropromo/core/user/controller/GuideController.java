@@ -2,7 +2,6 @@ package ifpr.roteiropromo.core.user.controller;
 import ifpr.roteiropromo.core.errors.StandartError;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTO;
 import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
-import ifpr.roteiropromo.core.user.domain.dtos.UserDTO;
 import ifpr.roteiropromo.core.user.service.GuideService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,7 +34,7 @@ public class GuideController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Guides found successfully",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UserDTO.class)) }),
+                            schema = @Schema(implementation = GuideDTO.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized access",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = StandartError.class)) })
@@ -51,7 +50,7 @@ public class GuideController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Itineraries found successfully",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UserDTO.class)) }),
+                            schema = @Schema(implementation = ItineraryDTO.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized access",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = StandartError.class)) }),
