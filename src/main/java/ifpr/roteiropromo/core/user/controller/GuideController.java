@@ -1,13 +1,9 @@
 package ifpr.roteiropromo.core.user.controller;
 import ifpr.roteiropromo.core.errors.StandartError;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTO;
-import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
-import ifpr.roteiropromo.core.pagesource.domain.TopGuideDTO;
 import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
 import ifpr.roteiropromo.core.user.domain.dtos.UserDTO;
-import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.service.GuideService;
-import ifpr.roteiropromo.core.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,7 +17,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 
 @RestController
