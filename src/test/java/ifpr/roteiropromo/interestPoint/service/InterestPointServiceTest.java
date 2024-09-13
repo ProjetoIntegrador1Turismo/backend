@@ -11,6 +11,7 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -18,6 +19,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -41,10 +43,8 @@ public class InterestPointServiceTest {
         InterestPointDTOForm interestPointDTOForm = new InterestPointDTOForm();
         interestPointDTOForm.setName("Cataratas do Iguaçu");
         interestPointDTOForm.setInterestPointType("TOURIST_POINT");
-        interestPointDTOForm.setImageCoverUrl(null);
 
         TouristPoint touristPoint = new TouristPoint();
-        touristPoint.setImageCoverUrl("http://localhost:8081/uploads/interestpointplaceholder.webp");
 
         when(modelMapper.map(any(), any())).thenAnswer(invocation -> {
             InterestPointDTOForm dto = invocation.getArgument(0);
@@ -54,10 +54,13 @@ public class InterestPointServiceTest {
             return mappedPoint;
         });
 
+        ArgumentCaptor<TouristPoint> captor = ArgumentCaptor.forClass(TouristPoint.class);
         when(interestPointRepository.save(any())).thenReturn(touristPoint);
+        interestPointService.create(interestPointDTOForm);
+        verify(interestPointRepository).save(captor.capture());
+        TouristPoint savedInterestPoint = captor.getValue();
 
-        InterestPoint interestPoint = interestPointService.create(interestPointDTOForm);
-        Assertions.assertEquals("http://localhost:8081/uploads/interestpointplaceholder.webp", interestPoint.getImageCoverUrl());
+        Assertions.assertEquals("http://localhost:8081/uploads/interestpointplaceholder.webp", savedInterestPoint.getImageCoverUrl());
     }
 
 
