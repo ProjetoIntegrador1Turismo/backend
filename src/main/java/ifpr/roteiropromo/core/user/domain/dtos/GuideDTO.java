@@ -19,4 +19,5 @@ public class GuideDTO {
     private List<ItineraryDTO> itineraries;
     private List<ReviewDTO> reviews;
     private Double averageRating;
+    private String profileImageUrl;
 }

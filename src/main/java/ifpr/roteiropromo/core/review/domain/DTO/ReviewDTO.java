@@ -1,5 +1,6 @@
 package ifpr.roteiropromo.core.review.domain.DTO;
 
+import ifpr.roteiropromo.core.pagesource.domain.BasicGuideDTO;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,4 +13,7 @@ public class ReviewDTO {
     private String text;
     private String date;
     private Integer rating;
+
+    private BasicGuideDTO guide;
+
 }

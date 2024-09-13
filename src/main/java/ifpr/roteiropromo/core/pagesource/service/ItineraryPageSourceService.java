@@ -14,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,13 +38,14 @@ public class ItineraryPageSourceService {
         return modelMapper.map(itineraryService.findOneById(id), ItineraryDTO.class);
     }
 
-
     private List<GuideReviewDTO> getReviews(Long id){
         Long guideId = itineraryService.getGuideByItinerary(id).getGuide().getId();
+        List<GuideReviewDTO> reviews = reviewService.getAllByGuide(guideId);
 
-        return reviewService.getAllByGuide(guideId);
+        return reviews.stream()
+                .limit(5)
+                .collect(Collectors.toList());
     }
-
 
     private BasicGuideDTO getGuideByItineraryId(Long id){
         return modelMapper.map(itineraryService.getGuideByItinerary(id).getGuide(), BasicGuideDTO.class);
