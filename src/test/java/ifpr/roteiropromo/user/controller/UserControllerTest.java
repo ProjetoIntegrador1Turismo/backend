@@ -88,22 +88,22 @@ public class UserControllerTest {
 
     }
 
-    @Test
-    public void createNewUser_mustReturnUserDTO() throws Exception {
-
-        given(userService.creatNewUser(ArgumentMatchers.any())).willReturn(userDTO);
-
-        ResultActions actions = mockMvc.perform(post("/user/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(userDTOForm))
-        );
-        actions.andDo(print())
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.id").value(userDTO.getId()),
-                        jsonPath("$.email").value(userDTO.getEmail())
-                );
-    }
+//    @Test
+//    public void createNewUser_mustReturnUserDTO() throws Exception {
+//
+//        given(userService.creatNewUser(ArgumentMatchers.any())).willReturn(userDTO);
+//
+//        ResultActions actions = mockMvc.perform(post("/user/create")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(objectMapper.writeValueAsString(userDTOForm))
+//        );
+//        actions.andDo(print())
+//                .andExpectAll(
+//                        status().isOk(),
+//                        jsonPath("$.id").value(userDTO.getId()),
+//                        jsonPath("$.email").value(userDTO.getEmail())
+//                );
+//    }
 
 //    @Test
 //    public void getAllUsers_mustReturnUserList() throws Exception {

@@ -80,7 +80,7 @@ public class InterestPointService {
         return interestPointRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 
-    private boolean interestPointAlreadyExist(String name){
+    public boolean interestPointAlreadyExist(String name){
         InterestPoint interestPointFound = interestPointRepository.getOnByName(name);
         return interestPointFound != null;
     }
