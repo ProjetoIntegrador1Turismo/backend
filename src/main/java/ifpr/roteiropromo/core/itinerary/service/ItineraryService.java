@@ -185,7 +185,19 @@ public class ItineraryService {
                     return modelMapper.map(itinerary, ItineraryDTO.class);}).collect(Collectors.toList());
         }
 
+    public List<ItineraryDTO> getItinerariesByGuideAndInterestPoint(Long guideId, Long interestPointId) {
+        Guide guide = userService.findGuideById(guideId);
+        if (guide == null) {
+            throw new ServiceError("Guide not found");
+        }
+
+        return guide.getItineraries().stream()
+                .filter(itinerary -> itinerary.getInterestPoints().stream()
+                        .anyMatch(interestPoint -> interestPoint.getId().equals(interestPointId)))
+                .map(itinerary -> modelMapper.map(itinerary, ItineraryDTO.class))
+                .collect(Collectors.toList());
     }
+}
 
 
 
