@@ -9,6 +9,7 @@ import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryUpdateDTO;
 import ifpr.roteiropromo.core.itinerary.service.ItineraryService;
 import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -183,6 +184,24 @@ public class ItineraryController {
     })
     public ResponseEntity<List<ItineraryDTO>> getByGuideEmail() {
         return ResponseEntity.ok(itineraryService.getByGuideEmail(jwtTokenHandler.getUserDataFromToken().getEmail()));
+    }
+
+
+    @GetMapping("/guide/{guideId}/interest-point/{interestPointId}")
+    @Operation(summary = "Get itineraries by guide and interest point",
+            description = "Allow to get itineraries from a guide with a specific interest point.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of itineraries",
+                    content = @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ItineraryDTO.class)))),
+            @ApiResponse(responseCode = "404", description = "Guide or interest point not found",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandartError.class)))
+    })
+    public ResponseEntity<List<ItineraryDTO>> getItinerariesByGuideAndInterestPoint(
+            @PathVariable Long guideId, @PathVariable Long interestPointId) {
+        List<ItineraryDTO> itineraries = itineraryService.getItinerariesByGuideAndInterestPoint(guideId, interestPointId);
+        return ResponseEntity.ok(itineraries);
     }
 
 }
