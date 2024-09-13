@@ -39,7 +39,7 @@ public class ReviewController {
             @ApiResponse(responseCode = "200", description = "Review created successfully",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ReviewDTO.class)) }),
-            @ApiResponse(responseCode = "400", description = "",
+            @ApiResponse(responseCode = "400", description = "Guide not found to review with id provided",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = StandartError.class)) }),
             @ApiResponse(responseCode = "400", description = "Tourist already reviewed this guide",
