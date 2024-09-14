@@ -4,10 +4,7 @@ package ifpr.roteiropromo.interestPoint.service;
 import ifpr.roteiropromo.core.enums.InterestPointType;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTOForm;
-import ifpr.roteiropromo.core.interestPoint.domain.entities.Event;
-import ifpr.roteiropromo.core.interestPoint.domain.entities.Experience;
-import ifpr.roteiropromo.core.interestPoint.domain.entities.Hotel;
-import ifpr.roteiropromo.core.interestPoint.domain.entities.TouristPoint;
+import ifpr.roteiropromo.core.interestPoint.domain.entities.*;
 import ifpr.roteiropromo.core.interestPoint.repository.InterestPointRepository;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
 import lombok.extern.log4j.Log4j2;
@@ -37,6 +34,33 @@ public class InterestPointServiceTest {
 
     @InjectMocks
     private InterestPointService interestPointService;
+
+    @Test
+    public void create_shouldCreateOneRestaurant() {
+        InterestPointDTOForm interestPointDTOForm = createInterestPoint("Lual nas Cataratas", "RESTAURANT");
+        when(interestPointRepository.getOnByName(any())).thenReturn(null);
+        when(modelMapper.map(any(), eq(Restaurant.class))).thenAnswer(invocation -> {
+            InterestPointDTOForm dto = invocation.getArgument(0);
+            Restaurant mappedPoint = new Restaurant();
+            mappedPoint.setName(dto.getName());
+            mappedPoint.setImageCoverUrl(dto.getImageCoverUrl());
+            mappedPoint.setInterestPointType(InterestPointType.valueOf(dto.getInterestPointType()));
+            return mappedPoint;
+        });
+        when(interestPointRepository.save(any())).thenReturn(new Restaurant());
+
+        interestPointService.create(interestPointDTOForm);
+
+        ArgumentCaptor<Restaurant> captor = ArgumentCaptor.forClass(Restaurant.class);
+        verify(interestPointRepository).save(captor.capture());
+        Restaurant savedInterestPoint = captor.getValue();
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(interestPointDTOForm.getName(), savedInterestPoint.getName()),
+                () -> Assertions.assertEquals(interestPointDTOForm.getInterestPointType(),
+                        savedInterestPoint.getInterestPointType().toString())
+        );
+    }
 
     @Test
     public void create_shouldCreateOneExperience() {
