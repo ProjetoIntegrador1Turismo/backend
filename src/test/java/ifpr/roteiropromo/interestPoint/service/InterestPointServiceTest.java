@@ -5,6 +5,7 @@ import ifpr.roteiropromo.core.enums.InterestPointType;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTOForm;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.Event;
+import ifpr.roteiropromo.core.interestPoint.domain.entities.Experience;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.Hotel;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.TouristPoint;
 import ifpr.roteiropromo.core.interestPoint.repository.InterestPointRepository;
@@ -36,6 +37,33 @@ public class InterestPointServiceTest {
 
     @InjectMocks
     private InterestPointService interestPointService;
+
+    @Test
+    public void create_shouldCreateOneExperience() {
+        InterestPointDTOForm interestPointDTOForm = createInterestPoint("Lual nas Cataratas", "EXPERIENCE");
+        when(interestPointRepository.getOnByName(any())).thenReturn(null);
+        when(modelMapper.map(any(), eq(Experience.class))).thenAnswer(invocation -> {
+            InterestPointDTOForm dto = invocation.getArgument(0);
+            Experience mappedPoint = new Experience();
+            mappedPoint.setName(dto.getName());
+            mappedPoint.setImageCoverUrl(dto.getImageCoverUrl());
+            mappedPoint.setInterestPointType(InterestPointType.valueOf(dto.getInterestPointType()));
+            return mappedPoint;
+        });
+        when(interestPointRepository.save(any())).thenReturn(new Experience());
+
+        interestPointService.create(interestPointDTOForm);
+
+        ArgumentCaptor<Experience> captor = ArgumentCaptor.forClass(Experience.class);
+        verify(interestPointRepository).save(captor.capture());
+        Experience savedInterestPoint = captor.getValue();
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(interestPointDTOForm.getName(), savedInterestPoint.getName()),
+                () -> Assertions.assertEquals(interestPointDTOForm.getInterestPointType(),
+                        savedInterestPoint.getInterestPointType().toString())
+        );
+    }
 
     @Test
     public void create_shouldCreateOneEvent() {
