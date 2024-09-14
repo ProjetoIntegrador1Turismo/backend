@@ -27,6 +27,11 @@ public class TouristService {
         AuthenticatedUserDTO userAthenticated = jwtTokenHandler.getUserDataFromToken();
         Tourist touristFound = userService.getTouristByEmail(userAthenticated.getEmail());
         Itinerary itinerary = itineraryService.findOneById(itineraryId);
+
+        if (touristFound.getInterestedItineraries().stream().anyMatch(i -> i.getId().equals(itineraryId))) {
+            throw new ServiceError("Você já sinalizou interesse nesse roteiro!");
+        }
+
         touristFound.getInterestedItineraries().add(itinerary);
         userService.updateTourist(touristFound);
         return mapper.map(userService.getTouristByEmail(userAthenticated.getEmail()), TouristDTO.class);
