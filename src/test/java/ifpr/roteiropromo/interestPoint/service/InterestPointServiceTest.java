@@ -4,6 +4,7 @@ package ifpr.roteiropromo.interestPoint.service;
 import ifpr.roteiropromo.core.enums.InterestPointType;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTOForm;
+import ifpr.roteiropromo.core.interestPoint.domain.entities.Event;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.Hotel;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.TouristPoint;
 import ifpr.roteiropromo.core.interestPoint.repository.InterestPointRepository;
@@ -37,6 +38,33 @@ public class InterestPointServiceTest {
     private InterestPointService interestPointService;
 
     @Test
+    public void create_shouldCreateOneEvent() {
+        InterestPointDTOForm interestPointDTOForm = createInterestPoint("LatinoWare", "EVENT");
+        when(interestPointRepository.getOnByName(any())).thenReturn(null);
+        when(modelMapper.map(any(), eq(Event.class))).thenAnswer(invocation -> {
+            InterestPointDTOForm dto = invocation.getArgument(0);
+            Event mappedPoint = new Event();
+            mappedPoint.setName(dto.getName());
+            mappedPoint.setImageCoverUrl(dto.getImageCoverUrl());
+            mappedPoint.setInterestPointType(InterestPointType.valueOf(dto.getInterestPointType()));
+            return mappedPoint;
+        });
+        when(interestPointRepository.save(any())).thenReturn(new Event());
+
+        interestPointService.create(interestPointDTOForm);
+
+        ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
+        verify(interestPointRepository).save(captor.capture());
+        Event savedInterestPoint = captor.getValue();
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(interestPointDTOForm.getName(), savedInterestPoint.getName()),
+                () -> Assertions.assertEquals(interestPointDTOForm.getInterestPointType(),
+                        savedInterestPoint.getInterestPointType().toString())
+        );
+    }
+
+    @Test
     public void create_shouldCreateOneHotel() {
         InterestPointDTOForm interestPointDTOForm = createInterestPoint("Mabu Termas", "HOTEL");
         when(interestPointRepository.getOnByName(any())).thenReturn(null);
@@ -62,8 +90,6 @@ public class InterestPointServiceTest {
                         savedInterestPoint.getInterestPointType().toString())
         );
     }
-
-
 
     @Test
     public void create_shouldCreateOneTouristPoint() {
