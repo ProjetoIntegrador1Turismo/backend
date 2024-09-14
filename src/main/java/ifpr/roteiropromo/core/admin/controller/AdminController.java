@@ -41,6 +41,13 @@ public class AdminController {
     }
 
 
+    @GetMapping("/approved-guides")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<SimpleGuideDTO>> getAllApprovedGuides(){
+        return ResponseEntity.ok(adminService.getAllApprovedGuides());
+    }
+
+
     @PutMapping("/approve-guide/{guideId}")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Approve guide", description = "Approve a guide that is not approved yet.")
