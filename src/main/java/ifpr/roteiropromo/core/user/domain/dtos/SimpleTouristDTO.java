@@ -14,5 +14,6 @@ public class SimpleTouristDTO {
     private String firstName;
     private String lastName;
     private String profileImageUrl;
+    private String phone;
 
 }
