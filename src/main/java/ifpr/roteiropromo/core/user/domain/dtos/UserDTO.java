@@ -15,5 +15,6 @@ public class UserDTO {
     private String cadasturCode;
     private String profileImageUrl;
     private Boolean isApproved;
+    private String phone;
     private boolean activeAdmin;
 }

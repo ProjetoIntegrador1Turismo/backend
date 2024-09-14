@@ -13,5 +13,6 @@ public class UserDTOUpdate {
     private String firstName;
     private String lastName;
     private String newPassword;
+    private String phone;
 
 }

@@ -17,4 +17,6 @@ public class AuthenticatedUserDTO {
     private String cadasturCode;
     private String profileImageUrl;
 
+    private String phone;
+
 }

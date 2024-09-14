@@ -118,6 +118,9 @@ public class AuthenticationService {
         authenticatedUserDTO.setAuthTokenExpiresIn(tokenData.get("authTokenExpiresIn"));
         authenticatedUserDTO.setRefreshToken(tokenData.get("refreshToken"));
         authenticatedUserDTO.setRefreshTokenExpiresIn(tokenData.get("refreshTokenExpiresIn"));
+
+        authenticatedUserDTO.setPhone(user.getPhone());
+
         return authenticatedUserDTO;
     }
 
