@@ -39,6 +39,14 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
+    public List<SimpleGuideDTO> getAllApprovedGuides() {
+        List<Guide> guides = userRepository.findAllApprovedGuides();
+        return guides.stream()
+                .map(guide -> modelMapper.map(guide, SimpleGuideDTO.class))
+                .collect(Collectors.toList());
+    }
+
+
     public Guide approveGuide(Long id) {
         Guide guide = userService.findGuideById(id);
 
@@ -102,4 +110,6 @@ public class AdminService {
     public List<FeaturedTouristPoint> getAllFeaturedPoints() {
         return featuredTouristPointRepository.findAll();
     }
+
+
 }
