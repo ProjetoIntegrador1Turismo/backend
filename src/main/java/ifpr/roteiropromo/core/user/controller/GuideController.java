@@ -1,6 +1,7 @@
 package ifpr.roteiropromo.core.user.controller;
 import ifpr.roteiropromo.core.errors.StandartError;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTO;
+import ifpr.roteiropromo.core.pagesource.domain.InterestedTouristDTO;
 import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
 import ifpr.roteiropromo.core.user.service.GuideService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -60,6 +61,13 @@ public class GuideController {
     })
     public ResponseEntity<List<ItineraryDTO>> getItinerariesFromAuthenticatedGuide(){
         return ResponseEntity.ok(guideService.getItinerariesFromAuthenticatedGuide());
+    }
+
+
+    @GetMapping("/interestedTourists")
+    @PreAuthorize("hasRole('GUIA')")
+    public ResponseEntity<List<InterestedTouristDTO>> getInterestedTourists(){
+        return ResponseEntity.ok(guideService.getInterestedTourists());
     }
 
 
