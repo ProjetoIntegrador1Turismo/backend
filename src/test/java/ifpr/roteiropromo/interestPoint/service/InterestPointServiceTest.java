@@ -4,6 +4,7 @@ package ifpr.roteiropromo.interestPoint.service;
 import ifpr.roteiropromo.core.enums.InterestPointType;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTOForm;
+import ifpr.roteiropromo.core.interestPoint.domain.entities.Hotel;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.TouristPoint;
 import ifpr.roteiropromo.core.interestPoint.repository.InterestPointRepository;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
@@ -34,9 +35,39 @@ public class InterestPointServiceTest {
 
     @InjectMocks
     private InterestPointService interestPointService;
+
+    @Test
+    public void create_shouldCreateOneHotel() {
+        InterestPointDTOForm interestPointDTOForm = createInterestPoint("Mabu Termas", "HOTEL");
+        when(interestPointRepository.getOnByName(any())).thenReturn(null);
+        when(modelMapper.map(any(), eq(Hotel.class))).thenAnswer(invocation -> {
+            InterestPointDTOForm dto = invocation.getArgument(0);
+            Hotel mappedPoint = new Hotel();
+            mappedPoint.setName(dto.getName());
+            mappedPoint.setImageCoverUrl(dto.getImageCoverUrl());
+            mappedPoint.setInterestPointType(InterestPointType.valueOf(dto.getInterestPointType()));
+            return mappedPoint;
+        });
+        when(interestPointRepository.save(any())).thenReturn(new Hotel());
+
+        interestPointService.create(interestPointDTOForm);
+
+        ArgumentCaptor<Hotel> captor = ArgumentCaptor.forClass(Hotel.class);
+        verify(interestPointRepository).save(captor.capture());
+        Hotel savedInterestPoint = captor.getValue();
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(interestPointDTOForm.getName(), savedInterestPoint.getName()),
+                () -> Assertions.assertEquals(interestPointDTOForm.getInterestPointType(),
+                        savedInterestPoint.getInterestPointType().toString())
+        );
+    }
+
+
+
     @Test
     public void create_shouldCreateOneTouristPoint() {
-        InterestPointDTOForm interestPointDTOForm = createTouristPoint();
+        InterestPointDTOForm interestPointDTOForm = createInterestPoint("Cataratas do Iguaçu", "TOURIST_POINT");
         when(interestPointRepository.getOnByName(any())).thenReturn(null);
         when(modelMapper.map(any(), eq(TouristPoint.class))).thenAnswer(invocation -> {
             InterestPointDTOForm dto = invocation.getArgument(0);
@@ -114,15 +145,15 @@ public class InterestPointServiceTest {
     }
 
 
-    public InterestPointDTOForm createTouristPoint(){
+    public InterestPointDTOForm createInterestPoint(String name, String type){
         InterestPointDTOForm interestPointDTOForm = new InterestPointDTOForm();
-        interestPointDTOForm.setName("Cataratas do Iguaçu");
+        interestPointDTOForm.setName(name);
         interestPointDTOForm.setAverageValue(3);
-        interestPointDTOForm.setShortDescription("Cataratas do Iguaçu é uma das mais belas quedas d'água do mundo.");
+        interestPointDTOForm.setShortDescription("\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         interestPointDTOForm.setImageCoverUrl(null);
-        interestPointDTOForm.setLongDescription("As Cataratas do Iguaçu são um conjunto de cerca de 275 quedas de água no rio Iguaçu, localizadas entre o Parque Nacional do Iguaçu, Paraná, no Brasil, e o Parque Nacional Iguazú em Misiones, na Argentina.");
+        interestPointDTOForm.setLongDescription("Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.");
         interestPointDTOForm.setDuration("2 horas");
-        interestPointDTOForm.setInterestPointType("TOURIST_POINT");
+        interestPointDTOForm.setInterestPointType(type);
         return interestPointDTOForm;
     }
 
