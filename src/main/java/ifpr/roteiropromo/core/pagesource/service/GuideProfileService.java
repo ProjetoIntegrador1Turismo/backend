@@ -29,28 +29,10 @@ public class GuideProfileService {
         Guide guide = userService.findGuideById(id);
         GuideProfileDTO guideProfileDTO = mapper.map(guide, GuideProfileDTO.class);
         List<GuideReviewDTO> guideReviewDTOS = reviewService.getAllByGuide(id);
-        List<InterestedTouristDTO> interestedTourists = this.getInterestedTourists(id);
         guideProfileDTO.setReviews(guideReviewDTOS);
-        guideProfileDTO.setInterested(interestedTourists);
         return guideProfileDTO;
     }
 
-
-    public List<InterestedTouristDTO> getInterestedTourists(long id){
-        Guide guide = userService.findGuideById(id);
-        List<InterestedTouristDTO> interestedTourists = new ArrayList<>();
-
-        for (Itinerary itinerary : guide.getItineraries()) {
-            for (Tourist tourist : itinerary.getInterestedTourists()) {
-                InterestedTouristDTO interestedTouristDTO = new InterestedTouristDTO();
-                interestedTouristDTO.setTourist(mapper.map(tourist, SimpleTouristDTO.class));
-                BasicItineraryDTO basicItineraryDTO = mapper.map(itinerary, BasicItineraryDTO.class);
-                interestedTouristDTO.setItinerary(basicItineraryDTO);
-                interestedTourists.add(interestedTouristDTO);
-            }
-        }
-        return interestedTourists;
-    }
 
 
 }

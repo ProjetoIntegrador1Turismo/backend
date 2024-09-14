@@ -3,18 +3,17 @@ package ifpr.roteiropromo.core.user.service;
 import ifpr.roteiropromo.core.auth.domain.AuthenticatedUserDTO;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTO;
 import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
+import ifpr.roteiropromo.core.pagesource.domain.BasicItineraryDTO;
+import ifpr.roteiropromo.core.pagesource.domain.InterestedTouristDTO;
 import ifpr.roteiropromo.core.pagesource.domain.TopGuideDTO;
-import ifpr.roteiropromo.core.review.domain.entities.Review;
-import ifpr.roteiropromo.core.review.repository.ReviewRepository;
 import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
+import ifpr.roteiropromo.core.user.domain.dtos.SimpleTouristDTO;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
-import ifpr.roteiropromo.core.user.domain.entities.User;
+import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import ifpr.roteiropromo.core.user.repository.GuideRepository;
-import ifpr.roteiropromo.core.user.repository.UserRepository;
 import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -40,6 +39,23 @@ public class GuideService {
 
     public List<Guide> getGuidesWhoOfferTour(Long id){
          return guideRepository.findGuidesByInterestPoint(id);
+    }
+
+
+    public List<InterestedTouristDTO> getInterestedTourists(){
+        Guide guide = guideRepository.getOnByEmail(jwtTokenHandler.getUserDataFromToken().getEmail());
+        List<InterestedTouristDTO> interestedTourists = new ArrayList<>();
+
+        for (Itinerary itinerary : guide.getItineraries()) {
+            for (Tourist tourist : itinerary.getInterestedTourists()) {
+                InterestedTouristDTO interestedTouristDTO = new InterestedTouristDTO();
+                interestedTouristDTO.setTourist(mapper.map(tourist, SimpleTouristDTO.class));
+                BasicItineraryDTO basicItineraryDTO = mapper.map(itinerary, BasicItineraryDTO.class);
+                interestedTouristDTO.setItinerary(basicItineraryDTO);
+                interestedTourists.add(interestedTouristDTO);
+            }
+        }
+        return interestedTourists;
     }
 
 
