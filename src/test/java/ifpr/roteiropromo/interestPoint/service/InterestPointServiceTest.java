@@ -35,6 +35,11 @@ public class InterestPointServiceTest {
     @InjectMocks
     private InterestPointService interestPointService;
 
+    @Test
+    public void getOneByName_shouldReturnInterestPointFound(){
+        when(interestPointRepository.getOnByName(any())).thenReturn(new TouristPoint());
+        Assertions.assertNotNull(interestPointService.getOneByName("Itaipu"));
+    }
 
     @Test
     public void getOneByName_shouldThrowExceptionWhenNotFoundInterestByName(){
