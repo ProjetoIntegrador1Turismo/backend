@@ -35,6 +35,15 @@ public class InterestPointServiceTest {
     @InjectMocks
     private InterestPointService interestPointService;
 
+
+    @Test
+    public void getOneByName_shouldThrowExceptionWhenNotFoundInterestByName(){
+        when(interestPointRepository.getOnByName(any())).thenReturn(null);
+        Throwable exception = Assertions.assertThrows(ServiceError.class, () -> interestPointService.getOneByName("Itaipu"));
+        Assertions.assertEquals("Could not found a Interest Point with this name: Itaipu" , exception.getMessage());
+    }
+
+
     @Test
     public void create_shouldCreateOneRestaurant() {
         InterestPointDTOForm interestPointDTOForm = createInterestPoint("Lual nas Cataratas", "RESTAURANT");
