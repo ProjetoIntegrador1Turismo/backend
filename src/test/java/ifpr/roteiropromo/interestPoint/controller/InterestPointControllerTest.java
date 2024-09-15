@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -61,6 +62,7 @@ public class InterestPointControllerTest {
         payload.setLongDescription("Lorem ipsum lorem, lorem lorem ipsum lorem.");
 
         interestPoint = mapper.map(payload, TouristPoint.class);
+        interestPoint.setId(1L);
     }
 
 
@@ -79,6 +81,21 @@ public class InterestPointControllerTest {
             status().isOk(),
             jsonPath("$.name").value(payload.getName())
         );
+    }
+
+    @Test
+    public void getOneById_shouldReturnOneInterestPoint() throws Exception {
+        given(interestPointService.getOne(ArgumentMatchers.any())).willReturn(interestPoint);
+
+        ResultActions actions = mockMvc.perform(get("/interestpoint/1")
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        actions.andDo(print())
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.name").value(payload.getName())
+                );
     }
 
 
