@@ -85,6 +85,23 @@ public class InterestPointControllerTest {
     }
 
     @Test
+    public void createNewInterestPoint_shouldReturnBadRequest() throws Exception {
+        given(interestPointService.create(ArgumentMatchers.any())).willThrow(
+                new ServiceError("There is already a point of interest with that name: Cataratas do Iguaçu")
+        );
+
+        ResultActions actions = mockMvc.perform(post("/interestpoint")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload))
+        );
+
+        actions.andDo(print())
+                .andExpectAll(
+                        status().isBadRequest()
+                );
+    }
+
+    @Test
     public void getOneById_shouldReturnOneInterestPoint() throws Exception {
         given(interestPointService.getOne(ArgumentMatchers.any())).willReturn(interestPoint);
 
@@ -101,7 +118,8 @@ public class InterestPointControllerTest {
 
     @Test
     public void getOneById_shouldReturnBadRequest() throws Exception {
-        given(interestPointService.getOne(ArgumentMatchers.any())).willThrow(ServiceError.class);
+        given(interestPointService.getOne(ArgumentMatchers.any())).willThrow(
+                new ServiceError("Não foi possível encontrar um ponto de interesse com o ID: 1"));
 
         ResultActions actions = mockMvc.perform(get("/interestpoint/1")
                 .contentType(MediaType.APPLICATION_JSON)
