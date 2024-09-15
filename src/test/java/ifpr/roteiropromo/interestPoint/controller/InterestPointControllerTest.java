@@ -2,6 +2,7 @@ package ifpr.roteiropromo.interestPoint.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.interestPoint.controller.InterestPointController;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTOForm;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
@@ -95,6 +96,20 @@ public class InterestPointControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.name").value(payload.getName())
+                );
+    }
+
+    @Test
+    public void getOneById_shouldReturnBadRequest() throws Exception {
+        given(interestPointService.getOne(ArgumentMatchers.any())).willThrow(ServiceError.class);
+
+        ResultActions actions = mockMvc.perform(get("/interestpoint/1")
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        actions.andDo(print())
+                .andExpectAll(
+                        status().isBadRequest()
                 );
     }
 
