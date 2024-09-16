@@ -3,7 +3,6 @@ package ifpr.roteiropromo.core.pagesource.controller;
 
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.simple.BasicGenericDTO;
 import ifpr.roteiropromo.core.interestPoint.service.PaginatedService;
-import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
 import ifpr.roteiropromo.core.pagesource.domain.BasicItineraryDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
