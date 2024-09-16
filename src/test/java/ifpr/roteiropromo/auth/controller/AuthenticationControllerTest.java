@@ -1,7 +1,6 @@
 package ifpr.roteiropromo.auth.controller;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ifpr.roteiropromo.core.auth.controller.AuthenticationController;
 import ifpr.roteiropromo.core.auth.domain.AuthenticatedUserDTO;
