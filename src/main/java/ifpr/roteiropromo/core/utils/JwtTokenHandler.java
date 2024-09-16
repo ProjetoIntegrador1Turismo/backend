@@ -2,8 +2,6 @@ package ifpr.roteiropromo.core.utils;
 
 import ifpr.roteiropromo.core.auth.domain.AuthenticatedUserDTO;
 import ifpr.roteiropromo.core.errors.ServiceError;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpEntity;
