@@ -4,7 +4,6 @@ package ifpr.roteiropromo.core.images.controller;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.errors.StandartError;
 import ifpr.roteiropromo.core.images.service.ImageService;
-import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
 import ifpr.roteiropromo.core.itinerary.service.ItineraryService;
 import ifpr.roteiropromo.core.user.service.UserService;
