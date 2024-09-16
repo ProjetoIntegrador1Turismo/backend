@@ -102,6 +102,17 @@ public class CommentService {
         ).toList();
     }
 
+    private void setTouristInfo(CommentDTO commentDTO, Comment comment) {
+        Tourist tourist = touristRepository.findByCommentsContains(comment);
+
+        BasicTouristDTO basicTouristDTO = new BasicTouristDTO();
+        basicTouristDTO.setId(tourist.getId());
+        basicTouristDTO.setTouristName(tourist.getFirstName() + " " + tourist.getLastName());
+        basicTouristDTO.setProfileImageUrl(tourist.getProfileImageUrl());
+
+        commentDTO.setTourist(basicTouristDTO);
+    }
+
     public void deleteComment(Long commentId) {
         Tourist tourist = getTouristAuthenticated();
         Comment comment = getCommentFromTouristOrFail(tourist, commentId);
