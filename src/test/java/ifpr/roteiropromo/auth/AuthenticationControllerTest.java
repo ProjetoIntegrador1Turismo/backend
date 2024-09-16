@@ -70,6 +70,24 @@ public class AuthenticationControllerTest {
     }
 
 
+    @Test
+    public void getUSerTokenAndData_shouldRespondUnauthorized() throws Exception {
+        given(authenticationService.getUSerTokenAndData(ArgumentMatchers.any())).willThrow(
+                new AuthenticationServerError("Guide not approved yet", HttpStatus.UNAUTHORIZED)
+        );
+
+        ResultActions actions = mockMvc.perform(post("/auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userAuthForm))
+        );
+
+        actions.andDo(print())
+                .andExpectAll(
+                        status().isUnauthorized(),
+                        jsonPath("$.message").value("Guide not approved yet")
+                );
+
+    }
 
     @Test
     public void getUSerTokenAndData_shouldRespondBadRequest() throws Exception {
