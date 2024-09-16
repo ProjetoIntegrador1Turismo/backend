@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.log4j.Log4j2;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +26,11 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final ModelMapper modelMapper;
 
-    public UserController(UserService userService){
+    public UserController(UserService userService, ModelMapper modelMapper){
         this.userService = userService;
+        this.modelMapper = modelMapper;
     }
 
 
@@ -105,8 +108,8 @@ public class UserController {
                             schema = @Schema(implementation = StandartError.class)) })
     })
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> getOne(@RequestParam String email){
-        return ResponseEntity.ok(userService.getOneByEmail(email));
+    public ResponseEntity<UserDTO> getOne(@RequestParam String email){
+        return ResponseEntity.ok(modelMapper.map(userService.getOneByEmail(email), UserDTO.class));
     }
 
 
