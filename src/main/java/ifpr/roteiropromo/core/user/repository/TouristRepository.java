@@ -1,5 +1,6 @@
 package ifpr.roteiropromo.core.user.repository;
 
+import ifpr.roteiropromo.core.comments.domain.entities.Comment;
 import ifpr.roteiropromo.core.review.domain.entities.Review;
 import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,5 +13,5 @@ public interface TouristRepository extends JpaRepository<Tourist, Long> {
 
     Tourist findByReviewsContains(Review review);
 
-
+    Tourist findByCommentsContains(Comment comment);
 }
