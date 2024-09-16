@@ -47,7 +47,10 @@ public class CommentService {
         tourist.getComments().add(commentSave);
         userService.updateTourist(tourist);
         updateInterestPointAverageRating(interestPointFound);
-        return mapper.map(commentSave, CommentDTO.class);
+
+        CommentDTO commentSaved = modelMapper.map(commentSave, CommentDTO.class);
+        setTouristInfo(commentSaved, commentSave);
+        return commentSaved;
     }
 
     private void updateInterestPointAverageRating(InterestPoint interestPointFound) {
@@ -111,7 +114,7 @@ public class CommentService {
         }).toList();
     }
 
-    private void setTouristInfo(CommentDTO commentDTO, Comment comment) {
+    public void setTouristInfo(CommentDTO commentDTO, Comment comment) {
         Tourist tourist = touristRepository.findByCommentsContains(comment);
 
         BasicTouristDTO basicTouristDTO = new BasicTouristDTO();
