@@ -5,9 +5,7 @@ import ifpr.roteiropromo.core.auth.domain.AuthenticatedUserDTO;
 import ifpr.roteiropromo.core.errors.AuthenticationServerError;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
-import ifpr.roteiropromo.core.itinerary.service.ItineraryService;
 import ifpr.roteiropromo.core.pagesource.domain.BasicGuideDTO;
-import ifpr.roteiropromo.core.review.repository.ReviewRepository;
 import ifpr.roteiropromo.core.user.domain.dtos.*;
 import ifpr.roteiropromo.core.user.domain.entities.Admin;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
@@ -16,12 +14,9 @@ import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.repository.GuideRepository;
 import ifpr.roteiropromo.core.user.repository.UserRepository;
 import ifpr.roteiropromo.core.utils.JwtTokenHandler;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -192,6 +187,11 @@ public class UserService {
         Tourist touristFound = getTouristByEmail(userAuthenticated.getEmail());
 
         TouristDTO touristDTO = mapper.map(touristFound, TouristDTO.class);
+
+        touristDTO.getComments().forEach(comment -> {
+            comment.setTourist(mapper.map(touristFound, BasicTouristDTO.class));
+            comment.getTourist().setTouristName(touristFound.getFirstName() + " " + touristFound.getLastName());
+        });
 
         touristDTO.getInterestedItineraries().forEach(itinerary -> {
             Guide guide = guideRepository.getByItineraries(mapper.map(itinerary, Itinerary.class));
