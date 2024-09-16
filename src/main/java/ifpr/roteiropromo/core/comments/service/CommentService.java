@@ -9,6 +9,7 @@ import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import ifpr.roteiropromo.core.interestPoint.repository.InterestPointRepository;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
+import ifpr.roteiropromo.core.user.domain.dtos.BasicTouristDTO;
 import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.repository.TouristRepository;
@@ -33,6 +34,7 @@ public class CommentService {
     private final JwtTokenHandler jwtTokenHandler;
     private final TouristRepository touristRepository;
     private final InterestPointRepository interestPointRepository;
+    private final ModelMapper modelMapper;
 
     public CommentDTO createComment(Long interestPointId, CommentDTOForm commentDTOForm) {
         Tourist tourist = getTouristAuthenticated();
@@ -84,22 +86,29 @@ public class CommentService {
     }
 
     public List<CommentDTO> getAll(){
-        return commentRepository.findAll().stream().map(comment -> mapper.map(comment, CommentDTO.class)).toList();
+        return commentRepository.findAll().stream().map(comment -> {
+            CommentDTO commentDTO = mapper.map(comment, CommentDTO.class);
+           setTouristInfo(commentDTO, comment);
+            return commentDTO;
+        }).toList();
     }
 
     public CommentDTO getOne(Long id) {
         Comment commentFound = commentRepository.findById(id).orElseThrow(
                 () -> new ServiceError("Could not find comment with id: " + id)
         );
-        return mapper.map(commentFound, CommentDTO.class);
+        CommentDTO comment = mapper.map(commentFound, CommentDTO.class);
+        setTouristInfo(comment, commentFound);
+        return comment;
     }
-
 
     public List<CommentDTO> getAllByInterestPoint(Long interestPointId) {
         InterestPoint interestPointFound = interestPointService.getOne(interestPointId);
-        return commentRepository.findAllByInterestPoint(interestPointFound).stream().map(
-                comment -> mapper.map(comment, CommentDTO.class)
-        ).toList();
+        return commentRepository.findAllByInterestPoint(interestPointFound).stream().map(comment -> {
+            CommentDTO commentDTO = mapper.map(comment, CommentDTO.class);
+            setTouristInfo(commentDTO, comment);
+            return commentDTO;
+        }).toList();
     }
 
     private void setTouristInfo(CommentDTO commentDTO, Comment comment) {
