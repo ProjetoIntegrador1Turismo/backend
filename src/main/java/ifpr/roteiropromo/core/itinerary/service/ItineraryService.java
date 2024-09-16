@@ -10,6 +10,7 @@ import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryResponseDTO;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryUpdateDTO;
 import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
 import ifpr.roteiropromo.core.itinerary.repository.ItineraryRepository;
+import ifpr.roteiropromo.core.pagesource.domain.BasicItineraryDTO;
 import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.domain.entities.Tourist;
@@ -20,13 +21,11 @@ import ifpr.roteiropromo.core.user.service.UserService;
 import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.logging.Log;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
@@ -185,7 +184,7 @@ public class ItineraryService {
                     return modelMapper.map(itinerary, ItineraryDTO.class);}).collect(Collectors.toList());
         }
 
-    public List<ItineraryDTO> getItinerariesByGuideAndInterestPoint(Long guideId, Long interestPointId) {
+    public List<BasicItineraryDTO> getItinerariesByGuideAndInterestPoint(Long guideId, Long interestPointId) {
         Guide guide = userService.findGuideById(guideId);
         if (guide == null) {
             throw new ServiceError("Guide not found");
@@ -194,7 +193,7 @@ public class ItineraryService {
         return guide.getItineraries().stream()
                 .filter(itinerary -> itinerary.getInterestPoints().stream()
                         .anyMatch(interestPoint -> interestPoint.getId().equals(interestPointId)))
-                .map(itinerary -> modelMapper.map(itinerary, ItineraryDTO.class))
+                .map(itinerary -> modelMapper.map(itinerary, BasicItineraryDTO.class))
                 .collect(Collectors.toList());
     }
 }

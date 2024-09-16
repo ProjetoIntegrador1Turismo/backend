@@ -7,6 +7,7 @@ import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTOForm;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryResponseDTO;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryUpdateDTO;
 import ifpr.roteiropromo.core.itinerary.service.ItineraryService;
+import ifpr.roteiropromo.core.pagesource.domain.BasicItineraryDTO;
 import ifpr.roteiropromo.core.utils.JwtTokenHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -198,9 +199,9 @@ public class ItineraryController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = StandartError.class)))
     })
-    public ResponseEntity<List<ItineraryDTO>> getItinerariesByGuideAndInterestPoint(
+    public ResponseEntity<List<BasicItineraryDTO>> getItinerariesByGuideAndInterestPoint(
             @PathVariable Long guideId, @PathVariable Long interestPointId) {
-        List<ItineraryDTO> itineraries = itineraryService.getItinerariesByGuideAndInterestPoint(guideId, interestPointId);
+        List<BasicItineraryDTO> itineraries = itineraryService.getItinerariesByGuideAndInterestPoint(guideId, interestPointId);
         return ResponseEntity.ok(itineraries);
     }
 
