@@ -1,13 +1,12 @@
 package ifpr.roteiropromo.core.pagesource.service;
 
 
-import ifpr.roteiropromo.core.comments.domain.DTO.CommentDTO;
+import ifpr.roteiropromo.core.comments.domain.DTO.SimpleCommentDTO;
 import ifpr.roteiropromo.core.comments.service.CommentService;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTO;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
 import ifpr.roteiropromo.core.pagesource.domain.TopGuideDTO;
 import ifpr.roteiropromo.core.pagesource.domain.TourPageDTO;
-import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
 import ifpr.roteiropromo.core.user.service.GuideService;
 import lombok.RequiredArgsConstructor;
@@ -47,8 +46,11 @@ public class TourPageSourceService {
     }
 
 
-    private List<CommentDTO> getComments(Long id){
-        return commentService.getAllByInterestPoint(id);
+    private List<SimpleCommentDTO> getComments(Long id){
+
+        List<SimpleCommentDTO> comments = commentService.getAllByInterestPoint(id).stream().map(comment -> modelMapper.map(comment, SimpleCommentDTO.class)).collect(Collectors.toList());
+
+        return comments;
     }
 
 }
