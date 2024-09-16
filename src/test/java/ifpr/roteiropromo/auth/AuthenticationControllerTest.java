@@ -69,6 +69,25 @@ public class AuthenticationControllerTest {
 
     }
 
+    @Test
+    public void getUSerTokenAndData_shouldRespondUserAuthenticationData() throws Exception {
+        given(authenticationService.getUSerTokenAndData(ArgumentMatchers.any())).willReturn(
+                authenticatedUserDTO
+        );
+
+        ResultActions actions = mockMvc.perform(post("/auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userAuthForm))
+        );
+
+        actions.andDo(print())
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.email").value(userAuthForm.getUsername()),
+                        jsonPath("$.userType").value(authenticatedUserDTO.getUserType())
+                );
+
+    }
 
     @Test
     public void getUSerTokenAndData_shouldRespondUnauthorized() throws Exception {
