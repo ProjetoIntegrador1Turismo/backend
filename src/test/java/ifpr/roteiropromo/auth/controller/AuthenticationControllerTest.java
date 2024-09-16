@@ -1,4 +1,4 @@
-package ifpr.roteiropromo.auth;
+package ifpr.roteiropromo.auth.controller;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
