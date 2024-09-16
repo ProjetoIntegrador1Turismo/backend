@@ -3,6 +3,8 @@ package ifpr.roteiropromo.core.comments.domain.DTO;
 
 import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import ifpr.roteiropromo.core.pagesource.domain.BasicPointDTO;
+import ifpr.roteiropromo.core.user.domain.dtos.BasicTouristDTO;
+import ifpr.roteiropromo.core.user.domain.dtos.SimpleTouristDTO;
 import ifpr.roteiropromo.core.user.domain.entities.Tourist;
 import jakarta.persistence.OneToOne;
 import lombok.Getter;
@@ -16,8 +18,7 @@ public class CommentDTO {
     private String text;
     private String wasVisitingDate;
     private Integer rating;
-//    private InterestPoint interestPoint;
     private BasicPointDTO interestPoint;
-    private String touristName;
 
+    private BasicTouristDTO tourist;
 }
