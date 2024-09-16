@@ -1,7 +1,6 @@
 package ifpr.roteiropromo.core.itinerary.controller;
 
 import ifpr.roteiropromo.core.errors.StandartError;
-import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTO;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTOForm;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryResponseDTO;
