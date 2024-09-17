@@ -87,7 +87,8 @@ public class ImageController {
         }else {
             if(imgCover != null){
                 String imageCover = imageService.saveImage(imgCover);
-                interestPointService.updateCoverImageUrl(id, imageCover);
+                String oldImgCover = interestPointService.updateCoverImageUrl(id, imageCover);
+                imageService.deleteImage(oldImgCover);
             }
             if (files != null){
                 List<String> imagesUrl = new ArrayList<>();
