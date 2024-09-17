@@ -122,10 +122,12 @@ public class InterestPointService {
         return interestPoints;
     }
 
-    public void updateCoverImageUrl(Long id, String imageUrl) {
+    public String updateCoverImageUrl(Long id, String imageUrl) {
         InterestPoint interestPointFound = getOne(id);
+        String imgUrl = interestPointFound.getImageCoverUrl();
         interestPointFound.setImageCoverUrl(imageUrl);
         interestPointRepository.save(interestPointFound);
+        return imgUrl;
     }
 
     public List<InterestPointDTO> getAllByType(InterestPointType interestPointType) {
