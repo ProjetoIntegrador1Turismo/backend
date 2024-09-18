@@ -22,6 +22,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -115,7 +116,7 @@ public class UserService {
     }
 
 
-    // OBS: PARA UTILIZAR ESSE MÉTODO É PRECISO JÁ ESTAR COM O CONTEINER NOVO ATUALIZADO... (O COM TEMA DO APP)
+//    // OBS: PARA UTILIZAR ESSE MÉTODO É PRECISO JÁ ESTAR COM O CONTEINER NOVO ATUALIZADO... (O COM TEMA DO APP)
     public String resetUserPassword(String email) {
         try {
             User userFound = getOneByEmail(email);
@@ -130,7 +131,18 @@ public class UserService {
             HttpEntity<String> entity = new HttpEntity<>(payload, headers);
 
             String url = "http://localhost:8080/admin/realms/SpringBootKeycloak/users/" + userIDKeycloak + "/execute-actions-email";
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
+
+            // **Novas linhas adicionadas**
+            String redirectUri = "http://localhost:3000/login";
+            String clientId = "login-app";
+
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+                    .queryParam("redirect_uri", redirectUri)
+                    .queryParam("client_id", clientId);
+
+            String urlWithParams = builder.toUriString();
+
+            ResponseEntity<String> response = restTemplate.exchange(urlWithParams, HttpMethod.PUT, entity, String.class);
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 return "Email enviado com sucesso!";
@@ -141,6 +153,7 @@ public class UserService {
             throw new ServiceError("Erro ao enviar email para recuperação de senha: " + e.getMessage());
         }
     }
+
 
 
 
