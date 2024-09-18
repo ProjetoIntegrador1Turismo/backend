@@ -27,5 +27,6 @@ public class InterestPointDTO {
     private String requiredAge;
     private String imageCoverUrl;
     private List<String> images;
+    private String averageRating;
 
 }
