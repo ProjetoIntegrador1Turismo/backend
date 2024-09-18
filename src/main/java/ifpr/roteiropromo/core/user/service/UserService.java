@@ -259,6 +259,7 @@ public class UserService {
         // Atualizar nome no backend
         user.setFirstName(userDTOUpdate.getFirstName());
         user.setLastName(userDTOUpdate.getLastName());
+        user.setPhone(userDTOUpdate.getPhone());
         User updatedUser = userRepository.save(user);
 
         // Atualizar nome e senha no Keycloak
