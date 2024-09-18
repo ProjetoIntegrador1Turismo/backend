@@ -1,6 +1,6 @@
 package ifpr.roteiropromo.core.interestPoint.controller;
 
-import ifpr.roteiropromo.core.errors.StandartError;
+import ifpr.roteiropromo.core.errors.StandardError;
 import ifpr.roteiropromo.core.enums.InterestPointType;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTO;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTOForm;
@@ -47,16 +47,16 @@ public class InterestPointController {
                             schema = @Schema(implementation = InterestPoint.class)) }),
             @ApiResponse(responseCode = "400", description = "Interest Point already exist by name provided",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "400", description = "Interest Point type not found",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))}),
+                            schema = @Schema(implementation = StandardError.class))}),
             @ApiResponse(responseCode = "403", description = "Forbidden",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<InterestPoint> createNewInterestPoint(@RequestBody InterestPointDTOForm interestPointDTOForm){
         return ResponseEntity.ok(interestPointService.create(interestPointDTOForm));
@@ -70,10 +70,10 @@ public class InterestPointController {
                             schema = @Schema(implementation = InterestPoint.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))}),
+                            schema = @Schema(implementation = StandardError.class))}),
             @ApiResponse(responseCode = "403", description = "Forbidden",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<List<InterestPoint>> getAllInterestPoints(){
         return ResponseEntity.ok(interestPointService.getAll());
@@ -89,10 +89,10 @@ public class InterestPointController {
                             schema = @Schema(implementation = InterestPoint.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))}),
+                            schema = @Schema(implementation = StandardError.class))}),
             @ApiResponse(responseCode = "403", description = "Forbidden",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<InterestPoint> getOneByName(@RequestParam String name){
         return ResponseEntity.ok(interestPointService.getOneByName(name));
@@ -108,13 +108,13 @@ public class InterestPointController {
                             schema = @Schema(implementation = InterestPoint.class)) }),
             @ApiResponse(responseCode = "400", description = "Not exist by id provided",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))}),
+                            schema = @Schema(implementation = StandardError.class))}),
             @ApiResponse(responseCode = "403", description = "Forbidden",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<InterestPoint> getOneById(@PathVariable Long id){
         return ResponseEntity.ok(interestPointService.getOne(id));
@@ -132,13 +132,13 @@ public class InterestPointController {
                             schema = @Schema(implementation = InterestPoint.class)) }),
             @ApiResponse(responseCode = "400", description = "Not exist by id provided",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))}),
+                            schema = @Schema(implementation = StandardError.class))}),
             @ApiResponse(responseCode = "403", description = "Forbidden",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<InterestPoint> updateOneById(
             @PathVariable Long id,
@@ -156,7 +156,7 @@ public class InterestPointController {
                             schema = @Schema(implementation = InterestPointDTO.class)) }),
             @ApiResponse(responseCode = "400", description = "Not exist by type provided",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) })
+                            schema = @Schema(implementation = StandardError.class)) })
     })
     public ResponseEntity<List<InterestPointDTO>> getAllByType(@RequestParam String type) {
         InterestPointType interestPointType;
@@ -179,13 +179,13 @@ public class InterestPointController {
                     content = { @Content(mediaType = "application/json") }),
             @ApiResponse(responseCode = "400", description = "Not exist by id provided",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))}),
+                            schema = @Schema(implementation = StandardError.class))}),
             @ApiResponse(responseCode = "403", description = "Forbidden",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<Void> deleteOneById(@PathVariable Long id){
         interestPointService.delete(id);

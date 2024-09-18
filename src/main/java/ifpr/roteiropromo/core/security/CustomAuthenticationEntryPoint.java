@@ -2,7 +2,7 @@ package ifpr.roteiropromo.core.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import ifpr.roteiropromo.core.errors.StandartError;
+import ifpr.roteiropromo.core.errors.StandardError;
 import jakarta.servlet.ServletException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -17,17 +17,17 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
     @Override
     public void commence(jakarta.servlet.http.HttpServletRequest request, jakarta.servlet.http.HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        StandartError standartError = new StandartError();
-        standartError.setTimestamp(Instant.now());
-        standartError.setError("Unauthorized");
-        standartError.setPath(request.getRequestURI());
-        standartError.setMessage("Expired or Invalid Token.");
+        StandardError standardError = new StandardError();
+        standardError.setTimestamp(Instant.now());
+        standardError.setError("Unauthorized");
+        standardError.setPath(request.getRequestURI());
+        standardError.setMessage("Expired or Invalid Token.");
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        String jsonResponse = objectMapper.writeValueAsString(standartError);
+        String jsonResponse = objectMapper.writeValueAsString(standardError);
         response.getWriter().write(jsonResponse);
     }
 }

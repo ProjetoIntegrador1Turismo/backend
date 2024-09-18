@@ -1,5 +1,5 @@
 package ifpr.roteiropromo.core.user.controller;
-import ifpr.roteiropromo.core.errors.StandartError;
+import ifpr.roteiropromo.core.errors.StandardError;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTO;
 import ifpr.roteiropromo.core.user.domain.dtos.GuideDTO;
 import ifpr.roteiropromo.core.user.service.GuideService;
@@ -37,7 +37,7 @@ public class GuideController {
                             schema = @Schema(implementation = GuideDTO.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized access",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) })
+                            schema = @Schema(implementation = StandardError.class)) })
     })
     public ResponseEntity<List<GuideDTO>> getAllGuides(){
         return ResponseEntity.ok(guideService.getAllGuides());
@@ -53,10 +53,10 @@ public class GuideController {
                             schema = @Schema(implementation = ItineraryDTO.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized access",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "403", description = "Forbidden access",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) })
+                            schema = @Schema(implementation = StandardError.class)) })
     })
     public ResponseEntity<List<ItineraryDTO>> getItinerariesFromAuthenticatedGuide(){
         return ResponseEntity.ok(guideService.getItinerariesFromAuthenticatedGuide());

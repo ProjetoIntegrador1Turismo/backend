@@ -1,6 +1,6 @@
 package ifpr.roteiropromo.core.user.controller;
 
-import ifpr.roteiropromo.core.errors.StandartError;
+import ifpr.roteiropromo.core.errors.StandardError;
 import ifpr.roteiropromo.core.user.domain.dtos.*;
 import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.service.UserService;
@@ -40,10 +40,10 @@ public class UserController {
                             schema = @Schema(implementation = UserDTO.class)) }),
             @ApiResponse(responseCode = "409", description = "User email or CadasturCode already registered",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid data for user creation",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) })
+                            schema = @Schema(implementation = StandardError.class)) })
     })
     public ResponseEntity<UserDTO> createNewUser(@RequestBody UserDTOForm userDTOForm){
         return ResponseEntity.ok(userService.createNewUser(userDTOForm));
@@ -59,10 +59,10 @@ public class UserController {
                     array = @ArraySchema(schema = @Schema(implementation = User.class)))),
             @ApiResponse(responseCode = "401", description = "Unauthorized access",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "403", description = "Forbidden access",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) })
+                            schema = @Schema(implementation = StandardError.class)) })
     })
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserDTO>> getAllUsers(){
@@ -80,7 +80,7 @@ public class UserController {
                             array = @ArraySchema(schema = @Schema(implementation = User.class)))),
             @ApiResponse(responseCode = "401", description = "Unauthorized access",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) })
+                            schema = @Schema(implementation = StandardError.class)) })
     })
     public ResponseEntity<TouristDTO> getMeTourist(){
         return ResponseEntity.ok(userService.getMeTourist());
@@ -96,13 +96,13 @@ public class UserController {
                             schema = @Schema(implementation = User.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized access",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "403", description = "Forbidden access",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "400", description = "Not found user by email provided",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) })
+                            schema = @Schema(implementation = StandardError.class)) })
     })
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> getOne(@RequestParam String email){
@@ -119,10 +119,10 @@ public class UserController {
                             schema = @Schema(implementation = User.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized access",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "400", description = "Not found user by email provided",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) })
+                            schema = @Schema(implementation = StandardError.class)) })
     })
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTOUpdate userDTOUpdate) {
@@ -142,10 +142,10 @@ public class UserController {
                             schema = @Schema(implementation = User.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized access",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "400", description = "Not found user by email provided",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) })
+                            schema = @Schema(implementation = StandardError.class)) })
     })
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> resetPassword(@RequestParam String email) {

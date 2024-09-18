@@ -2,7 +2,7 @@ package ifpr.roteiropromo.core.images.controller;
 
 
 import ifpr.roteiropromo.core.errors.ServiceError;
-import ifpr.roteiropromo.core.errors.StandartError;
+import ifpr.roteiropromo.core.errors.StandardError;
 import ifpr.roteiropromo.core.images.service.ImageService;
 import ifpr.roteiropromo.core.interestPoint.service.InterestPointService;
 import ifpr.roteiropromo.core.itinerary.service.ItineraryService;
@@ -49,10 +49,10 @@ public class ImageController {
             @ApiResponse(responseCode = "200", description = "Image uploaded successfully"),
             @ApiResponse(responseCode = "400", description = "Not exist by id provided",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<String> uploadInterestPointImage(@RequestParam MultipartFile file, @RequestParam Long id) {
         try {
@@ -72,10 +72,10 @@ public class ImageController {
             @ApiResponse(responseCode = "200", description = "Images saved"),
             @ApiResponse(responseCode = "400", description = "Not exist by id provided",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<String> uploadInterestPointImages(
             @RequestParam (required = false) MultipartFile imgCover,
@@ -109,10 +109,10 @@ public class ImageController {
             @ApiResponse(responseCode = "200", description = "URL image saved"),
             @ApiResponse(responseCode = "400", description = "Could not upload image",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<String> uploadUserImage(@RequestParam MultipartFile file) {
         try {
@@ -132,10 +132,10 @@ public class ImageController {
             @ApiResponse(responseCode = "200", description = "URL image saved"),
             @ApiResponse(responseCode = "400", description = "Could not upload image",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<String> uploadItineraryImage(@RequestParam MultipartFile file, @RequestParam Long id) {
         try {
