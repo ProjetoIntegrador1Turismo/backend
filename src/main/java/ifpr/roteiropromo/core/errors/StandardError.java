@@ -8,7 +8,7 @@ import java.time.Instant;
 
 @NoArgsConstructor
 @Data
-public class StandartError {
+public class StandardError {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "UTC")
     private Instant timestamp;

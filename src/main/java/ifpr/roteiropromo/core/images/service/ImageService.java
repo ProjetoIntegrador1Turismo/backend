@@ -3,6 +3,7 @@ package ifpr.roteiropromo.core.images.service;
 
 import ifpr.roteiropromo.core.errors.ServiceError;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Service
+@Log4j2
 public class ImageService {
 
     @Value("${upload.dir}")
@@ -40,5 +42,19 @@ public class ImageService {
             throw new ServiceError("An error occurred when trying to store image!");
         }
     }
+
+    public void deleteImage(String imageUrl) {
+        String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+        if (!"interestpointplaceholder.webp".equals(fileName)){
+            try {
+                log.info("Img que será deletada: " + fileName);
+                Path filePath = Paths.get(uploadDir, fileName);
+                Files.deleteIfExists(filePath);
+            } catch (IOException e) {
+                throw new ServiceError("An error occurred when trying to delete image!");
+            }
+        }
+    }
+
 }
 

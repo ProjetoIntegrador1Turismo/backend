@@ -34,6 +34,7 @@ class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/user/create").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/user/recovery").permitAll()
                         .requestMatchers("/file/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/interestpoint").permitAll()
                         .requestMatchers(HttpMethod.GET, "/paginated/**").permitAll()

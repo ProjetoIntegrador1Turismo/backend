@@ -2,9 +2,6 @@ package ifpr.roteiropromo.core.interestPoint.service;
 
 
 import ifpr.roteiropromo.core.address.model.dtos.AddressDTO;
-import ifpr.roteiropromo.core.address.model.entities.Address;
-import ifpr.roteiropromo.core.comments.domain.entities.Comment;
-import ifpr.roteiropromo.core.comments.repository.CommentRepository;
 import ifpr.roteiropromo.core.enums.InterestPointType;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.interestPoint.domain.dtos.InterestPointDTO;
@@ -125,10 +122,12 @@ public class InterestPointService {
         return interestPoints;
     }
 
-    public void updateCoverImageUrl(Long id, String imageUrl) {
+    public String updateCoverImageUrl(Long id, String imageUrl) {
         InterestPoint interestPointFound = getOne(id);
+        String imgUrl = interestPointFound.getImageCoverUrl();
         interestPointFound.setImageCoverUrl(imageUrl);
         interestPointRepository.save(interestPointFound);
+        return imgUrl;
     }
 
     public List<InterestPointDTO> getAllByType(InterestPointType interestPointType) {

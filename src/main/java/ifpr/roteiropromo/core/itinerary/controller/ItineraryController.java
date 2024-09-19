@@ -1,7 +1,6 @@
 package ifpr.roteiropromo.core.itinerary.controller;
 
-import ifpr.roteiropromo.core.errors.StandartError;
-import ifpr.roteiropromo.core.interestPoint.domain.entities.InterestPoint;
+import ifpr.roteiropromo.core.errors.StandardError;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTO;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryDTOForm;
 import ifpr.roteiropromo.core.itinerary.domain.dto.ItineraryResponseDTO;
@@ -47,13 +46,13 @@ public class ItineraryController {
                             schema = @Schema(implementation = ItineraryDTO.class)) }),
             @ApiResponse(responseCode = "400", description = "Guide not found by email",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))}),
+                            schema = @Schema(implementation = StandardError.class))}),
             @ApiResponse(responseCode = "403", description = "Forbidden",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<ItineraryDTO> saveOne(@RequestBody ItineraryDTOForm itineraryDTOForm){
         return ResponseEntity.ok(itineraryService.create(itineraryDTOForm));
@@ -70,16 +69,16 @@ public class ItineraryController {
                             schema = @Schema(implementation = ItineraryDTO.class)) }),
             @ApiResponse(responseCode = "400", description = "Guide not found by email",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "400", description = "Guide authenticated dont have a itinerary with id send in request",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))}),
+                            schema = @Schema(implementation = StandardError.class))}),
             @ApiResponse(responseCode = "403", description = "Forbidden",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<ItineraryDTO> update(@PathVariable Long id, @RequestBody ItineraryUpdateDTO itineraryDTO){
         return ResponseEntity.ok(itineraryService.update(id, itineraryDTO));
@@ -101,7 +100,7 @@ public class ItineraryController {
                             schema = @Schema(implementation = ItineraryDTO.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<List<ItineraryDTO>> getAll(){
         return ResponseEntity.ok(itineraryService.findAll());
@@ -117,10 +116,10 @@ public class ItineraryController {
                             schema = @Schema(implementation = ItineraryDTO.class)) }),
             @ApiResponse(responseCode = "400", description = "Itinerary not found by id",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<ItineraryDTO> getOne(@PathVariable Long id){
         return ResponseEntity.ok(itineraryService.findById(id));
@@ -136,10 +135,10 @@ public class ItineraryController {
                             schema = @Schema(implementation = ItineraryDTO.class)) }),
             @ApiResponse(responseCode = "400", description = "Itinerary not found by id",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<ItineraryResponseDTO> getGuide(@PathVariable Long id){
         return ResponseEntity.ok(itineraryService.getGuideByItinerary(id));
@@ -154,13 +153,13 @@ public class ItineraryController {
             @ApiResponse(responseCode = "200", description = "Itinerary deleted successfully"),
             @ApiResponse(responseCode = "400", description = "Itinerary not found by id",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))}),
+                            schema = @Schema(implementation = StandardError.class))}),
             @ApiResponse(responseCode = "403", description = "Forbidden",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<Void> delete(@PathVariable Long id){
         itineraryService.delete(id);
@@ -178,10 +177,10 @@ public class ItineraryController {
                             schema = @Schema(implementation = ItineraryDTO.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))}),
+                            schema = @Schema(implementation = StandardError.class))}),
             @ApiResponse(responseCode = "403", description = "Forbidden",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<List<ItineraryDTO>> getByGuideEmail() {
         return ResponseEntity.ok(itineraryService.getByGuideEmail(jwtTokenHandler.getUserDataFromToken().getEmail()));
@@ -197,7 +196,7 @@ public class ItineraryController {
                             array = @ArraySchema(schema = @Schema(implementation = ItineraryDTO.class)))),
             @ApiResponse(responseCode = "404", description = "Guide or interest point not found",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)))
+                            schema = @Schema(implementation = StandardError.class)))
     })
     public ResponseEntity<List<BasicItineraryDTO>> getItinerariesByGuideAndInterestPoint(
             @PathVariable Long guideId, @PathVariable Long interestPointId) {

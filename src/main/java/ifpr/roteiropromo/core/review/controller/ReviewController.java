@@ -1,7 +1,7 @@
 package ifpr.roteiropromo.core.review.controller;
 
 
-import ifpr.roteiropromo.core.errors.StandartError;
+import ifpr.roteiropromo.core.errors.StandardError;
 import ifpr.roteiropromo.core.review.domain.DTO.ReviewDTO;
 import ifpr.roteiropromo.core.review.domain.DTO.ReviewDTOForm;
 import ifpr.roteiropromo.core.review.service.ReviewService;
@@ -41,16 +41,16 @@ public class ReviewController {
                             schema = @Schema(implementation = ReviewDTO.class)) }),
             @ApiResponse(responseCode = "400", description = "Guide not found to review with id provided",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "400", description = "Tourist already reviewed this guide",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))}),
+                            schema = @Schema(implementation = StandardError.class))}),
             @ApiResponse(responseCode = "403", description = "Forbidden",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<ReviewDTO> reviewOneGuide(@PathVariable Long id, @RequestBody ReviewDTOForm reviewDTOForm) {
         return ResponseEntity.ok(reviewService.reviewOneGuide(id, reviewDTOForm));
@@ -67,13 +67,13 @@ public class ReviewController {
                             schema = @Schema(implementation = ReviewDTO.class)) }),
             @ApiResponse(responseCode = "400", description = "Not found review to update with id provided",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))}),
+                            schema = @Schema(implementation = StandardError.class))}),
             @ApiResponse(responseCode = "403", description = "Forbidden",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<ReviewDTO> updateReview(@RequestBody ReviewDTO reviewDto) {
         return ResponseEntity.ok(reviewService.updateReview(reviewDto));
@@ -90,13 +90,13 @@ public class ReviewController {
                             schema = @Schema(implementation = ReviewDTO.class)) }),
             @ApiResponse(responseCode = "400", description = "Not found review to delete with id provided",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))}),
+                            schema = @Schema(implementation = StandardError.class))}),
             @ApiResponse(responseCode = "403", description = "Forbidden",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<Void> deleteOneReview(@PathVariable Long reviewId){
         reviewService.deleteReviewById(reviewId);

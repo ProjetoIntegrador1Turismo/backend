@@ -1,6 +1,6 @@
 package ifpr.roteiropromo.core.user.controller;
 
-import ifpr.roteiropromo.core.errors.StandartError;
+import ifpr.roteiropromo.core.errors.StandardError;
 import ifpr.roteiropromo.core.user.domain.dtos.TouristDTO;
 import ifpr.roteiropromo.core.user.service.TouristService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,13 +35,13 @@ public class TouristController {
                             schema = @Schema(implementation = TouristDTO.class)) }),
             @ApiResponse(responseCode = "400", description = "Itinerary not found for id informed.",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized access",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "403", description = "Forbidden access",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) })
+                            schema = @Schema(implementation = StandardError.class)) })
     })
     public ResponseEntity<TouristDTO> signalItineraryInterest(@PathVariable Long itineraryId){
         return ResponseEntity.ok(touristService.signalItineraryInterest(itineraryId));
@@ -56,13 +56,13 @@ public class TouristController {
                     content = { @Content(mediaType = "application/json") }),
             @ApiResponse(responseCode = "400", description = "Tourist dont have interest in itinerary with id informed.",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized access",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "403", description = "Forbidden access",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) })
+                            schema = @Schema(implementation = StandardError.class)) })
     })
     public ResponseEntity<Void> removeSignalInterested(@PathVariable Long itineraryId){
         touristService.removeInterestedItinerary(itineraryId);

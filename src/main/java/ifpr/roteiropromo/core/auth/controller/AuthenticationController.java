@@ -3,7 +3,7 @@ package ifpr.roteiropromo.core.auth.controller;
 import ifpr.roteiropromo.core.auth.domain.AuthenticatedUserDTO;
 import ifpr.roteiropromo.core.auth.domain.UserAuthenticationDTO;
 import ifpr.roteiropromo.core.auth.service.AuthenticationService;
-import ifpr.roteiropromo.core.errors.StandartError;
+import ifpr.roteiropromo.core.errors.StandardError;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,10 +33,10 @@ public class AuthenticationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "400", description = "User not found or invalid authentication data.",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "401", description = "Guide account not aproved yet.",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "200", description = "User authenticated successfully.",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = AuthenticatedUserDTO.class)) })
@@ -52,7 +52,7 @@ public class AuthenticationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "401", description = "Expired or Invalid Token.",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "200", description = "Authentication token refreshed successfully.",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = AuthenticatedUserDTO.class)) })

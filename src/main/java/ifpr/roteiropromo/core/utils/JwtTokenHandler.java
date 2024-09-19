@@ -2,8 +2,6 @@ package ifpr.roteiropromo.core.utils;
 
 import ifpr.roteiropromo.core.auth.domain.AuthenticatedUserDTO;
 import ifpr.roteiropromo.core.errors.ServiceError;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpEntity;
@@ -33,11 +31,10 @@ public class JwtTokenHandler {
     private final String keycloackAdminPassword = System.getProperty("KC_ADMIN_PASSWORD");
 
 
-    //Extrai os dados do usuario a partir do token enviado na requisição
     public AuthenticatedUserDTO getUserDataFromToken() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // Verifica se a autenticação é do tipo JWT (se o usuário estiver autenticado com um token JWT)
+
         if (authentication instanceof JwtAuthenticationToken) {
             JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) authentication;
             AuthenticatedUserDTO userDTO = new AuthenticatedUserDTO();
@@ -47,7 +44,7 @@ public class JwtTokenHandler {
             //Extrai os dados do token
 
             String idKeyclock = jwtAuthenticationToken.getName();
-            Object userEmail = jwtAuthenticationToken.getTokenAttributes().get("preferred_username"); //ATUALIZADO AQUI
+            Object userEmail = jwtAuthenticationToken.getTokenAttributes().get("preferred_username");
             Object userName = jwtAuthenticationToken.getTokenAttributes().get("given_name");
             Object userLastName = jwtAuthenticationToken.getTokenAttributes().get("family_name");
             log.info("Token JWT: " + token);

@@ -4,7 +4,7 @@ package ifpr.roteiropromo.core.comments.controller;
 import ifpr.roteiropromo.core.comments.domain.DTO.CommentDTO;
 import ifpr.roteiropromo.core.comments.domain.DTO.CommentDTOForm;
 import ifpr.roteiropromo.core.comments.service.CommentService;
-import ifpr.roteiropromo.core.errors.StandartError;
+import ifpr.roteiropromo.core.errors.StandardError;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,16 +39,16 @@ public class CommentController {
                             schema = @Schema(implementation = CommentDTO.class)) }),
             @ApiResponse(responseCode = "400", description = "Interest Point not exist by id provided",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "400", description = "Authenticated user is not a Tourist",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "400", description = "Tourist has already commented this Interest Point",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class))})
+                            schema = @Schema(implementation = StandardError.class))})
     })
     public ResponseEntity<CommentDTO> createComment(
             @PathVariable Long interestPointId,
@@ -81,7 +81,7 @@ public class CommentController {
                             schema = @Schema(implementation = CommentDTO.class)) }),
             @ApiResponse(responseCode = "400", description = "Comment Not exist by id provided",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) })
+                            schema = @Schema(implementation = StandardError.class)) })
     })
     public ResponseEntity<CommentDTO> getOne(@PathVariable Long commentId){
         return ResponseEntity.ok(commentService.getOne(commentId));
@@ -97,7 +97,7 @@ public class CommentController {
                             schema = @Schema(implementation = CommentDTO.class)) }),
             @ApiResponse(responseCode = "400", description = "Interest Point Not exist by id provided",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) })
+                            schema = @Schema(implementation = StandardError.class)) })
     })
     public ResponseEntity<List<CommentDTO>> getAllByInterestPoint(@PathVariable Long interestPointId){
         return ResponseEntity.ok(commentService.getAllByInterestPoint(interestPointId));
@@ -112,10 +112,10 @@ public class CommentController {
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Comment Not exist by id provided",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) }),
+                            schema = @Schema(implementation = StandardError.class)) }),
             @ApiResponse(responseCode = "400", description = "Authenticated user is not a Tourist",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandartError.class)) })
+                            schema = @Schema(implementation = StandardError.class)) })
     })
     public ResponseEntity<Void> deleteComment(@PathVariable Long commentId){
         commentService.deleteComment(commentId);
