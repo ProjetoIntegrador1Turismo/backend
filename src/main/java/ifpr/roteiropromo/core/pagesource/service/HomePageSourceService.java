@@ -44,11 +44,16 @@ public class HomePageSourceService {
         return homePageDTO;
     }
 
+
+
     private List<BasicPointDTO> getRandomPointsToSecondSlider() {
+        //        second slider vir roteiros, hoteis e expêriencias.
         List<BasicPointDTO> basicPointDTO = new ArrayList<>();
-        basicPointDTO.addAll(getRandomRestaurant());
-        basicPointDTO.addAll(getRandomHotels());
-        basicPointDTO.addAll(getRandomEvents());
+//        basicPointDTO.addAll(getRandomRestaurant());
+//        basicPointDTO.addAll(getRandomEvents());
+        basicPointDTO.addAll(getRandomHotels()); //hoteis
+        basicPointDTO.addAll(getRandomExperiences()); //expêriencias
+        basicPointDTO.addAll(getRandomItineraries()); //roteiros
         return basicPointDTO;
     }
 
@@ -83,10 +88,13 @@ public class HomePageSourceService {
     }
 
     private List<BasicPointDTO> getRandomPointsToFirstSlider() {
+        //first slider vir apenas restaurantes, eventos e pontos turisticos
         List<BasicPointDTO> basicPointDTO = new ArrayList<>();
-        basicPointDTO.addAll(getRandomTouristPoints());
-        basicPointDTO.addAll(getRandomExperiences());
-        basicPointDTO.addAll(getRandomItineraries());
+        basicPointDTO.addAll(getRandomTouristPoints()); //pontos turisticos
+        basicPointDTO.addAll(getRandomEvents()); // eventos
+        basicPointDTO.addAll(getRandomRestaurant()); //restaurantes
+//        basicPointDTO.addAll(getRandomExperiences());
+//        basicPointDTO.addAll(getRandomItineraries());
         return basicPointDTO;
     }
 
