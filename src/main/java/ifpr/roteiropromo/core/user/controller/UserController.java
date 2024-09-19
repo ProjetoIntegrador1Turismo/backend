@@ -150,7 +150,6 @@ public class UserController {
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = StandardError.class)) })
     })
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> resetPassword(@RequestParam String email) {
         return ResponseEntity.ok(userService.resetUserPassword(email));
     }
