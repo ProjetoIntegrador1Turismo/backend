@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class Event extends InterestPoint {
 
-    @Column(length = 500)
+    @Column(length = 2800)
     private String longDescription;
     private String date;
     private String duration;

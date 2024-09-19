@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class Experience extends InterestPoint {
 
-    @Column(length = 500)
+    @Column(length = 2800)
     private String longDescription;
     private String requiredAge;
     private String duration;
