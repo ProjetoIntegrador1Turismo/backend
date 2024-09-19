@@ -6,6 +6,7 @@ server:
 upload:
   dir: uploads/
 
+
 #CONFIGURAÇÃO BANCO NO CONTAINER LOCAL P/ COMANDO DA LINHA 32
 spring:
 #  profiles:
@@ -25,7 +26,10 @@ spring:
   mvc:
     static-path-pattern: /uploads/**
     log-request-details: true
-
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
 
   #docker run --name roteirodb -p 3307:3306 -e MYSQL_ROOT_PASSWORD=admin -e MYSQL_DATABASE=roteiro -e MYSQL_USER=projeto -e MYSQL_PASSWORD=12345 -d mysql:latest
 
