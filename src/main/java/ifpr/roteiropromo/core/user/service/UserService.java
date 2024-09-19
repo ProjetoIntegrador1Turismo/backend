@@ -5,9 +5,7 @@ import ifpr.roteiropromo.core.auth.domain.AuthenticatedUserDTO;
 import ifpr.roteiropromo.core.errors.AuthenticationServerError;
 import ifpr.roteiropromo.core.errors.ServiceError;
 import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
-import ifpr.roteiropromo.core.itinerary.service.ItineraryService;
 import ifpr.roteiropromo.core.pagesource.domain.BasicGuideDTO;
-import ifpr.roteiropromo.core.review.repository.ReviewRepository;
 import ifpr.roteiropromo.core.user.domain.dtos.*;
 import ifpr.roteiropromo.core.user.domain.entities.Admin;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
@@ -16,12 +14,9 @@ import ifpr.roteiropromo.core.user.domain.entities.User;
 import ifpr.roteiropromo.core.user.repository.GuideRepository;
 import ifpr.roteiropromo.core.user.repository.UserRepository;
 import ifpr.roteiropromo.core.utils.JwtTokenHandler;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -49,7 +44,6 @@ public class UserService {
         validateCadasturCodeIfGuide(userDTOForm);
         createUserOnResourceServer(userDTOForm);
 
-        // DEFAULT IMAGE URL
         final String DEFAULT_IMAGE_URL = "http://localhost:8081/uploads/userplaceholder.png";
 
         User user;
@@ -60,7 +54,7 @@ public class UserService {
             admin.setActiveAdmin(true);
             user = admin;
 
-            // Adicionando role ADMIN no keycloak:
+
             try {
                 String userId = getUserIdFromKeycloak(user);
                 this.addRoleToUser(userId, jwtTokenHandler.getAdminToken(), "ADMIN");
@@ -81,7 +75,6 @@ public class UserService {
 
         user.setProfileImageUrl(DEFAULT_IMAGE_URL);
 
-        // Salvando no banco
         User savedUser = userRepository.save(user);
         return mapper.map(savedUser, UserDTO.class);
     }
@@ -243,7 +236,6 @@ public class UserService {
             throw new ServiceError("User not found with email: " + jwtTokenHandler.getUserDataFromToken().getEmail());
         }
 
-        // Atualizar nome no backend
         user.setFirstName(userDTOUpdate.getFirstName());
         user.setLastName(userDTOUpdate.getLastName());
         User updatedUser = userRepository.save(user);
@@ -266,13 +258,6 @@ public class UserService {
         userRepository.save(userFound);
     }
 
-
-
-    //////////////////////////////////////////////////
-    //////////////////////////////////////////////////
-    // Métodos relacionados ao KEYCLOAK:
-    //////////////////////////////////////////////////
-    //////////////////////////////////////////////////
 
 
     private HttpEntity<String> createRequestToKeycloakToNewUser(UserDTOForm userDTOForm){
@@ -336,9 +321,6 @@ public class UserService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Bearer " + token);
 
-        //
-        // Atualizar nome no Keycloak
-        //
         Map<String, Object> updateNamePayload = new HashMap<>();
         updateNamePayload.put("firstName", user.getFirstName());
         updateNamePayload.put("lastName", user.getLastName());
@@ -410,12 +392,6 @@ public class UserService {
                 .get("id").toString();
     }
 
-
-    //////////////////////////////////////////////////
-    //////////////////////////////////////////////////
-    // Outros métodos:
-    //////////////////////////////////////////////////
-    //////////////////////////////////////////////////
 
 
     public <S, T> List<T> mapList(List<S> source, Class<T> targetClass) {
