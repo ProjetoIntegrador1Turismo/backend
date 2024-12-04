@@ -18,5 +18,4 @@ public class BasicGenericDTO {
     private String imageCoverUrl;
     private InterestPointType interestPointType;
 
-
 }

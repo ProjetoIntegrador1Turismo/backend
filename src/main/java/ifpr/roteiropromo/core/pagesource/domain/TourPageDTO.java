@@ -16,5 +16,4 @@ public class TourPageDTO {
     List<TopGuideDTO> guidesWhoOfferThisTour;
     List<SimpleCommentDTO> comments;
 
-
 }

@@ -192,8 +192,4 @@ public class InterestPointController {
         return ResponseEntity.noContent().build();
     }
 
-
-
-
-
 }

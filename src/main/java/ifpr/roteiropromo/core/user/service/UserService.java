@@ -96,7 +96,7 @@ public class UserService {
     private void createUserOnResourceServer(UserDTOForm userDTOForm){
         try {
             new RestTemplate().postForEntity(
-                    "http://localhost:8080/admin/realms/SpringBootKeycloak/users",
+                    "http://"+System.getProperty("KEYCLOAK_URL")+"/admin/realms/SpringBootKeycloak/users",
                     createRequestToKeycloakToNewUser(userDTOForm), Map.class);
         } catch (HttpClientErrorException.Conflict e) {
             throw new AuthenticationServerError("User e-mail already registered!", HttpStatus.CONFLICT);
@@ -128,7 +128,7 @@ public class UserService {
             String payload = "[\"UPDATE_PASSWORD\"]";
             HttpEntity<String> entity = new HttpEntity<>(payload, headers);
 
-            String url = "http://localhost:8080/admin/realms/SpringBootKeycloak/users/" + userIDKeycloak + "/execute-actions-email";
+            String url = "http://"+System.getProperty("KEYCLOAK_URL")+"/admin/realms/SpringBootKeycloak/users/" + userIDKeycloak + "/execute-actions-email";
 
             // **Novas linhas adicionadas**
             String redirectUri = "http://localhost:3000/login";
@@ -305,7 +305,7 @@ public class UserService {
 
     public String getUserIdFromKeycloak(User user) {
         RestTemplate restTemplate = new RestTemplate();
-        String keycloakUrl = "http://localhost:8080/admin/realms/SpringBootKeycloak/users?search=" + user.getEmail();
+        String keycloakUrl = "http://"+System.getProperty("KEYCLOAK_URL")+"/admin/realms/SpringBootKeycloak/users?search=" + user.getEmail();
         String token = jwtTokenHandler.getAdminToken();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -348,7 +348,7 @@ public class UserService {
         HttpEntity<Map<String, Object>> nameEntity = new HttpEntity<>(updateNamePayload, headers);
         try {
             restTemplate.exchange(
-                    "http://localhost:8080/admin/realms/SpringBootKeycloak/users/" + userId,
+                    "http://"+System.getProperty("KEYCLOAK_URL")+"/admin/realms/SpringBootKeycloak/users/" + userId,
                     HttpMethod.PUT, nameEntity, String.class);
         } catch (Exception e) {
             throw new ServiceError("Failed to update user name in Keycloak: " + e.getMessage());
@@ -364,7 +364,7 @@ public class UserService {
             HttpEntity<Map<String, Object>> passwordEntity = new HttpEntity<>(updatePasswordPayload, headers);
             try {
                 restTemplate.exchange(
-                        "http://localhost:8080/admin/realms/SpringBootKeycloak/users/" + userId + "/reset-password",
+                        "http://"+System.getProperty("KEYCLOAK_URL")+"/admin/realms/SpringBootKeycloak/users/" + userId + "/reset-password",
                         HttpMethod.PUT, passwordEntity, String.class);
             } catch (Exception e) {
                 throw new ServiceError("Failed to update user password in Keycloak: " + e.getMessage());
@@ -386,7 +386,7 @@ public class UserService {
 
         HttpEntity<String> entity = new HttpEntity<>(roleRepresentation, headers);
         restTemplate.exchange(
-                "http://localhost:8080/admin/realms/SpringBootKeycloak/users/" + userId + "/role-mappings/realm",
+                "http://"+System.getProperty("KEYCLOAK_URL")+"/admin/realms/SpringBootKeycloak/users/" + userId + "/role-mappings/realm",
                 HttpMethod.POST, entity, String.class);
     }
 
@@ -398,7 +398,7 @@ public class UserService {
         headers.set("Authorization", "Bearer " + adminMasterToken);
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        String url = "http://localhost:8080/admin/realms/SpringBootKeycloak/roles";
+        String url = "http://"+System.getProperty("KEYCLOAK_URL")+"/admin/realms/SpringBootKeycloak/roles";
 
         ResponseEntity<List<Map<String, Object>>> response = restTemplate.exchange(
                 url,

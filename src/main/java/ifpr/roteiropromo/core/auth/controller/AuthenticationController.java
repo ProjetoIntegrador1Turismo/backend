@@ -61,11 +61,4 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.getAuthRefreshToken(refreshToken));
     }
 
-
-
-
-
-
-
-
 }

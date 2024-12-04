@@ -15,8 +15,4 @@ public class InterestPointCardDTO implements Serializable {
     private String duration;
     private String imageCoverUrl;
 
-
-
-
-
 }

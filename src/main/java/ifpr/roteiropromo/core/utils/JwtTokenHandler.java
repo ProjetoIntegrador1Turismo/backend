@@ -65,7 +65,7 @@ public class JwtTokenHandler {
     public String getAdminToken(){
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Map> response = restTemplate.postForEntity(
-                "http://localhost:8080/realms/master/protocol/openid-connect/token",
+                "http://"+System.getProperty("KEYCLOAK_URL")+"/realms/master/protocol/openid-connect/token",
                 createEntityRequestForAdmin(), Map.class);
         return (String) response.getBody().get("access_token");
     }

@@ -37,7 +37,7 @@ public class ImageService {
             String fileName = file.getOriginalFilename();
             Path filePath = Paths.get(uploadDir, fileName);
             Files.write(filePath, file.getBytes());
-            return "http://localhost:8081/uploads/" + fileName;
+            return "/uploads/" + fileName;
         }catch (IOException e){
             throw new ServiceError("An error occurred when trying to store image!");
         }

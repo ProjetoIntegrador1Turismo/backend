@@ -126,7 +126,7 @@ public class ItineraryController {
     }
 
     @GetMapping("/guide-detail/{id}")
-    @Operation(summary = "Get one Itinerary and Guide ownder",
+    @Operation(summary = "Get one Itinerary and Guide owner",
             description = "Return a Itinerary and Guide owner by Itinerary id",
             security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {

@@ -8,7 +8,6 @@ import lombok.Setter;
 public class UserDTOUpdate {
 
     private Long id;
-//    private String email;
     private String userName;
     private String firstName;
     private String lastName;

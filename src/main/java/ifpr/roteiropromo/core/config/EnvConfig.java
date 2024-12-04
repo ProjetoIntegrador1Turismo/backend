@@ -16,6 +16,7 @@ public class EnvConfig {
         String keycloackAdminName = dotenv.get("KC_ADMIN_NAME");
         String keycloackAdminPassword = dotenv.get("KC_ADMIN_PASSWORD");
 
+        String keycloakUrl = dotenv.get("KEYCLOAK_URL");
 
         System.setProperty("DB_USERNAME", dbUser);
         System.setProperty("DB_PASSWORD", dbPassword);
@@ -23,6 +24,7 @@ public class EnvConfig {
         System.setProperty("CLIENT_ID", keycloackClientId);
         System.setProperty("KC_ADMIN_NAME", keycloackAdminName);
         System.setProperty("KC_ADMIN_PASSWORD", keycloackAdminPassword);
+        System.setProperty("KEYCLOAK_URL", keycloakUrl);
 
     }
 

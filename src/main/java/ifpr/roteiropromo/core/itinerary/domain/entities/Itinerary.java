@@ -32,7 +32,7 @@ public class Itinerary implements Serializable {
     @ManyToMany
     private List<InterestPoint> interestPoints;
 
-    private String imageCoverUrl; // Novo campo para URL da imagem
+    private String imageCoverUrl;
 
     @ManyToMany(mappedBy = "interestedItineraries")
     private List<Tourist> interestedTourists;

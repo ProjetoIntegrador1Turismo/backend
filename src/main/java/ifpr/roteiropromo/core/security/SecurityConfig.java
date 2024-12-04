@@ -22,8 +22,6 @@ import org.springframework.web.cors.CorsUtils;
 @Profile(value = {"!application-test"})
 class SecurityConfig {
 
-
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http

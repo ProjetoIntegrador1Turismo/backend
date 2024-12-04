@@ -44,12 +44,12 @@ spring:
             scope: openid
         provider:
           keycloak:
-            issuer-uri: http://localhost:8080/realms/SpringBootKeycloak
+            issuer-uri: http://keycloak-prod:8080/realms/SpringBootKeycloak
             user-name-attribute: preferred_username
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8080/realms/SpringBootKeycloak
-          jwk-set-uri: http://localhost:8080/realms/SpringBootKeycloak/protocol/openid-connect/certs
+          issuer-uri: http://keycloak-prod:8080/realms/SpringBootKeycloak
+          jwk-set-uri: http://keycloak-prod:8080/realms/SpringBootKeycloak/protocol/openid-connect/certs
 
 
 logging:

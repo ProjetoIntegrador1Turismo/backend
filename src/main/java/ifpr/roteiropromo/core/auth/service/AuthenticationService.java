@@ -31,6 +31,7 @@ public class AuthenticationService {
     private final ModelMapper mapper;
     private final JwtTokenHandler jwtTokenHandler;
 
+    private final String keycloakUrl = System.getProperty("KEYCLOAK_URL");
 
     //Retorna os dados do usuario e o token de autenticação caso exista
     //Caso não exista, ou, os dados de login estejam errados, lança uma exceção
@@ -127,7 +128,7 @@ public class AuthenticationService {
     private ResponseEntity<Map> makeRequestToAuthenticationServer(HttpEntity<MultiValueMap<String, String>> payLoad){
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.postForEntity(
-                "http://localhost:8080/realms/SpringBootKeycloak/protocol/openid-connect/token",
+                "http://"+keycloakUrl+"/realms/SpringBootKeycloak/protocol/openid-connect/token",
                 payLoad, Map.class
         );
     }
