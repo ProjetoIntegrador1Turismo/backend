@@ -20,6 +20,9 @@ public interface GuideRepository extends JpaRepository<Guide, Long> {
     @Query("SELECT g FROM Guide g JOIN g.itineraries i JOIN i.interestPoints ip WHERE ip.id = :interestPointId")
     List<Guide> findGuidesByInterestPoint(Long interestPointId);
 
-    @Query("SELECT g FROM Guide g ORDER BY g.averageRating DESC")
+//    @Query("SELECT g FROM Guide g ORDER BY g.averageRating DESC")
+//    List<Guide> getGuidesOrderedByRating();
+
+    @Query("SELECT g FROM Guide g WHERE g.isApproved = true ORDER BY g.averageRating DESC")
     List<Guide> getGuidesOrderedByRating();
 }

@@ -42,7 +42,6 @@ public class JwtTokenHandler {
             String token = jwtAuthenticationToken.getToken().getTokenValue();
 
             //Extrai os dados do token
-
             String idKeyclock = jwtAuthenticationToken.getName();
             Object userEmail = jwtAuthenticationToken.getTokenAttributes().get("preferred_username");
             Object userName = jwtAuthenticationToken.getTokenAttributes().get("given_name");
@@ -91,7 +90,7 @@ public class JwtTokenHandler {
         }
         String payload = new String(Base64.getUrlDecoder().decode(parts[1]));
         JSONObject jsonObject = new JSONObject(payload);
-        return jsonObject.getString("email");
+        return jsonObject.getString("preferred_username");
     }
 
 }

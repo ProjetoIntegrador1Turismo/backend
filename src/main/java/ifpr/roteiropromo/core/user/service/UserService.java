@@ -45,7 +45,7 @@ public class UserService {
         validateCadasturCodeIfGuide(userDTOForm);
         createUserOnResourceServer(userDTOForm);
 
-        final String DEFAULT_IMAGE_URL = "http://localhost:8081/uploads/userplaceholder.png";
+        final String DEFAULT_IMAGE_URL = "/uploads/userplaceholder.png";
 
         User user;
 

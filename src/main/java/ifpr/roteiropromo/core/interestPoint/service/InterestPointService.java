@@ -38,7 +38,7 @@ public class InterestPointService {
     public InterestPoint create(InterestPointDTOForm interestPointDTOForm) {
 
         // URL da imagem de capa padrão
-        final String DEFAULT_IMAGE_URL = "http://localhost:8081/uploads/interestpointplaceholder.webp";
+        final String DEFAULT_IMAGE_URL = "/uploads/interestpointplaceholder.webp";
 
         // Verifica se o ponto de interesse já existe
         if (interestPointAlreadyExist(interestPointDTOForm.getName())) {
