@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  keycloak:
+    image: keycloakroteiro:custom
+    container_name: keycloak-prod
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    ports:
+      - "8080:8080"
+    networks:
+      - roteiro-network-prod
+
+  mysql:
+    image: mysql:latest
+    container_name: roteirodb-prod
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=roteiro
+      - MYSQL_USER=projeto
+      - MYSQL_PASSWORD=12345
+    command: --innodb-buffer-pool-size=64M --max-connections=50 --performance-schema=OFF
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data_prod:/var/lib/mysql
+    networks:
+      - roteiro-network-prod
+
+  app:
+    build: .
+    container_name: roteiro-app-prod
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/roteiro?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=projeto
+      - SPRING_DATASOURCE_PASSWORD=12345
+      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER-URI=http://keycloak-prod:8080/realms/SpringBootKeycloak
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI=http://keycloak-prod:8080/realms/SpringBootKeycloak
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mysql
+      - keycloak
+    networks:
+      - roteiro-network-prod
+    volumes:
+      - ./uploads:/app/uploads
+      - ./.env:/app/.env
+
+networks:
+  roteiro-network-prod:
+    driver: bridge
+
+volumes:
+  mysql_data_prod:
