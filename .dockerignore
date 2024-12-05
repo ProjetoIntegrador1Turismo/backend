@@ -1,0 +1,8 @@
+.git
+.gitignore
+target/
+uploads/
+.idea/
+*.iml
+node_modules/
+*.log
