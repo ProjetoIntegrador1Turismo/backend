@@ -27,7 +27,7 @@ services:
       - roteiro-network-prod
 
   app:
-    image: guilhermelazy/keycloackroteiro:latest
+    build: .
     container_name: roteiro-app-prod
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/roteiro?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
