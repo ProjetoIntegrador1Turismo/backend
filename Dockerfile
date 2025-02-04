@@ -8,5 +8,6 @@ RUN mvn clean package -DskipTests -Dmaven.repo.local=/app/.m2
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
+COPY .env .env
 EXPOSE 8081
 ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75.0", "-XX:+UseG1GC", "-Xmx256m", "-jar", "app.jar"]
