@@ -38,7 +38,7 @@ services:
       - CLIENT_ID=admin-cli
       - KC_ADMIN_NAME=guilherme.vieira.lazarotto@gmail.com
       - KC_ADMIN_PASSWORD=anderson
-      - KEYCLOAK_URL=http://keycloak-prod:8080
+      - KEYCLOAK_URL=keycloak-prod:8080
     ports:
       - "8081:8081"
     depends_on:
