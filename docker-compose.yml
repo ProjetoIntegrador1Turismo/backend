@@ -34,7 +34,7 @@ services:
     environment:
       - DB_USERNAME=projeto
       - DB_PASSWORD=12345
-      - DB_URL=jdbc:mysql://mysql:3306/roteiro?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/roteiro?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       - CLIENT_ID=admin-cli
       - KC_ADMIN_NAME=guilherme.vieira.lazarotto@gmail.com
       - KC_ADMIN_PASSWORD=anderson
