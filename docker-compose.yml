@@ -32,11 +32,13 @@ services:
       dockerfile: Dockerfile
     container_name: roteiro-app-prod
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/roteiro?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-      - SPRING_DATASOURCE_USERNAME=projeto
-      - SPRING_DATASOURCE_PASSWORD=12345
-      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER-URI=http://keycloak-prod:8080/realms/SpringBootKeycloak
-      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI=http://keycloak-prod:8080/realms/SpringBootKeycloak
+      - DB_USERNAME=projeto
+      - DB_PASSWORD=12345
+      - DB_URL=jdbc:mysql://mysql:3306/roteiro?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      - CLIENT_ID=admin-cli
+      - KC_ADMIN_NAME=guilherme.vieira.lazarotto@gmail.com
+      - KC_ADMIN_PASSWORD=anderson
+      - KEYCLOAK_URL=http://keycloak-prod:8080
     ports:
       - "8081:8081"
     depends_on:
@@ -46,6 +48,7 @@ services:
       - roteiro-network-prod
     volumes:
       - ./uploads:/app/uploads
+
 
 networks:
   roteiro-network-prod:
