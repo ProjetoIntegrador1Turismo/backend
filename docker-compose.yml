@@ -20,7 +20,7 @@ services:
       - MYSQL_PASSWORD=12345
     command: --innodb-buffer-pool-size=64M --max-connections=50 --performance-schema=OFF
     ports:
-      - "3307:3306"
+      - "3306:3306"
     volumes:
       - mysql_data_prod:/var/lib/mysql
     networks:
