@@ -1,4 +1,7 @@
+version: "3.8"
+
 services:
+
   keycloak:
     image: guilhermelazy/keycloackroteiro:latest
     container_name: keycloak-prod
@@ -27,7 +30,9 @@ services:
       - roteiro-network-prod
 
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: roteiro-app-prod
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/roteiro?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
@@ -44,7 +49,6 @@ services:
       - roteiro-network-prod
     volumes:
       - ./uploads:/app/uploads
-      - ./.env:/app/.env
 
 networks:
   roteiro-network-prod:
