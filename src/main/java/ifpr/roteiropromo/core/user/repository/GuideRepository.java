@@ -2,6 +2,8 @@ package ifpr.roteiropromo.core.user.repository;
 
 import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
 import ifpr.roteiropromo.core.user.domain.entities.Guide;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -25,4 +27,6 @@ public interface GuideRepository extends JpaRepository<Guide, Long> {
 
     @Query("SELECT g FROM Guide g WHERE g.isApproved = true ORDER BY g.averageRating DESC")
     List<Guide> getGuidesOrderedByRating();
+
+    Page<Guide> findAllByOrderByAverageRatingDesc(Pageable pageable);
 }

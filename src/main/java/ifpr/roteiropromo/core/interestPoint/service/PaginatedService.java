@@ -7,12 +7,19 @@ import ifpr.roteiropromo.core.interestPoint.repository.*;
 import ifpr.roteiropromo.core.itinerary.domain.entities.Itinerary;
 import ifpr.roteiropromo.core.itinerary.repository.ItineraryRepository;
 import ifpr.roteiropromo.core.pagesource.domain.BasicItineraryDTO;
+import ifpr.roteiropromo.core.user.domain.entities.Guide;
+import ifpr.roteiropromo.core.user.repository.GuideRepository;
+import ifpr.roteiropromo.core.user.service.GuideService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +33,8 @@ public class PaginatedService {
     private final TouristPointRepository touristPointRepository;
     private final InterestPointRepository interestPointRepository;
     private final ItineraryRepository itineraryRepository;
+    private final GuideService guideService;
+    private final GuideRepository guideRepository;
 
     public Page<BasicGenericDTO> findEventPaginated(int page, int size, String name){
         Pageable pageable = PageRequest.of(page, size);
@@ -129,11 +138,38 @@ public class PaginatedService {
         ));
     }
 
+//    public Page<BasicItineraryDTO> findItinerariesPaginated(int page, int size, String query) {
+//        Pageable pageable = PageRequest.of(page, size);
+//        Page<Itinerary> itineraryPage;
+//        if (query.isEmpty()){
+//            itineraryPage = itineraryRepository.findAll(pageable);
+//
+//        }else {
+//            itineraryPage = itineraryRepository.findItinerariesByTitleContainingIgnoreCase(query, pageable);
+//        }
+//        return itineraryPage.map(itinerary -> new BasicItineraryDTO(
+//                itinerary.getId(),
+//                itinerary.getTitle(),
+//                itinerary.getImageCoverUrl()
+//        ));
+//    }
+
     public Page<BasicItineraryDTO> findItinerariesPaginated(int page, int size, String query) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Itinerary> itineraryPage;
         if (query.isEmpty()){
-            itineraryPage = itineraryRepository.findAll(pageable);
+            Page<Guide> guidePage = guideRepository.findAllByOrderByAverageRatingDesc(pageable);
+
+            //  Extrair os itinerários desses guias mantendo a ordem dos guias paginados
+            List<Itinerary> itineraries = guidePage.getContent().stream()
+                    .flatMap(guide -> guide.getItineraries().stream())
+                    .collect(Collectors.toList());
+
+            //  Criar página de itinerários
+            itineraryPage = new PageImpl<>(itineraries, pageable, itineraries.size());
+
+//            itineraryPage = itineraryRepository.findAll(pageable);
+
         }else {
             itineraryPage = itineraryRepository.findItinerariesByTitleContainingIgnoreCase(query, pageable);
         }

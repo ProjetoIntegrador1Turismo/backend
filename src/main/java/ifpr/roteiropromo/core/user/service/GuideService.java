@@ -72,4 +72,9 @@ public class GuideService {
     public void updateGuide(Guide guide) {
         guideRepository.save(guide);
     }
+
+    public List<Guide> getAllGuidesOrderByRating() {
+        List<Guide> guides = guideRepository.getGuidesOrderedByRating();
+        return guides;
+    }
 }
